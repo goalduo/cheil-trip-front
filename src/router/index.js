@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
 import PostView from '@/views/PostView.vue'
+import AttractionSearchView from '@/views/AttractionSearchView.vue'
 import PostCreateView from '@/views/PostCreateView.vue'
 
 const router = createRouter({
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/post/create',
       name: 'postCreate',
       component: PostCreateView
+    },
+    {
+      path: '/attraction',
+      name: 'attraction',
+      component : AttractionSearchView
     }
     // {
     //   path: '/about',
