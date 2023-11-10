@@ -12,7 +12,7 @@ import { RouterLink } from 'vue-router'
       <!-- 추후에 라우팅 경로 명시 요망 -->
       <RouterLink class="link" to="/">여행지 검색</RouterLink>
       <RouterLink class="link" to="/">여행카드 만들기</RouterLink>
-      <RouterLink class="link" to="/">게시판</RouterLink>
+      <RouterLink class="link" to="/post">게시판</RouterLink>
       <RouterLink class="link" to="/">로그인</RouterLink>
     </div>
   </header>
