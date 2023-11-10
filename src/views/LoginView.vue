@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router'
+
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 </script>
@@ -11,9 +13,9 @@ import SitemapFooter from '../components/SitemapFooter.vue'
     <input type="password" id="password" placeholder="비밀번호" />
     <input type="button" id="submit" value="로그인" />
     <div class="account">
-      <p>아이디 찾기</p>
-      <p>비밀번호 찾기</p>
-      <p>회원가입</p>
+      <RouterLink class="link" to="/">아이디 찾기</RouterLink>
+      <RouterLink class="link" to="/">비밀번호 찾기</RouterLink>
+      <RouterLink class="link" to="/register">회원가입</RouterLink>
     </div>
   </form>
   <SitemapFooter></SitemapFooter>
@@ -79,12 +81,13 @@ import SitemapFooter from '../components/SitemapFooter.vue'
   gap: 10px;
 }
 
-.account p {
+.account .link {
   cursor: pointer;
   padding: 2px 0;
   font-size: 11px;
   font-weight: 500;
   color: var(--fourth-font-color);
+  text-decoration: none;
   border-bottom: 1px solid var(--tag-font-color);
 }
 </style>
