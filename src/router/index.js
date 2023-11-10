@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
+import LoginView from '@/views/LoginView.vue'
 import PostView from '@/views/PostView.vue'
 import AttractionSearchView from '@/views/AttractionSearchView.vue'
 import PostCreateView from '@/views/PostCreateView.vue'
+import PostDetailView from '@/views/PostDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +13,11 @@ const router = createRouter({
       path: '/',
       name: 'main',
       component: MainView
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
     },
     {
       path: '/post',
@@ -23,9 +30,15 @@ const router = createRouter({
       component: PostCreateView
     },
     {
+
       path: '/attraction',
       name: 'attraction',
-      component : AttractionSearchView
+      component: AttractionSearchView
+    },
+    {
+      path: '/post/detail',
+      name: 'postDetail',
+      component: PostDetailView
     }
     // {
     //   path: '/about',

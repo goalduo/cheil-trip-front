@@ -1,4 +1,30 @@
-<script setup></script>
+<script setup>
+import Editor from '@toast-ui/editor'
+import '@toast-ui/editor/dist/toastui-editor.css'
+import SitemapFooter from '../components/SitemapFooter.vue'
+
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  const editor = new Editor({
+    el: document.querySelector('#editor'),
+    width: '500px',
+    height: '600px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical',
+    placeholder:
+      '- 위치 정보를 자세히 알려주시면 더 좋아요!\n- 마크다운으로도 작성할 수 있어요.\n- 여행과 관련된 정보들을 많이 알려주세요!',
+    toolbarItems: [
+      ['heading', 'bold', 'italic', 'strike'],
+      ['hr', 'quote'],
+      ['ul', 'ol', 'task', 'indent', 'outdent'],
+      ['table', 'link'],
+      ['code', 'codeblock'],
+      ['scrollSync']
+    ]
+  })
+})
+</script>
 
 <template>
   <div id="wrap">
@@ -25,9 +51,10 @@
       <span>최대 5개의 태그를 달 수 있어요!</span>
     </div>
 
-    <div class="editor">
+    <div class="editor-input">
       <p>내용</p>
       <!-- TOAST UI 위치 -->
+      <div id="editor"></div>
     </div>
 
     <div class="submit">
@@ -35,13 +62,14 @@
       <button class="confirm">확인</button>
     </div>
   </div>
+
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>
 #wrap {
   position: relative;
   width: 100%;
-  height: 100vh;
   margin: 0 auto;
   padding: 25px;
   display: flex;
@@ -60,7 +88,7 @@
 .category-input,
 .title-input,
 .tag-input,
-.editor {
+.editor-input {
   margin: 15px 0;
   display: flex;
   flex-direction: column;
@@ -70,7 +98,7 @@
 .category-input p,
 .title-input p,
 .tag-input p,
-.editor p {
+.editor-input p {
   font-size: 16px;
   font-weight: 500;
   color: var(--sub-font-color);
@@ -103,6 +131,7 @@
   font-size: 16px;
   border: 1px solid var(--tag-color);
   border-radius: 4px;
+  outline-color: var(--sky-color);
 }
 
 .tag-input input {
@@ -111,6 +140,7 @@
   font-size: 16px;
   border: 1px solid var(--tag-color);
   border-radius: 4px;
+  outline-color: var(--sky-color);
 }
 
 .tag-input span {
@@ -119,6 +149,7 @@
 }
 
 .submit {
+  margin: 20px 0;
   display: flex;
   gap: 10px;
 }
@@ -130,5 +161,14 @@
   font-size: 16px;
   border: 1px solid var(--tag-color);
   border-radius: 4px;
+}
+
+.cancel:hover,
+.confirm:hover {
+  border-color: var(--fourth-font-color);
+}
+
+#editor {
+  width: 1000px;
 }
 </style>

@@ -1,16 +1,13 @@
 <script setup>
 import NavHeader from '../components/NavHeader.vue'
 import PostSimple from '../components/post/PostSimple.vue'
+import SitemapFooter from '../components/SitemapFooter.vue'
 </script>
 
 <template>
-  <div id="wrap">
-    <NavHeader></NavHeader>
-    <PostSimple></PostSimple>
-  </div>
+  <NavHeader></NavHeader>
+  <PostSimple></PostSimple>
+  <SitemapFooter></SitemapFooter>
 </template>
 
-<style scoped>
-#wrap {
-}
-</style>
+<style scoped></style>

@@ -13,8 +13,9 @@ import { RouterLink } from 'vue-router'
       <RouterLink class="link" to="/attraction">여행지 검색</RouterLink>
       <RouterLink class="link" to="/">여행카드 만들기</RouterLink>
       <RouterLink class="link" to="/post">게시판</RouterLink>
+      <RouterLink class="link" to="/post/detail">게시물 상세</RouterLink>
       <RouterLink class="link" to="/post/create">게시물 작성하기</RouterLink>
-      <RouterLink class="link" to="/">로그인</RouterLink>
+      <RouterLink class="link" to="/login">로그인</RouterLink>
     </div>
   </header>
 </template>
