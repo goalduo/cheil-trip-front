@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { VITE_VUE_ATTRACTION_URL } = import.meta.env;
+const { VITE_VUE_ATTRACTION_URL, VITE_VUE_API_URL } = import.meta.env;
 
 function AttractionAxios() {
   const instance = axios.create({
@@ -20,7 +20,7 @@ function AttractionAxios() {
 }
 
 // local vue api axios instance
-function localAxios() {
+function RestServerAxios() {
   const instance = axios.create({
     baseURL: VITE_VUE_API_URL,
     headers: {
@@ -30,4 +30,4 @@ function localAxios() {
   return instance;
 }
 
-export { localAxios, AttractionAxios };
+export { RestServerAxios, AttractionAxios };

@@ -1,56 +1,67 @@
 <script setup>
+import {ref, onMounted} from 'vue'
 import PostCard from './PostCard.vue'
+import { getBoardList } from '@/api/BoardAPI.js'
+const articles = ref([]);
+onMounted(async() => {
+    articles.value = await getBoardList();
+    console.log(articles);
+})
 
-const articles = [
-  {
-    id: 1,
-    userName: 'wook2',
-    title: '해동용궁사에서 용 보다',
-    content: '해동용궁사',
-    hit: 20,
-    registerTime: '2023-11-10'
-  },
-  {
-    id: 2,
-    userName: 'wook2',
-    title: '서울 롯데타워에서 다이빙',
-    content: '서울 롯데타워',
-    hit: 20,
-    registerTime: '2023-02-05'
-  },
-  {
-    id: 3,
-    userName: 'wook2',
-    title: 'Card title',
-    content: 'Card content',
-    hit: 20,
-    registerTime: '2023-02-05'
-  },
-  {
-    id: 4,
-    userName: 'wook2',
-    title: 'Card title',
-    content: 'Card content',
-    hit: 20,
-    registerTime: '2023-02-05'
-  },
-  {
-    id: 5,
-    userName: 'wook2',
-    title: 'Card title',
-    content: 'Card content',
-    hit: 20,
-    registerTime: '2023-02-05'
-  },
-  {
-    id: 6,
-    userName: 'wook2',
-    title: 'Card title',
-    content: 'Card content',
-    hit: 20,
-    registerTime: '2023-02-05'
-  }
-]
+async function searchAttraction() {
+   
+}
+
+// const articles = [
+//   {
+//     id: 1,
+//     userName: 'wook2',
+//     title: '해동용궁사에서 용 보다',
+//     content: '해동용궁사',
+//     hit: 20,
+//     registerTime: '2023-11-10'
+//   },
+//   {
+//     id: 2,
+//     userName: 'wook2',
+//     title: '서울 롯데타워에서 다이빙',
+//     content: '서울 롯데타워',
+//     hit: 20,
+//     registerTime: '2023-02-05'
+//   },
+//   {
+//     id: 3,
+//     userName: 'wook2',
+//     title: 'Card title',
+//     content: 'Card content',
+//     hit: 20,
+//     registerTime: '2023-02-05'
+//   },
+//   {
+//     id: 4,
+//     userName: 'wook2',
+//     title: 'Card title',
+//     content: 'Card content',
+//     hit: 20,
+//     registerTime: '2023-02-05'
+//   },
+//   {
+//     id: 5,
+//     userName: 'wook2',
+//     title: 'Card title',
+//     content: 'Card content',
+//     hit: 20,
+//     registerTime: '2023-02-05'
+//   },
+//   {
+//     id: 6,
+//     userName: 'wook2',
+//     title: 'Card title',
+//     content: 'Card content',
+//     hit: 20,
+//     registerTime: '2023-02-05'
+//   }
+// ]
 </script>
 
 <template>
