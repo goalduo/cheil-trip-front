@@ -1,6 +1,51 @@
 <script setup>
+// 추후에 처리해야 할 내용은 아래 모든 input 요소의 value에 대해 유효성 검사를 마쳤을 때, 가입할 수 있어야 함.
+
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
+
+import { ref, watch } from 'vue'
+
+const name = ref('')
+const id = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+
+const isValidEmail = ref(false)
+const isValidPassword = ref(false)
+const isValidConfirmPassword = ref(false)
+
+const emailRegExp = /^[a-zA-z0-9._%+-]+@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$/
+const passwordRegExp = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/
+
+watch(email, () => {
+  if (email.value && emailRegExp.test(email.value)) {
+    isValidEmail.value = true
+  } else {
+    isValidEmail.value = false
+  }
+})
+
+watch(password, () => {
+  if (password.value && passwordRegExp.test(password.value)) {
+    isValidPassword.value = true
+  } else {
+    isValidPassword.value = false
+  }
+})
+
+watch(confirmPassword, () => {
+  isValidConfirmPassword.value = confirmPassword.value === password.value ? true : false
+})
+
+// IME(한글) 처리를 위한 메서드 선언
+const onChangeNameInputValue = (event) => {
+  name.value = event.target.value
+}
+const onChangeIdInputValue = (event) => {
+  id.value = event.target.value
+}
 </script>
 
 <template>
@@ -12,25 +57,66 @@ import SitemapFooter from '../components/SitemapFooter.vue'
 
     <div class="group">
       <label for="name">이름</label>
-      <input type="text" id="name" name="name" placeholder="이름" />
+      <input
+        :value="name"
+        @input="onChangeNameInputValue"
+        type="text"
+        id="name"
+        name="name"
+        placeholder="이름"
+      />
     </div>
     <div class="group">
       <label for="id">아이디</label>
-      <input type="text" id="id" name="id" placeholder="아이디" />
+      <input
+        :value="id"
+        @input="onChangeIdInputValue"
+        type="text"
+        id="id"
+        name="id"
+        placeholder="아이디"
+      />
+      <!-- <p class="input-text-error">중복된 아이디가 있습니다.</p> -->
     </div>
     <div class="group">
       <label for="email">이메일</label>
-      <input type="email" id="email" name="email" placeholder="이메일" />
+      <input
+        v-model="email"
+        :class="{ 'input-error': !isValidEmail }"
+        type="email"
+        id="email"
+        name="email"
+        placeholder="이메일"
+      />
+      <p v-show="!isValidEmail" class="input-text-error">이메일 주소를 정확히 입력해주세요.</p>
     </div>
     <div class="group">
       <label for="password">비밀번호</label>
-      <input type="password" id="password" name="password" placeholder="******" />
+      <input
+        v-model="password"
+        :class="{ 'input-error': !isValidPassword }"
+        type="password"
+        id="password"
+        name="password"
+        placeholder="********"
+      />
+      <p v-show="!isValidPassword" class="input-text-error">
+        영문, 숫자, 특수문자를 조합하여 입력해주세요. (8-16자)
+      </p>
     </div>
     <div class="group">
       <label for="password-confirm">비밀번호 확인하기</label>
-      <input type="password" id="password-confirm" name="password-confirm" placeholder="******" />
+      <input
+        v-model="confirmPassword"
+        :class="{ 'input-error': !isValidConfirmPassword }"
+        type="password"
+        id="password-confirm"
+        name="password-confirm"
+        placeholder="********"
+      />
+      <p v-show="!isValidConfirmPassword" class="input-text-error">비밀번호가 일치하지 않습니다.</p>
     </div>
-    <input type="button" id="submit" value="가입하기" />
+    <input type="button" id="submit" value="가입하기" @click="registerUserInfo" />
   </form>
   <SitemapFooter></SitemapFooter>
 </template>
@@ -89,6 +175,18 @@ label {
   font-weight: 400;
   border-radius: 4px;
   outline-color: var(--sky-color);
+}
+
+/* input 테두리에 오류를 알리기 위한 클래스 선택자 */
+.input-error {
+  outline-color: var(--red-color) !important;
+}
+
+/* 텍스트로 오류를 알리기 위한 클래스 선택자 */
+.input-text-error {
+  line-height: 16px;
+  font-size: 11px;
+  color: var(--red-color);
 }
 
 #name::placeholder,
