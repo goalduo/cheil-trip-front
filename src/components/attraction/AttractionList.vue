@@ -234,6 +234,7 @@ onMounted(() => {
   box-shadow:
     0 5px 20px rgba(0, 0, 0, 0.19),
     0 3px 3px rgba(0, 0, 0, 0.21);
+  overflow: scroll;
 }
 
 #map {
@@ -336,12 +337,9 @@ hr {
 }
 
 .result {
-  height: 480px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex-wrap: nowrap;
-  overflow-y: auto;
 }
 .result li {
   cursor: pointer;
