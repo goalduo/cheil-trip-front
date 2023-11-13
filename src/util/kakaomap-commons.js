@@ -1,4 +1,5 @@
 const ps = new kakao.maps.services.Places();  
+let searchResult = {};
 function initMap(dom) {
     const mapContainer = document.getElementById(dom);
     const options = {
@@ -9,13 +10,20 @@ function initMap(dom) {
     return map;
 }
 function displayMarker(location, map) {
-    const { Lat, Lng } = location
-    var markerPosition  = new kakao.maps.LatLng(Lat, Lng); 
+    const { y, x, place_name } = location;
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+    var markerPosition  = new kakao.maps.LatLng(y, x); 
 // 마커를 생성합니다
-  var marker = new kakao.maps.Marker({
-      position: markerPosition
-  });
-// 마커가 지도 위에 표시되도록 설정합니다
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: markerPosition
+    });
+    // 마커가 지도 위에 표시되도록 설정합니다
+    kakao.maps.event.addListener(marker, 'click', function() {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>');
+        infowindow.open(map, marker);
+    });
     marker.setMap(map);
     map.setCenter(markerPosition);
 }
@@ -32,53 +40,51 @@ function drawLine(map, path) {
     });	
 }
 
-async function searchPlacesByKeyword(keyword) {
+function searchPlacesByKeyword(keyword, callbackFn) {
+
     // var keyword = document.getElementById('keyword').value;
     if (!keyword.replace(/^\s+|\s+$/g, '')) {
         alert('키워드를 입력해주세요!');
         return false;
     }
     // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-    const result = await ps.keywordSearch(keyword, placesSearchCB); 
-    console.log(result)
-    return result;
+    ps.keywordSearch(keyword, (data,status,pagination) => {
+        const result = placesSearchCB(data, status)
+        callbackFn(result)
+    }); 
 }
 
-// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-function placesSearchCB(data, status, pagination) {
-    if (status === kakao.maps.services.Status.OK) {
-        // 정상적으로 검색이 완료됐으면
-        // 검색 목록과 마커를 표출합니다
-        // console.log(data);
-        // console.log(status);
-        // console.log(pagination);
-        console.log({
-            data,
-            status,
-            pagination
-        })
-        return {
-            data,
-            status,
-            pagination
-        }
-
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-
-        alert('검색 결과가 존재하지 않습니다.');
-        return;
-
-    } else if (status === kakao.maps.services.Status.ERROR) {
-
-        alert('검색 결과 중 오류가 발생했습니다.');
-        return;
-
+function placesSearchCB(data, status) {
+if (status === kakao.maps.services.Status.OK) {
+    return {
+        searchList : data
+    }
+} else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+    alert('검색 결과가 존재하지 않습니다.');
+    return;
+} else if (status === kakao.maps.services.Status.ERROR) {
+    alert('검색 결과 중 오류가 발생했습니다.');
+    return;
     }
 }
-  
+function search(keyword, map, callbackFn) {
+    searchPlacesByKeyword(keyword, (response) => {
+    // console.log(response)
+    var bounds = new kakao.maps.LatLngBounds();
+    response.searchList.forEach(data => {
+        displayMarker({ y: data.y, x: data.x }, map)
+        bounds.extend(new kakao.maps.LatLng(data.y, data.x));
+        });
+        map.setBounds(bounds);
+    callbackFn(response.searchList)
+    })
+}
+
+
 export {
     initMap,
     displayMarker,
     drawLine,
-    searchPlacesByKeyword
+    searchPlacesByKeyword,
+    search
 }
