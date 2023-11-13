@@ -6,7 +6,7 @@ import PostView from '@/views/PostView.vue'
 import AttractionSearchView from '@/views/AttractionSearchView.vue'
 import PostCreateView from '@/views/PostCreateView.vue'
 import PostDetailView from '@/views/PostDetailView.vue'
-
+import KakaoMap from '@/components/attraction/KakaoMap.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -45,6 +45,11 @@ const router = createRouter({
       path: '/post/detail',
       name: 'postDetail',
       component: PostDetailView
+    },
+    {
+      path: '/maptest',
+      name: 'maptest',
+      component: KakaoMap
     }
     // {
     //   path: '/about',
