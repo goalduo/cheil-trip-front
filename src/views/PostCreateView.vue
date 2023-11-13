@@ -3,7 +3,7 @@ import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 onMounted(() => {
   const editor = new Editor({
@@ -24,6 +24,15 @@ onMounted(() => {
     ]
   })
 })
+
+const categoryState = ref([false, false, false, false])
+
+const onClickCategory = (num) => {
+  categoryState.value.map((value, index) => {
+    if (index === num) categoryState.value[index] = true
+    else categoryState.value[index] = false
+  })
+}
 </script>
 
 <template>
@@ -33,10 +42,26 @@ onMounted(() => {
     <div class="category-input">
       <p>카테고리</p>
       <ul>
-        <li><button>여행지</button></li>
-        <li><button>맛집</button></li>
-        <li><button>코스</button></li>
-        <li><button>기타</button></li>
+        <li>
+          <button @click="onClickCategory(0)" :class="{ 'category-selected': categoryState[0] }">
+            여행지
+          </button>
+        </li>
+        <li>
+          <button @click="onClickCategory(1)" :class="{ 'category-selected': categoryState[1] }">
+            맛집
+          </button>
+        </li>
+        <li>
+          <button @click="onClickCategory(2)" :class="{ 'category-selected': categoryState[2] }">
+            코스
+          </button>
+        </li>
+        <li>
+          <button @click="onClickCategory(3)" :class="{ 'category-selected': categoryState[3] }">
+            기타
+          </button>
+        </li>
       </ul>
     </div>
 
@@ -120,7 +145,7 @@ onMounted(() => {
   border-radius: 4px;
 }
 
-.category-input ul li button:hover {
+.category-input ul li .category-selected {
   color: var(--sky-color);
   border-color: var(--sky-color);
 }
