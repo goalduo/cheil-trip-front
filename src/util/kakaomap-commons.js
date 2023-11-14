@@ -40,17 +40,21 @@ function drawLine(map, path) {
   })
 }
 
-function searchPlacesByKeyword(keyword, callbackFn) {
+function searchPlacesByKeyword(keyword, callbackFn, option) {
   // var keyword = document.getElementById('keyword').value;
   if (!keyword.replace(/^\s+|\s+$/g, '')) {
     alert('키워드를 입력해주세요!')
     return false
   }
   // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
-  ps.keywordSearch(keyword, (data, status, pagination) => {
-    const result = placesSearchCB(data, status)
-    callbackFn(result)
-  })
+  ps.keywordSearch(
+    keyword,
+    (data, status, pagination) => {
+      const result = placesSearchCB(data, status)
+      callbackFn(result)
+    },
+    option
+  )
 }
 
 function searchPlacesByCategory(category, map, callbackFn) {
@@ -79,9 +83,25 @@ function placesSearchCB(data, status) {
     return
   }
 }
-function search(keyword, map, callbackFn) {
-  searchPlacesByKeyword(keyword, (response) => {
-    // console.log(response)
+function search(keyword, map, callbackFn, option) {
+  searchPlacesByKeyword(
+    keyword,
+    (response) => {
+      // console.log(response)
+      var bounds = new kakao.maps.LatLngBounds()
+      response.searchList.forEach((data) => {
+        displayMarker({ y: data.y, x: data.x }, map)
+        bounds.extend(new kakao.maps.LatLng(data.y, data.x))
+      })
+      map.setBounds(bounds)
+      callbackFn(response.searchList)
+    },
+    option
+  )
+}
+
+function searchByCategory(category, map, callbackFn) {
+  searchPlacesByCategory(category, map, (response) => {
     var bounds = new kakao.maps.LatLngBounds()
     response.searchList.forEach((data) => {
       displayMarker({ y: data.y, x: data.x }, map)
@@ -92,10 +112,17 @@ function search(keyword, map, callbackFn) {
   })
 }
 
-function searchByCategory(category, map, callbackFn) {
-  searchPlacesByCategory(category, map, (response) => {
-    callbackFn(response.searchList)
-  })
+function setMapByArea(map, lat, lng) {
+  map.setCenter(new kakao.maps.LatLng(lat, lng))
+  map.setLevel(5)
 }
 
-export { initMap, displayMarker, drawLine, searchPlacesByKeyword, search, searchByCategory }
+export {
+  initMap,
+  displayMarker,
+  drawLine,
+  searchPlacesByKeyword,
+  search,
+  searchByCategory,
+  setMapByArea
+}
