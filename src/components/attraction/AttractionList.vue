@@ -12,14 +12,15 @@ import {
   drawLine,
   searchPlacesByKeyword,
   search,
-  searchByCategory
+  searchByCategory,
+  setMapByArea
 } from '@/util/kakaomap-commons.js'
-import AttractionListRow from './AttractionListRow.vue'
-let searchOptions = ref([])
+//import AttractionListRow from './AttractionListRow.vue'
+// let searchOptions = ref([])
 const areaCode = ref(0)
-const contentTypeId = ref(0)
-const keyword = ref('')
-const tripList = ref([])
+const contentTypeId = ref('')
+// const keyword = ref('')
+// const tripList = ref([])
 // onMounted(async () => {
 //   searchOptions.value = await getsearchOptionList()
 //   console.log(searchOptions.value)
@@ -51,9 +52,47 @@ const searchKeyword = ref('')
 const searchList = ref([])
 const checkedList = ref([])
 function displaysearchKeyword() {
-  search(searchKeyword.value, map, (response) => {
-    searchList.value = response
+  if (areaCode.value !== 0) {
+    search(
+      searchKeyword.value,
+      map,
+      (response) => {
+        searchList.value = response
+      },
+      {
+        location: new kakao.maps.LatLng(map.getCenter().getLat(), map.getCenter().getLng()),
+        radius: 5000
+      }
+    )
+  } else {
+    search(
+      searchKeyword.value,
+      map,
+      (response) => {
+        searchList.value = response
+      },
+      {}
+    )
+  }
+}
+
+const isAreaSelected = ref(new Array(17))
+isAreaSelected.value.fill(false)
+
+function displayArea(code, lat, lng) {
+  // 기존에 있던 코드와 같으면 취소
+  if (areaCode.value === code) {
+    areaCode.value = 0
+    isAreaSelected.value[code - 1] = false
+    return
+  }
+
+  areaCode.value = code
+  isAreaSelected.value.map((_, index) => {
+    if (index === code - 1) isAreaSelected.value[index] = true
+    else isAreaSelected.value[index] = false
   })
+  setMapByArea(map, lat, lng)
 }
 
 // 새로 만든 함수
@@ -80,15 +119,24 @@ onMounted(() => {
   }
 })
 
-// 지역 고르면서 areaCode 값 설정하고, 고른 지역의 버튼 색깔 바꾸기
-const isAreaSelected = ref(new Array(17))
-isAreaSelected.value.fill(false)
-const setAreaCodeValue = (code, num) => {
-  areaCode.value = code
-  isAreaSelected.value.map((_, index) => {
-    if (index === num) isAreaSelected.value[index] = true
-    else isAreaSelected.value[index] = false
-  })
+const tripAreaObject = {
+  0: { rnum: 1, lat: 37.556099, lng: 126.972371, name: '서울' },
+  1: { rnum: 2, lat: 36.331643, lng: 127.433655, name: '대전' },
+  2: { rnum: 3, lat: 35.115277, lng: 129.04224, name: '부산' },
+  3: { rnum: 4, lat: 35.879802, lng: 128.628496, name: '대구' },
+  4: { rnum: 5, lat: 37.764002, lng: 128.9017, name: '강릉' },
+  5: { rnum: 6, lat: 36.794723, lng: 127.104594, name: '천안' },
+  6: { rnum: 7, lat: 36.625648, lng: 127.433981, name: '청주' },
+  7: { rnum: 8, lat: 35.13835, lng: 126.792492, name: '광주' },
+  8: { rnum: 9, lat: 35.84463, lng: 129.21793, name: '경주' },
+  9: { rnum: 10, lat: 35.94244, lng: 126.948073, name: '익산' },
+  10: { rnum: 11, lat: 36.071834, lng: 129.341956, name: '포항' },
+  11: { rnum: 12, lat: 34.753337, lng: 127.748982, name: '여수' },
+  12: { rnum: 13, lat: 35.551558, lng: 129.138941, name: '울산' },
+  13: { rnum: 14, lat: 37.476509, lng: 126.617011, name: '인천' },
+  14: { rnum: 15, lat: 37.736811, lng: 127.046963, name: '의정부' },
+  15: { rnum: 16, lat: 37.884585, lng: 127.7166, name: '춘천' },
+  16: { rnum: 17, lat: 33.507206, lng: 126.493237, name: '제주' }
 }
 
 // 유형은 정적인 객체
@@ -103,16 +151,6 @@ const tripTypeObject = {
   7: { rnum: 8, code: 'AD5', name: '숙박' },
   8: { rnum: 9, code: 'MT1', name: '대형마트' }
 }
-const isTypeSelected = ref(new Array(9))
-isTypeSelected.value.fill(false)
-const setTypeCodeValue = (code, num) => {
-  contentTypeId.value = code
-  console.log(contentTypeId.value)
-  isTypeSelected.value.map((_, index) => {
-    if (index === num) isTypeSelected.value[index] = true
-    else isTypeSelected.value[index] = false
-  })
-}
 </script>
 
 <template>
@@ -121,33 +159,30 @@ const setTypeCodeValue = (code, num) => {
       <div class="search">
         <div class="search-logo"></div>
         <!-- 지역 옵션 선택하기 -->
-        <p>지역 고르기</p>
+        <p class="pick-area">지역 고르기</p>
         <ul class="area">
-          <li v-for="searchOption in searchOptions" :key="searchOption.rnum">
+          <li v-for="tripArea in tripAreaObject" :key="tripArea.rnum">
             <button
-              :class="{ 'area-selected': isAreaSelected[searchOption.rnum - 1] }"
-              @click="setAreaCodeValue(searchOption.code, searchOption.rnum - 1)"
+              :class="{ 'area-selected': isAreaSelected[tripArea.rnum - 1] }"
+              @click="displayArea(tripArea.rnum, tripArea.lat, tripArea.lng)"
             >
-              {{ searchOption.name }}
+              {{ tripArea.name }}
             </button>
           </li>
         </ul>
 
         <!-- 검색지 유형 선택하기 -->
-        <p>유형 고르기</p>
+        <p class="pick-type">유형 고르기</p>
         <ul class="type">
           <li v-for="tripType in tripTypeObject" :key="tripType.rnum">
-            <button
-              :class="{ 'type-selected': isTypeSelected[tripType.rnum - 1] }"
-              @click="displaysearchCategory(tripType.code)"
-            >
+            <button @click="displaysearchCategory(tripType.code)">
               {{ tripType.name }}
             </button>
           </li>
         </ul>
 
         <!-- 여행지 검색하는 input 요소 -->
-        <p>검색어 입력하기</p>
+        <p class="insert-text">검색어 입력하기</p>
         <div class="search-input">
           <input
             v-model="searchKeyword"
@@ -185,65 +220,6 @@ const setTypeCodeValue = (code, num) => {
     <!-- 카카오 map이 들어갈 곳-->
     <div id="map"></div>
   </div>
-
-  <!-- 분기선 -->
-
-  <!-- <div class="container mt-5">
-    <div class="row"> -->
-  <!-- 중앙 left content end -->
-  <!-- 중앙 center content end -->
-  <!-- <div class="col-md-6">
-        <div id="localAreaInfo" class="alert alert-primary mt-3 text-center fw-bold" role="alert">
-          {{ user_area }} 관광지 정보
-        </div> -->
-  <!-- 관광지 검색 start -->
-  <!-- <form class="d-flex my-3" onsubmit="return false;" role="search">
-          <select class="form-select me-2" v-model="areaCode">
-            <option
-              v-for="searchOption in searchOptions"
-              :key="searchOption.rnum"
-              :value="searchOption.code"
-            >
-              {{ searchOption.name }}
-            </option>
-          </select>
-          <select id="search-content-id" class="form-select me-2">
-            <option value="0" selected>관광지 유형</option>
-            <option value="12">관광지</option>
-            <option value="14">문화시설</option>
-            <option value="15">축제공연행사</option>
-            <option value="25">여행코스</option>
-            <option value="28">레포츠</option>
-            <option value="32">숙박</option>
-            <option value="38">쇼핑</option>
-            <option value="39">음식점</option>
-          </select>
-          <input
-            id="search-keyword"
-            class="form-control me-2"
-            type="search"
-            placeholder="검색어"
-            aria-label="검색어"
-            v-model="keyword"
-          />
-          <button
-            id="btn-search"
-            class="btn btn-outline-success"
-            type="button"
-            @click="searchAttraction"
-          >
-            검색
-          </button>
-        </form> -->
-
-  <!-- kakao map start -->
-  <!-- <div id="map" class="mt-3" style="width: 100%; height: 400px"></div> -->
-  <!-- kakao map end -->
-
-  <!-- 관광지 검색 end -->
-  <!-- </div> -->
-  <!-- </div>
-  </div> -->
 </template>
 
 <style scoped>
@@ -297,11 +273,34 @@ const setTypeCodeValue = (code, num) => {
   gap: 25px;
 }
 
-.search p {
+.pick-area,
+.pick-type,
+.insert-text {
   margin-bottom: -15px;
   font-size: 15px;
   font-weight: 800;
   color: var(--sky-color);
+}
+
+.pick-area::after {
+  content: ' : 빠르게 다른 지역으로 이동하세요!';
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--fourth-font-color);
+}
+
+.pick-type::after {
+  content: ' : 지도 근처에서 장소 유형을 선택할 수 있어요!';
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--fourth-font-color);
+}
+
+.insert-text::after {
+  content: ' : 지역 근처나 전국에서 찾고자하는 장소를 검색해보세요!';
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--fourth-font-color);
 }
 
 .area,
@@ -325,8 +324,13 @@ const setTypeCodeValue = (code, num) => {
   border-radius: 20px;
 }
 
-.area li .area-selected,
-.type li .type-selected {
+.area li .area-selected {
+  color: var(--sky-color);
+  border-color: var(--sky-color);
+}
+
+.area li button:hover,
+.type li button:hover {
   color: var(--sky-color);
   border-color: var(--sky-color);
 }
