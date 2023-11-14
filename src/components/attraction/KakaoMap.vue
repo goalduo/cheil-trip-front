@@ -1,6 +1,7 @@
 <script setup>
 import { ref,onMounted } from "vue";
-import { initMap, displayMarker, drawLine, searchPlacesByKeyword, search } from '@/util/kakaomap-commons.js';
+import { initMap, displayMarker, drawLine, searchPlacesByKeyword, search, setMarkerWithCustomOverlay } from '@/util/kakaomap-commons.js';
+import { getTripplansAndTripCoursesByUserId } from "../../api/TripplanAPI";
 let map1, map2;
 const paths = [
   new kakao.maps.LatLng(126.97053, 37.56664),
@@ -25,6 +26,12 @@ onMounted(() => {
       map2 = initMap("map2");
       // displayMarker({ y: 37.56664, x : 126.97053 }, map1);
       // displayMarker({ y: 33.450701, x : 126.570667 }, map2);
+      getTripplansAndTripCoursesByUserId().then(data => {
+        data[0].tripCourseList.forEach(element => {
+          setMarkerWithCustomOverlay(element, map1);
+        });
+      });
+      
       drawLine(map1, paths);
       searchPlacesByKeyword("이태원 맛집", (data) => {
         searchList.value = data;
