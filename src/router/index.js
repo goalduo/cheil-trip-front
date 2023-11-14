@@ -7,6 +7,7 @@ import AttractionSearchView from '@/views/AttractionSearchView.vue'
 import PostCreateView from '@/views/PostCreateView.vue'
 import PostDetailView from '@/views/PostDetailView.vue'
 import KakaoMap from '@/components/attraction/KakaoMap.vue'
+import TripplanTest from '@/components/tripplan/TripplanTest.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/maptest',
       name: 'maptest',
       component: KakaoMap
+    },
+    {
+      path: '/urltest',
+      name: 'urltest',
+      component: TripplanTest
     }
     // {
     //   path: '/about',

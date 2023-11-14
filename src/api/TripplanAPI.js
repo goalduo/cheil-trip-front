@@ -5,7 +5,12 @@ function getTripplansAndTripCoursesByUserId() {
     return axios.get(`/user/tripplan`)
         .then((response) => response.data)
 }
+function getTripPlanAndTripCoursesByPlanId(id) {
+    return axios.get(`/tripplan/${id}`)
+        .then((response) => response.data)
+}
 
 export {
-    getTripplansAndTripCoursesByUserId
+    getTripplansAndTripCoursesByUserId,
+    getTripPlanAndTripCoursesByPlanId
 }
