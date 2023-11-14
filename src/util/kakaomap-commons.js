@@ -48,7 +48,6 @@ function displayMarker(location, map) {
   })
 
   kakao.maps.event.addListener(marker, 'mouseout', function () {
-    console.log('hi')
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     infowindow.close()
     // 마커를 클릭하면 커스텀 오버레이 표시
@@ -122,7 +121,16 @@ function search(keyword, map, callbackFn, option) {
       // console.log(response)
       var bounds = new kakao.maps.LatLngBounds()
       response.searchList.forEach((data) => {
-        displayMarker({ y: data.y, x: data.x }, map)
+        displayMarker(
+          {
+            y: data.y,
+            x: data.x,
+            place_name: data.place_name,
+            address_name: data.address_name,
+            category_group_name: data.category_group_name
+          },
+          map
+        )
         bounds.extend(new kakao.maps.LatLng(data.y, data.x))
       })
       map.setBounds(bounds)
