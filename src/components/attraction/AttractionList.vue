@@ -1,16 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import {
-  getsearchOptionList,
-  getKeywordAttractionList,
-  getAreaBasedAttractionList
-} from '@/api/AttractionAPI.js'
+// 공공데이터는 일단 제외
+// import {
+//   getsearchOptionList,
+//   getKeywordAttractionList,
+//   getAreaBasedAttractionList
+// } from '@/api/AttractionAPI.js'
 import {
   initMap,
   displayMarker,
   drawLine,
   searchPlacesByKeyword,
-  search
+  search,
+  searchByCategory
 } from '@/util/kakaomap-commons.js'
 import AttractionListRow from './AttractionListRow.vue'
 let searchOptions = ref([])
@@ -18,23 +20,24 @@ const areaCode = ref(0)
 const contentTypeId = ref(0)
 const keyword = ref('')
 const tripList = ref([])
-onMounted(async () => {
-  searchOptions.value = await getsearchOptionList()
-  console.log(searchOptions)
-})
+// onMounted(async () => {
+//   searchOptions.value = await getsearchOptionList()
+//   console.log(searchOptions.value)
+// })
 
-async function searchAttraction() {
-  console.log('search')
-  const params = { listYN: 'Y', arrange: 'A', numOfRows: 10, pageNo: 1 }
-  if (areaCode.value != 0) params.areaCode = areaCode.value
-  if (contentTypeId.value != 0) params.contentTypeId = contentTypeId.value
-  if (keyword.value != null && keyword.value.length > 0) {
-    params.keyword = keyword.value
-    tripList.value = await getKeywordAttractionList(params)
-  } else {
-    tripList.value = await getAreaBasedAttractionList(params)
-  }
-}
+// async function searchAttraction() {
+//   console.log('search')
+//   const params = { listYN: 'Y', arrange: 'A', numOfRows: 10, pageNo: 1 }
+//   if (areaCode.value != 0) params.areaCode = areaCode.value
+//   if (contentTypeId.value != 0) params.contentTypeId = contentTypeId.value
+//   if (keyword.value != null && keyword.value.length > 0) {
+//     params.keyword = keyword.value
+//     tripList.value = await getKeywordAttractionList(params)
+//   } else {
+//     tripList.value = await getAreaBasedAttractionList(params)
+//   }
+//   console.log(tripList.value)
+// }
 
 // 아래는 KakaoMap.vue에 있던 코드
 
@@ -52,6 +55,14 @@ function displaysearchKeyword() {
     searchList.value = response
   })
 }
+
+// 새로 만든 함수
+function displaysearchCategory() {
+  searchByCategory(contentTypeId.value, map, (response) => {
+    searchList.value = response
+  })
+}
+
 function checkPlace(checked) {
   checkedList.value.push(checked)
   displayMarker({ y: checked.y, x: checked.x }, map)
@@ -62,11 +73,45 @@ onMounted(() => {
     // displayMarker({ y: 37.56664, x : 126.97053 }, map1);
     // displayMarker({ y: 33.450701, x : 126.570667 }, map2);
     drawLine(map, paths)
-    searchPlacesByKeyword('이태원 맛집', (data) => {
-      searchList.value = data
-    })
+    // searchPlacesByKeyword('이태원 맛집', (data) => {
+    //   searchList.value = data
+    // })
   }
 })
+
+// 지역 고르면서 areaCode 값 설정하고, 고른 지역의 버튼 색깔 바꾸기
+const isAreaSelected = ref(new Array(17))
+isAreaSelected.value.fill(false)
+const setAreaCodeValue = (code, num) => {
+  areaCode.value = code
+  isAreaSelected.value.map((_, index) => {
+    if (index === num) isAreaSelected.value[index] = true
+    else isAreaSelected.value[index] = false
+  })
+}
+
+// 유형은 정적인 객체
+const tripTypeObject = {
+  0: { rnum: 1, code: 'AT4', name: '관광명소' },
+  1: { rnum: 2, code: 'CT1', name: '문화시설' },
+  2: { rnum: 3, code: 'FD6', name: '음식점' },
+  3: { rnum: 4, code: 'CE7', name: '카페' },
+  4: { rnum: 5, code: 'SW8', name: '지하철역' },
+  5: { rnum: 6, code: 'OL7', name: '주유소' },
+  6: { rnum: 7, code: 'PK6', name: '주차장' },
+  7: { rnum: 8, code: 'AD5', name: '숙박' },
+  8: { rnum: 9, code: 'MT1', name: '대형마트' }
+}
+const isTypeSelected = ref(new Array(9))
+isTypeSelected.value.fill(false)
+const setTypeCodeValue = (code, num) => {
+  contentTypeId.value = code
+  console.log(contentTypeId.value)
+  isTypeSelected.value.map((_, index) => {
+    if (index === num) isTypeSelected.value[index] = true
+    else isTypeSelected.value[index] = false
+  })
+}
 </script>
 
 <template>
@@ -78,36 +123,25 @@ onMounted(() => {
         <p>지역 고르기</p>
         <ul class="area">
           <li v-for="searchOption in searchOptions" :key="searchOption.rnum">
-            <button @click="">{{ searchOption.name }}</button>
+            <button
+              :class="{ 'area-selected': isAreaSelected[searchOption.rnum - 1] }"
+              @click="setAreaCodeValue(searchOption.code, searchOption.rnum - 1)"
+            >
+              {{ searchOption.name }}
+            </button>
           </li>
         </ul>
 
         <!-- 검색지 유형 선택하기 -->
         <p>유형 고르기</p>
         <ul class="type">
-          <li>
-            <button>관광지</button>
-          </li>
-          <li>
-            <button>문화시설</button>
-          </li>
-          <li>
-            <button>축제공연행사</button>
-          </li>
-          <li>
-            <button>여행코스</button>
-          </li>
-          <li>
-            <button>레포츠</button>
-          </li>
-          <li>
-            <button>숙박</button>
-          </li>
-          <li>
-            <button>쇼핑</button>
-          </li>
-          <li>
-            <button>음식점</button>
+          <li v-for="tripType in tripTypeObject" :key="tripType.rnum">
+            <button
+              :class="{ 'type-selected': isTypeSelected[tripType.rnum - 1] }"
+              @click="displaysearchCategory"
+            >
+              {{ tripType.name }}
+            </button>
           </li>
         </ul>
 
@@ -288,6 +322,12 @@ onMounted(() => {
   background-color: var(--font-color);
   border: 1px solid var(--tag-color);
   border-radius: 20px;
+}
+
+.area li .area-selected,
+.type li .type-selected {
+  color: var(--sky-color);
+  border-color: var(--sky-color);
 }
 
 .search-input {
