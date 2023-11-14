@@ -11,6 +11,7 @@ const searchList = ref([]);
 const checkedList = ref([]);
 function displaysearchKeyword() {
   search(searchKeyword.value, map1, (response) => {
+    console.log(response)
     searchList.value = response
   });
 }

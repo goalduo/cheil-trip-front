@@ -57,7 +57,8 @@ function displaysearchKeyword() {
 }
 
 // 새로 만든 함수
-function displaysearchCategory() {
+function displaysearchCategory(code) {
+  contentTypeId.value = code
   searchByCategory(contentTypeId.value, map, (response) => {
     searchList.value = response
   })
@@ -138,7 +139,7 @@ const setTypeCodeValue = (code, num) => {
           <li v-for="tripType in tripTypeObject" :key="tripType.rnum">
             <button
               :class="{ 'type-selected': isTypeSelected[tripType.rnum - 1] }"
-              @click="displaysearchCategory"
+              @click="displaysearchCategory(tripType.code)"
             >
               {{ tripType.name }}
             </button>
