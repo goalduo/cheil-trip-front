@@ -9,8 +9,9 @@ function initMap(dom) {
   let map = new kakao.maps.Map(mapContainer, options)
   return map
 }
+
 function displayMarker(location, map) {
-  const { y, x, place_name } = location
+  const { y, x, place_name, address_name, category_group_name } = location
   var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 })
   var markerPosition = new kakao.maps.LatLng(y, x)
   // 마커를 생성합니다
@@ -18,12 +19,33 @@ function displayMarker(location, map) {
     map: map,
     position: markerPosition
   })
+
+  const content = `
+    <div class="overlay-wrap">
+        <div class="overlay-title">
+            ${place_name}
+            <div class="close-button" onclick="closeOverlay()" title="닫기"></div>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-address">${address_name}</div>
+            <div class="overlay-category">${category_group_name}</div>
+        </div>
+    </div>`
+
+  let overlay = new kakao.maps.CustomOverlay({
+    map: map,
+    position: markerPosition
+  })
   // 마커가 지도 위에 표시되도록 설정합니다
   kakao.maps.event.addListener(marker, 'click', function () {
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-    infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>')
-    infowindow.open(map, marker)
+    // infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>')
+    // infowindow.open(map, marker)
+    // 마커를 클릭하면 커스텀 오버레이 표시
+    overlay.setContent(content)
+    overlay.setMap(map)
   })
+
   marker.setMap(map)
   map.setCenter(markerPosition)
 }
@@ -104,7 +126,17 @@ function searchByCategory(category, map, callbackFn) {
   searchPlacesByCategory(category, map, (response) => {
     var bounds = new kakao.maps.LatLngBounds()
     response.searchList.forEach((data) => {
-      displayMarker({ y: data.y, x: data.x }, map)
+      console.log(data)
+      displayMarker(
+        {
+          y: data.y,
+          x: data.x,
+          place_name: data.place_name,
+          address_name: data.address_name,
+          category_group_name: data.category_group_name
+        },
+        map
+      )
       bounds.extend(new kakao.maps.LatLng(data.y, data.x))
     })
     map.setBounds(bounds)
@@ -116,12 +148,14 @@ function setMapByArea(map, lat, lng) {
   map.setCenter(new kakao.maps.LatLng(lat, lng))
   map.setLevel(5)
 }
+
 function getMarker(location) {
   let marker = new kakao.maps.Marker({
     position: new kakao.maps.LatLng(location.y, location.x)
   })
   return marker
 }
+
 function setMarkerWithCustomOverlay(data, map) {
   // let marker = new kakao.maps.Marker({
   //   map: map,
