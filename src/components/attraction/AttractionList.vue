@@ -241,11 +241,11 @@ const tripTypeObject = {
   box-sizing: border-box;
   padding: 20px;
   border: none;
-  border-radius: 15px;
+  border-radius: 15px 0 0 15px;
   box-shadow:
     0 5px 20px rgba(0, 0, 0, 0.19),
     0 3px 3px rgba(0, 0, 0, 0.21);
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 #map {

@@ -6,11 +6,12 @@
   --sub-font-color: #6b7684;
   --third-font-color: #b0b8c1;
   --fourth-font-color: #000000;
-  --tag-color: #d6d9d7;
+  --tag-color: #eeeeee;
   --tag-font-color: #666666;
   --login-font-color: #dee2e6;
   --map-color: #f1f5f2;
   --sub-map-color: #dbe9f1;
+  --shadow-color: rgba(0, 0, 0, 0.09);
 
   --green-color: #95c811;
   --pink-color: #ff32ff;
