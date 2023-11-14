@@ -21,29 +21,39 @@ function displayMarker(location, map) {
   })
 
   const content = `
-    <div class="overlay-wrap">
-        <div class="overlay-title">
-            ${place_name}
-            <div class="close-button" onclick="closeOverlay()" title="닫기"></div>
-        </div>
-        <div class="overlay-body">
-            <div class="overlay-address">${address_name}</div>
-            <div class="overlay-category">${category_group_name}</div>
-        </div>
-    </div>`
+      <div class="infowindow-wrap">
+          <div class="infowindow-title">
+              ${place_name}
+          </div>
+          <div class="infowindow-body">
+              <div class="infowindow-address">${address_name}</div>
+              <div class="infowindow-category">${category_group_name}</div>
+          </div>
+      </div>`
 
   let overlay = new kakao.maps.CustomOverlay({
     map: map,
     position: markerPosition
   })
+
   // 마커가 지도 위에 표시되도록 설정합니다
-  kakao.maps.event.addListener(marker, 'click', function () {
+  kakao.maps.event.addListener(marker, 'mouseover', function () {
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     // infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>')
-    // infowindow.open(map, marker)
+    infowindow.setContent(content)
+    infowindow.open(map, marker)
     // 마커를 클릭하면 커스텀 오버레이 표시
-    overlay.setContent(content)
-    overlay.setMap(map)
+    // overlay.setContent(content)
+    // overlay.setMap(map)
+  })
+
+  kakao.maps.event.addListener(marker, 'mouseout', function () {
+    console.log('hi')
+    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+    infowindow.close()
+    // 마커를 클릭하면 커스텀 오버레이 표시
+    // overlay.setContent(content)
+    // overlay.setMap(map)
   })
 
   marker.setMap(map)
