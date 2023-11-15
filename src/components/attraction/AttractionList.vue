@@ -105,7 +105,16 @@ function displaysearchCategory(code) {
 
 function checkPlace(checked) {
   checkedList.value.push(checked)
-  displayMarker({ y: checked.y, x: checked.x }, map)
+  displayMarker(
+    {
+      y: checked.y,
+      x: checked.x,
+      place_name: checked.place_name,
+      address_name: checked.address_name,
+      category_group_name: checked.category_group_name
+    },
+    map
+  )
 }
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
