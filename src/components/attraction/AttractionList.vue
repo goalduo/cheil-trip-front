@@ -50,7 +50,7 @@ const paths = [
 ]
 const searchKeyword = ref('')
 const searchList = ref([])
-const checkedList = ref([])
+
 function displaysearchKeyword() {
   if (areaCode.value !== 0) {
     search(
@@ -103,19 +103,6 @@ function displaysearchCategory(code) {
   })
 }
 
-function checkPlace(checked) {
-  checkedList.value.push(checked)
-  displayMarker(
-    {
-      y: checked.y,
-      x: checked.x,
-      place_name: checked.place_name,
-      address_name: checked.address_name,
-      category_group_name: checked.category_group_name
-    },
-    map
-  )
-}
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     map = initMap('map')
@@ -165,6 +152,61 @@ const tripTypeObject = {
 const isTripCourseSaveOpen = ref(false)
 const convertOpenState = () => {
   isTripCourseSaveOpen.value = !isTripCourseSaveOpen.value
+}
+
+// 여행 경로 저장하기
+const tripCourseList = ref([])
+
+// 장소를 클릭할 때 카카오맵 center 다시 지정
+function showPlace(location) {
+  displayMarker(
+    {
+      y: location.y,
+      x: location.x,
+      place_name: location.place_name,
+      address_name: location.address_name,
+      category_group_name: location.category_group_name
+    },
+    map
+  )
+}
+
+// 여행 장소를 경로에 추가할 때
+function addPlace(location) {
+  showPlace(location)
+  // 여행 경로의 길이는 5를 넘을 수 없음
+  if (tripCourseList.value.length < 5) tripCourseList.value.push(location)
+  else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+
+  // console.log(tripCourseList.value)
+  isTripCourseSaveOpen.value = true
+}
+
+// 여행 장소를 경로에서 제거할 때
+function removePlace(location) {
+  tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
+}
+
+const isOnCreateTripCourse = ref(false)
+// 제목 정하기가 해시 태그보다 앞이므로 초기값은 true
+const isOnSetTitle = ref(true)
+
+// 경로 설정 후 저장하기 버튼을 누르면 제목 설정 단계로 돌입
+function goToSetTitle() {
+  isTripCourseSaveOpen.value = false
+  isOnCreateTripCourse.value = true
+}
+
+// 제목 설정 후 계속하기 버튼을 누르면 해시태그 설정 단계로 돌입
+function goToSetHashTag() {
+  isOnSetTitle.value = false
+}
+
+// 취소 버튼 누르면 여행 경로 생성 취소
+function cancelTripCourse() {
+  tripCourseList.value.length = 0
+  isOnCreateTripCourse.value = false
+  isOnSetTitle.value = true
 }
 </script>
 
@@ -220,12 +262,12 @@ const convertOpenState = () => {
         <div class="search-result-list">
           <ul class="result">
             <template v-for="search in searchList">
-              <li v-if="searchList.length" :key="search.id" @click="checkPlace(search)">
+              <li v-if="searchList.length" :key="search.id" @click="showPlace(search)">
                 <div class="span-group">
                   <span>{{ search.place_name }}</span>
                   <span>{{ search.address_name }}</span>
                 </div>
-                <div class="plus-button"></div>
+                <div @click="addPlace(search)" class="plus-button"></div>
               </li>
             </template>
           </ul>
@@ -235,48 +277,52 @@ const convertOpenState = () => {
 
     <!-- 카카오 map이 들어갈 곳-->
     <div id="map">
-      <!-- 여행 플랜 저장 - 최대 5개 제한 -->
-      <div v-show="isTripCourseSaveOpen" class="plan">
+      <!-- 여행 경로 저장 - 최대 5개 제한 -->
+      <div v-show="isTripCourseSaveOpen && !isOnCreateTripCourse" class="plan">
         <div class="plan-header">
           <div class="plan-logo"></div>
           <div @click="convertOpenState" class="up-down-button"></div>
         </div>
 
-        <ul class="plan-list">
-          <li>
-            <span>이마트 제주점</span>
-            <div class="minus-button"></div>
-          </li>
-          <li>
-            <span>제스코마트 본점</span>
-            <div class="minus-button"></div>
-          </li>
-          <li>
-            <span>이마트 신제주점</span>
-            <div class="minus-button"></div>
-          </li>
-          <li>
-            <span>롯데마트 제주점</span>
-            <div class="minus-button"></div>
-          </li>
-          <li>
-            <span>제주축산농협하나로마트 삼화점</span>
-            <div class="minus-button"></div>
+        <ul v-for="place in tripCourseList" class="plan-list">
+          <li :key="place.id">
+            <span>{{ place.place_name }}</span>
+            <div @click="removePlace(place)" class="minus-button"></div>
           </li>
         </ul>
 
         <span class="warning-text">여행 경로는 최대 5개까지 지정할 수 있습니다.</span>
 
         <div class="button-group">
-          <button class="save-button">저장하기</button>
-          <button class="cancel-button">취소</button>
+          <button @click="goToSetTitle" class="save-button">저장하기</button>
+          <button @click="cancelTripCourse" class="cancel-button">취소</button>
         </div>
       </div>
-      <!-- 여행 플랜 저장 창 숨기기 -->
-      <div v-show="!isTripCourseSaveOpen" class="plan-hide">
+      <!-- 여행 경로 저장 창 숨기기 -->
+      <div v-show="!isTripCourseSaveOpen && !isOnCreateTripCourse" class="plan-hide">
         <div class="plan-header">
           <div class="plan-logo"></div>
           <div @click="convertOpenState" class="up-down-button"></div>
+        </div>
+      </div>
+
+      <!-- 여행 경로 제목 정하기 -->
+      <div v-show="isOnCreateTripCourse && isOnSetTitle" class="plan-title">
+        <p>여행 경로의 제목 정하기</p>
+        <input type="text" />
+        <div class="button-group">
+          <button @click="goToSetHashTag" class="save-button">계속하기</button>
+          <button @click="cancelTripCourse" class="cancel-button">취소</button>
+        </div>
+      </div>
+
+      <!-- 여행 해시 태그 정하기 -->
+      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="plan-hash-tag">
+        <p>여행 경로의 해시 태그 정하기</p>
+        <input type="text" />
+        <div class="button-group">
+          <button class="save-button">최종 저장하기</button>
+          <button @click="cancelTripCourse" class="cancel-button">취소</button>
         </div>
       </div>
     </div>
@@ -319,6 +365,38 @@ const convertOpenState = () => {
   background-color: var(--font-color);
   border-radius: 15px;
   z-index: 10;
+}
+
+.plan-title,
+.plan-hash-tag {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  background-color: var(--font-color);
+  border-radius: 15px;
+  z-index: 10;
+}
+
+.plan-title p,
+.plan-hash-tag p {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--sky-color);
+}
+
+.plan-title input,
+.plan-hash-tag input {
+  padding: 20px;
+  font-size: 16px;
+  border: 1px solid var(--tag-color);
+  border-radius: 4px;
+  outline-color: var(--sky-color);
 }
 
 .plan-header {
@@ -397,7 +475,7 @@ const convertOpenState = () => {
 
 .button-group button {
   cursor: pointer;
-  width: 100px;
+  width: fit-content;
   height: 50px;
   padding: 0 10px;
   display: flex;
