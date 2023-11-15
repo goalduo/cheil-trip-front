@@ -3,8 +3,9 @@
 
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
-
+import { userRegist } from '@/api/UserAPI.js'
 import { ref, watch } from 'vue'
+import router from "../router";
 
 const name = ref('')
 const id = ref('')
@@ -46,6 +47,25 @@ const onChangeNameInputValue = (event) => {
 const onChangeIdInputValue = (event) => {
   id.value = event.target.value
 }
+
+async function registerUserInfo() {
+  const userInfo = {
+    userId : id.value,
+    userName : name.value,
+    userPass : password.value,
+    userEmail : email.value
+  }
+  await userRegist(
+    userInfo,
+    (response) => {
+      router.push('/')
+      console.log(response)
+    }),
+    (error) => {
+        console.error(error);
+    }
+}
+
 </script>
 
 <template>
