@@ -160,6 +160,12 @@ const tripTypeObject = {
   7: { rnum: 8, code: 'AD5', name: '숙박' },
   8: { rnum: 9, code: 'MT1', name: '대형마트' }
 }
+
+// 여행 경로 저장하기 창 열고 닫기 조절
+const isTripCourseSaveOpen = ref(false)
+const convertOpenState = () => {
+  isTripCourseSaveOpen.value = !isTripCourseSaveOpen.value
+}
 </script>
 
 <template>
@@ -215,26 +221,209 @@ const tripTypeObject = {
           <ul class="result">
             <template v-for="search in searchList">
               <li v-if="searchList.length" :key="search.id" @click="checkPlace(search)">
-                <span>{{ search.place_name }}</span>
-                <span>{{ search.address_name }}</span>
+                <div class="span-group">
+                  <span>{{ search.place_name }}</span>
+                  <span>{{ search.address_name }}</span>
+                </div>
+                <div class="plus-button"></div>
               </li>
             </template>
           </ul>
         </div>
       </div>
-      <!-- 여행 플랜 저장 - 최대 5개 제한 -->
-      <div class="plan"></div>
     </div>
 
     <!-- 카카오 map이 들어갈 곳-->
-    <div id="map"></div>
+    <div id="map">
+      <!-- 여행 플랜 저장 - 최대 5개 제한 -->
+      <div v-show="isTripCourseSaveOpen" class="plan">
+        <div class="plan-header">
+          <div class="plan-logo"></div>
+          <div @click="convertOpenState" class="up-down-button"></div>
+        </div>
+
+        <ul class="plan-list">
+          <li>
+            <span>이마트 제주점</span>
+            <div class="minus-button"></div>
+          </li>
+          <li>
+            <span>제스코마트 본점</span>
+            <div class="minus-button"></div>
+          </li>
+          <li>
+            <span>이마트 신제주점</span>
+            <div class="minus-button"></div>
+          </li>
+          <li>
+            <span>롯데마트 제주점</span>
+            <div class="minus-button"></div>
+          </li>
+          <li>
+            <span>제주축산농협하나로마트 삼화점</span>
+            <div class="minus-button"></div>
+          </li>
+        </ul>
+
+        <span class="warning-text">여행 경로는 최대 5개까지 지정할 수 있습니다.</span>
+
+        <div class="button-group">
+          <button class="save-button">저장하기</button>
+          <button class="cancel-button">취소</button>
+        </div>
+      </div>
+      <!-- 여행 플랜 저장 창 숨기기 -->
+      <div v-show="!isTripCourseSaveOpen" class="plan-hide">
+        <div class="plan-header">
+          <div class="plan-logo"></div>
+          <div @click="convertOpenState" class="up-down-button"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+#map {
+  position: relative;
+  width: 100%;
+  height: 95%;
+  border-radius: 15px;
+  box-shadow:
+    0 5px 20px rgba(0, 0, 0, 0.19),
+    0 3px 3px rgba(0, 0, 0, 0.21);
+}
+
+.plan {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: var(--font-color);
+  border-radius: 15px;
+  z-index: 10;
+}
+
+.plan-hide {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 15px;
+  background-color: var(--font-color);
+  border-radius: 15px;
+  z-index: 10;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-logo {
+  width: 200px;
+  height: 30px;
+  margin-bottom: -5px;
+  margin-left: -5px;
+  background-image: url('@/assets/images/plan-logo.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.up-down-button {
+  cursor: pointer;
+  width: 23px;
+  height: 23px;
+  background-image: url('@/assets/images/up-down-button.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-list li {
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--map-color);
+  border: none;
+  border-radius: 4px;
+}
+
+.plan-list li span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.plan-list li .minus-button {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  background-image: url('@/assets/images/minus-button.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.warning-text {
+  font-size: 11px;
+  font-weight: 200;
+  text-align: right;
+}
+
+.button-group {
+  padding: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-group button {
+  cursor: pointer;
+  width: 100px;
+  height: 50px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tag-font-color);
+  background-color: var(--font-color);
+  border: 1px solid var(--tag-color);
+  border-radius: 20px;
+}
+
+.save-button:hover {
+  color: var(--sky-color);
+  border-color: var(--sky-color);
+}
+
+.cancel-button:hover {
+  color: var(--minus-button-color);
+  border-color: var(--minus-button-color);
+}
+
 #wrap {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 20px;
   display: flex;
   align-items: center;
@@ -255,15 +444,6 @@ const tripTypeObject = {
     0 5px 20px rgba(0, 0, 0, 0.19),
     0 3px 3px rgba(0, 0, 0, 0.21);
   overflow-y: scroll;
-}
-
-#map {
-  width: 100%;
-  height: 95%;
-  border-radius: 15px;
-  box-shadow:
-    0 5px 20px rgba(0, 0, 0, 0.19),
-    0 3px 3px rgba(0, 0, 0, 0.21);
 }
 
 .search-logo {
@@ -396,16 +576,31 @@ hr {
   gap: 10px;
 }
 .result li {
-  cursor: pointer;
   width: 95%;
   box-sizing: border-box;
   padding: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
   background-color: var(--map-color);
   border: none;
   border-radius: 4px;
+}
+
+.span-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plus-button {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  background-image: url('@/assets/images/plus-button.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .result li span:first-child {
@@ -419,6 +614,6 @@ hr {
 }
 
 .result li:hover {
-  box-shadow: 0 0 0 2px var(--sky-color) inset;
+  box-shadow: 0 0 0 1px var(--sky-color) inset;
 }
 </style>
