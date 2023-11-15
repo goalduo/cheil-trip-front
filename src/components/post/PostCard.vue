@@ -56,7 +56,7 @@ function elapsedTime(date) {
       </ul>
     </div>
 
-    <div class="lower">{{ content }} , 작성자 : {{ userName }} , 조회수 : {{ hit }}</div>
+    <div class="lower"> 내용 : {{ content }} , <br/> 작성자 : {{ userName }} , 조회수 : {{ hit }}</div>
     <!-- <img src="" alt=""> -->
   </section>
 </template>

@@ -1,11 +1,19 @@
 <script setup>
 import {ref, onMounted} from 'vue'
 import PostCard from './PostCard.vue'
-import { getBoardList } from '@/api/BoardAPI.js'
+import { listArticle } from '@/api/BoardAPI.js'
 const articles = ref([]);
 onMounted(async() => {
-    articles.value = await getBoardList();
-    console.log(articles);
+  await listArticle(
+    {},
+    (response) => {
+      articles.value = response.data
+      console.log(articles.value)
+    },
+    (error) => {
+    console.log(error)
+  })
+    console.log(articles.value);
 })
 
 async function searchAttraction() {
