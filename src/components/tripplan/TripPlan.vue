@@ -57,7 +57,8 @@ const captureImage = async () => {
     <div id="make-card">
       <div ref="captureTarget" id="card">
         <div class="main-logo"></div>
-        <div class="stamp"></div>
+        <div class="right-up-edge"></div>
+        <div class="right-down-edge"></div>
 
         <div class="user-name">
           <p class="italic-text">CARD MAKER :</p>
@@ -170,6 +171,7 @@ const captureImage = async () => {
 }
 
 #card {
+  position: relative;
   box-sizing: border-box;
   height: fit-content;
   padding: 25px;
@@ -196,15 +198,23 @@ const captureImage = async () => {
   background-repeat: no-repeat;
 }
 
-.stamp {
+.right-up-edge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 110px;
-  height: 110px;
-  background-image: url('@/assets/images/stamp.svg');
-  background-position: center;
-  background-repeat: no-repeat;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-top: 2px solid var(--font-color);
+  border-right: 2px solid var(--font-color);
+}
+.right-down-edge {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-bottom: 2px solid var(--font-color);
+  border-right: 2px solid var(--font-color);
 }
 
 .user-name,
@@ -239,15 +249,14 @@ const captureImage = async () => {
 .trip-course ul li {
   width: fit-content;
   padding: 10px;
-  font-weight: 300;
   border: 1px solid var(--font-color);
   border-radius: 20px;
 }
 
 .trip-course ul li span {
   margin-left: 10px;
-  font-weight: 600;
-  color: var(--red-color);
+  font-weight: 100;
+  color: var(--font-color);
 }
 
 .url p:last-child {
