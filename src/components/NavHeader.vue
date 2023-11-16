@@ -1,5 +1,17 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+
+import { useHeaderMenuStore } from '../stores/menu'
+import { storeToRefs } from 'pinia'
+
+const headerMenuStore = useHeaderMenuStore()
+const { headerMenuList } = storeToRefs(headerMenuStore)
+const { changeHeaderMenuState } = headerMenuStore
+
+const logout = () => {
+  window.alert('로그아웃 되었습니다.')
+  changeHeaderMenuState()
+}
 </script>
 
 <template>
@@ -11,13 +23,15 @@ import { RouterLink } from 'vue-router'
     </div>
 
     <div class="nav-link">
-      <!-- 추후에 라우팅 경로 명시 요망 -->
-      <RouterLink class="link" to="/attraction">여행지 검색</RouterLink>
-      <RouterLink class="link" to="/plan">여행카드 만들기</RouterLink>
-      <RouterLink class="link" to="/post">게시판</RouterLink>
-      <RouterLink class="link" to="/post/detail">게시물 상세</RouterLink>
-      <RouterLink class="link" to="/post/create">게시물 작성하기</RouterLink>
-      <RouterLink class="link" to="/login">로그인</RouterLink>
+      <RouterLink
+        @[headerMenu.event]="logout"
+        v-for="headerMenu in headerMenuList"
+        v-show="headerMenu.show"
+        class="link"
+        :to="headerMenu.routeName"
+      >
+        {{ headerMenu.name }}
+      </RouterLink>
     </div>
   </header>
 </template>
