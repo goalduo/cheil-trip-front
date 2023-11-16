@@ -46,7 +46,8 @@ function elapsedTime(date) {
         <span class="date">{{ elapsedTime(registerTime) }}</span>
       </div>
 
-      <h1 id="title">{{ title }}</h1>
+      <!-- <h1 id="title">{{ title }}</h1> -->
+      <h1 id="title">해동용궁사에서 용을 보다</h1>
 
       <ul id="tag">
         <li>#부산</li>
@@ -56,7 +57,19 @@ function elapsedTime(date) {
       </ul>
     </div>
 
-    <div class="lower"> 내용 : {{ content }} , <br/> 작성자 : {{ userName }} , 조회수 : {{ hit }}</div>
+    <!-- <div class="lower"> 내용 : {{ content }} , <br/> 작성자 : {{ userName }} , 조회수 : {{ hit }}</div> -->
+    <div class="lower">
+      <div class="writer">
+        <p>작성자 :</p> 
+        <!-- <p>{{ userName }}</p> -->
+        <p>장수민</p>
+      </div>
+
+      <div class="hit">
+        <p>조회수 :</p> 
+        <p>{{ hit }}</p>
+      </div>
+    </div>
     <!-- <img src="" alt=""> -->
   </section>
 </template>
@@ -64,18 +77,19 @@ function elapsedTime(date) {
 <style scoped>
 #section {
   box-sizing: border-box;
-  width: 430px;
-  height: 380px;
+  width: 400px;
+  height: 300px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   /* border: 1px solid #d6d9d7; */
   border-radius: 15px;
   background-color: var(--font-color);
+  box-shadow: 4px 12px 30px 6px var(--shadow-color);
 }
 
 .upper {
-  flex-basis: 30%;
+  flex-basis: 50%;
   flex-grow: 1;
   padding: 20px;
 }
@@ -115,11 +129,26 @@ function elapsedTime(date) {
   color: var(--tag-font-color);
 }
 
+.writer, .hit {
+  padding: 10px 0;
+  color: var(--font-color)
+}
+.writer p:first-child, .hit p:first-child {
+  font-size: 15px;
+  font-weight: 200;
+}
+
+.writer p:last-child, .hit p:last-child {
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .lower {
   padding: 20px;
-  flex-basis: 70%;
-  flex-grow: 4;
+  flex-basis: 50%;
+  flex-grow: 1;
   background-color: var(--sky-color);
   border-radius: 0 0 15px 15px;
 }
+
 </style>

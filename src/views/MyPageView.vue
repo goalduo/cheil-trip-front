@@ -61,8 +61,15 @@ const tripPlans = {
                 </div>
 
                 <div class="lower">
-                  내용 : 아니 글쎄, 해동 용궁사에서 용을 봤어요 <br />
-                  작성자 : 장수민, 조회수 : 150
+                  <div class="writer">
+                    <p>작성자 :</p> 
+                    <p>민욱</p>
+                  </div>
+
+                  <div class="hit">
+                    <p>조회수 :</p> 
+                    <p>555</p>
+                  </div>
                 </div>
                 <!-- <img src="" alt=""> -->
               </section>
@@ -153,6 +160,7 @@ const tripPlans = {
   border-bottom: 2px solid var(--tag-color);
 }
 .post-list {
+  height: 500px;
   padding: 50px 30px;
   display: flex;
   gap: 20px;
@@ -161,8 +169,8 @@ const tripPlans = {
 
 #section {
   box-sizing: border-box;
-  width: 430px;
-  height: 380px;
+  width: 400px;
+  height: 300px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -173,7 +181,7 @@ const tripPlans = {
 }
 
 .upper {
-  flex-basis: 30%;
+  flex-basis: 50%;
   flex-grow: 1;
   padding: 20px;
 }
@@ -213,10 +221,24 @@ const tripPlans = {
   color: var(--tag-font-color);
 }
 
+.writer, .hit {
+  padding: 10px 0;
+  color: var(--font-color)
+}
+.writer p:first-child, .hit p:first-child {
+  font-size: 15px;
+  font-weight: 200;
+}
+
+.writer p:last-child, .hit p:last-child {
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .lower {
   padding: 20px;
-  flex-basis: 70%;
-  flex-grow: 4;
+  flex-basis: 50%;
+  flex-grow: 1;
   background-color: var(--sky-color);
   border-radius: 0 0 15px 15px;
 }

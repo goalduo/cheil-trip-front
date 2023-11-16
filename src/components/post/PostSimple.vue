@@ -82,11 +82,15 @@ async function searchAttraction() {
 
 <style scoped>
 #container {
-  width: 1000px;
-  margin: 100px auto;
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 0;
+  background-color: var(--font-color);
 }
 
 .card-list {
+  width: 60%;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap: 20px;
