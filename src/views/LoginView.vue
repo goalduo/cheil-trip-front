@@ -1,40 +1,38 @@
 <script setup>
-import { RouterLink,useRouter } from 'vue-router'
-import { ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useMemberStore } from "@/stores/member";
-import { useMenuStore } from "@/stores/menu";
+import { RouterLink, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useMemberStore } from '@/stores/member'
+import { useHeaderMenuStore } from '@/stores/menu'
 
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
-const router = useRouter();
-const memberStore = useMemberStore();
+const router = useRouter()
+const memberStore = useMemberStore()
 
-const { isLogin } = storeToRefs(memberStore);
-const { userLogin, getUserInfo } = memberStore;
-const { changeMenuState } = useMenuStore();
+const { isLogin } = storeToRefs(memberStore)
+const { userLogin, getUserInfo } = memberStore
+const { changeHeaderMenuState } = useMenuStore()
 
 const loginUser = ref({
-  userId: "",
-  userPass: "",
-});
+  userId: '',
+  userPass: ''
+})
 
 const login = async () => {
-  console.log("login ing!!!! !!!");
-  await userLogin(loginUser.value);
-  let token = sessionStorage.getItem("accessToken");
-  console.log("111. ", token);
-  console.log("isLogin: ", isLogin);
+  console.log('login ing!!!! !!!')
+  await userLogin(loginUser.value)
+  let token = sessionStorage.getItem('accessToken')
+  console.log('111. ', token)
+  console.log('isLogin: ', isLogin)
   if (isLogin) {
-    console.log("로그인 성공아닌가???");
-    getUserInfo(token);
-    // changeMenuState();
+    console.log('로그인 성공!')
+    getUserInfo(token)
+    changeHeaderMenuState()
   }
-  router.push("/");
-};
-
-
+  router.push('/')
+}
 </script>
 
 <template>
@@ -42,8 +40,14 @@ const login = async () => {
   <form id="login-form">
     <div class="login-logo"></div>
     <input type="text" id="id" v-model="loginUser.userId" placeholder="아이디" />
-    <input type="password" id="password" v-model="loginUser.userPass" @keyup.enter="login" placeholder="비밀번호" />
-    <input type="button" id="submit" value="로그인" @click="login"/>
+    <input
+      type="password"
+      id="password"
+      v-model="loginUser.userPass"
+      @keyup.enter="login"
+      placeholder="비밀번호"
+    />
+    <input type="button" id="submit" value="로그인" @click="login" />
     <div class="account">
       <RouterLink class="link" to="/">아이디 찾기</RouterLink>
       <RouterLink class="link" to="/">비밀번호 찾기</RouterLink>
