@@ -1,5 +1,6 @@
-import { RestServerAxios } from "../util/http-commons";
+import { RestServerAxios, fileAxios } from "../util/http-commons";
 const local = RestServerAxios();
+const axios = fileAxios();
 
 function listArticle(param, success, fail) {
     local.get(`/board`, { params: param }).then(success).catch(fail);
@@ -26,6 +27,10 @@ function listArticle(param, success, fail) {
     local.delete(`/board/${articleno}`).then(success).catch(fail);
   }
   
+function uploadImage(formData, success, fail) {
+  axios.post(`/board/image-upload`, formData).then(success).catch(fail);
+  }
+
   export {
     listArticle,
     detailArticle,
@@ -33,4 +38,5 @@ function listArticle(param, success, fail) {
     getModifyArticle,
     modifyArticle,
     deleteArticle,
+    uploadImage
   };

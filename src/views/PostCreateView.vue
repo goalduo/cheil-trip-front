@@ -1,12 +1,21 @@
 <script setup>
+import { useRouter } from 'vue-router'
 import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
 import { onMounted, ref } from 'vue'
+import { uploadImage, registArticle } from '@/api/BoardAPI.js'
+import { useMemberStore } from "@/stores/member";
+const memberStore = useMemberStore();
+const { userInfo } = memberStore;
 
+const { VITE_VUE_API_URL } = import.meta.env;
+const router = useRouter();
+let editor;
 onMounted(() => {
-  const editor = new Editor({
+  console.log(userInfo);
+  editor = new Editor({
     el: document.querySelector('#editor'),
     width: '500px',
     height: '600px',
@@ -18,21 +27,65 @@ onMounted(() => {
       ['heading', 'bold', 'italic', 'strike'],
       ['hr', 'quote'],
       ['ul', 'ol', 'task', 'indent', 'outdent'],
-      ['table', 'link'],
+      ['table', 'image', 'link'],
       ['code', 'codeblock'],
       ['scrollSync']
-    ]
+    ],
+    hooks: {
+      async addImageBlobHook(blob, callback) {
+        console.log(blob)
+        const formData = new FormData();
+        formData.append('image', blob);
+        uploadImage(
+          formData,
+          (response) => {
+            console.log(response);
+            const { saveFolder, originalFile, saveFile } = response.data;
+            console.log('서버에 저장된 파일명 : ', saveFile);
+            console.log('원본 파일명 : ', originalFile)
+            const imageUrl = `${VITE_VUE_API_URL}/board/image-print?savedFolder=${saveFolder}&filename=${saveFile}`;
+            callback(imageUrl, 'image alt attribute');
+          })
+        }
+      }
   })
 })
 
 const categoryState = ref([false, false, false, false])
-
+const categoryList = ['여행지', '맛집', '코스', '기타'];
+const title = ref("");
+const categorySelected = ref("");
 const onClickCategory = (num) => {
+  categorySelected.value = categoryList[num];
   categoryState.value.map((value, index) => {
     if (index === num) categoryState.value[index] = true
     else categoryState.value[index] = false
   })
 }
+function cancelPost() {
+  let confirm = confirm("작성중인 게시글이 있습니다. 떠나시겠습니까?")
+  if (confirm) router.push("/")
+  return
+}
+function savePost() {
+  const article = {
+    subject: title.value,
+    userId : 'ssafy',
+    category : categorySelected.value,
+    content : editor.getHTML(),
+  }
+  if (editor.getMarkdown().length < 1) {
+    alert('에디터 내용을 입력해 주세요.');
+    throw new Error('editor content is required!');
+  }
+  registArticle(article, (response) => {
+    console.log(response)
+  }, (error) => {
+    console.log(error)
+  })
+  
+}
+
 </script>
 
 <template>
@@ -67,7 +120,7 @@ const onClickCategory = (num) => {
 
     <div class="title-input">
       <p>제목</p>
-      <input type="text" placeholder="제목을 적어주세요." />
+      <input type="text" placeholder="제목을 적어주세요." v-model="title"/>
     </div>
 
     <div class="tag-input">
@@ -83,8 +136,8 @@ const onClickCategory = (num) => {
     </div>
 
     <div class="submit">
-      <button class="cancel">취소</button>
-      <button class="confirm">확인</button>
+      <button class="cancel" @click="cancelPost">취소</button>
+      <button class="confirm" @click="savePost">확인</button>
     </div>
   </div>
 

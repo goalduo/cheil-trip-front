@@ -30,4 +30,15 @@ function RestServerAxios() {
   return instance;
 }
 
-export { RestServerAxios, AttractionAxios };
+function fileAxios() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    withCredentials: true
+  });
+  return instance;
+}
+
+export { RestServerAxios, AttractionAxios, fileAxios };
