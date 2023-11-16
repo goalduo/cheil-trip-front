@@ -7,6 +7,11 @@ import { storeToRefs } from 'pinia'
 const headerMenuStore = useHeaderMenuStore()
 const { headerMenuList } = storeToRefs(headerMenuStore)
 const { changeHeaderMenuState } = headerMenuStore
+
+const logout = () => {
+  window.alert('로그아웃 되었습니다.')
+  changeHeaderMenuState()
+}
 </script>
 
 <template>
@@ -19,6 +24,7 @@ const { changeHeaderMenuState } = headerMenuStore
 
     <div class="nav-link">
       <RouterLink
+        @[headerMenu.event]="logout"
         v-for="headerMenu in headerMenuList"
         v-show="headerMenu.show"
         class="link"

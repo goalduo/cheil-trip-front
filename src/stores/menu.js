@@ -11,7 +11,7 @@ export const useHeaderMenuStore = defineStore('headerMenuStore', () => {
     { name: '게시물 작성하기', routeName: '/post/create', show: true },
     { name: '로그인', routeName: '/login', show: true },
     { name: '마이페이지', routeName: '/', show: false },
-    { name: '로그아웃', routeName: '/', show: false }
+    { name: '로그아웃', routeName: '/', show: false, event: 'click'  }
   ])
 
   const changeHeaderMenuState = () => {

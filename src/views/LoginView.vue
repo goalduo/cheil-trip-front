@@ -13,7 +13,7 @@ const memberStore = useMemberStore()
 
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo } = memberStore
-const { changeHeaderMenuState } = useMenuStore()
+const { changeHeaderMenuState } = useHeaderMenuStore()
 
 const loginUser = ref({
   userId: '',
