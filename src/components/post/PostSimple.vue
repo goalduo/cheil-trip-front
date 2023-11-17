@@ -44,46 +44,6 @@ const loadMore = async () => {
 //     content: '해동용궁사',
 //     hit: 20,
 //     registerTime: '2023-11-10'
-//   },
-//   {
-//     id: 2,
-//     userName: 'wook2',
-//     title: '서울 롯데타워에서 다이빙',
-//     content: '서울 롯데타워',
-//     hit: 20,
-//     registerTime: '2023-02-05'
-//   },
-//   {
-//     id: 3,
-//     userName: 'wook2',
-//     title: 'Card title',
-//     content: 'Card content',
-//     hit: 20,
-//     registerTime: '2023-02-05'
-//   },
-//   {
-//     id: 4,
-//     userName: 'wook2',
-//     title: 'Card title',
-//     content: 'Card content',
-//     hit: 20,
-//     registerTime: '2023-02-05'
-//   },
-//   {
-//     id: 5,
-//     userName: 'wook2',
-//     title: 'Card title',
-//     content: 'Card content',
-//     hit: 20,
-//     registerTime: '2023-02-05'
-//   },
-//   {
-//     id: 6,
-//     userName: 'wook2',
-//     title: 'Card title',
-//     content: 'Card content',
-//     hit: 20,
-//     registerTime: '2023-02-05'
 //   }
 // ]
 </script>
