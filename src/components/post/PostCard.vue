@@ -47,7 +47,7 @@ function elapsedTime(date) {
       </div>
 
       <!-- <h1 id="title">{{ title }}</h1> -->
-      <h1 id="title">해동용궁사에서 용을 보다</h1>
+      <h1 id="title">해동용궁사에서 용을 보다으하하하하하하하하하하하하하</h1>
 
       <ul id="tag">
         <li>#부산</li>
@@ -67,7 +67,8 @@ function elapsedTime(date) {
 
       <div class="hit">
         <p>조회수 :</p> 
-        <p>{{ hit }}</p>
+        <!-- <p>{{ hit }}</p> -->
+        <p>25</p>
       </div>
     </div>
     <!-- <img src="" alt=""> -->
@@ -89,9 +90,12 @@ function elapsedTime(date) {
 }
 
 .upper {
-  flex-basis: 50%;
-  flex-grow: 1;
+  box-sizing: border-box;
+  height: 170px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .info {
   display: flex;
@@ -130,7 +134,6 @@ function elapsedTime(date) {
 }
 
 .writer, .hit {
-  padding: 10px 0;
   color: var(--font-color)
 }
 .writer p:first-child, .hit p:first-child {
@@ -144,9 +147,12 @@ function elapsedTime(date) {
 }
 
 .lower {
+  box-sizing: border-box;
+  height: 130px;
   padding: 20px;
-  flex-basis: 50%;
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: var(--sky-color);
   border-radius: 0 0 15px 15px;
 }

@@ -1,6 +1,7 @@
 <script setup>
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
+import PostCard from '../components/post/PostCard.vue';
 
 const tripPlans = {
   0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
@@ -20,6 +21,7 @@ const tripPlans = {
 </script>
 
 <template>
+  <NavHeader></NavHeader>
   <div id="wrap">
     <div id="my">
       <div id="my-info">
@@ -38,41 +40,7 @@ const tripPlans = {
 
           <ul class="post-list">
             <li v-for="i in 4">
-              <section id="section">
-                <div class="upper">
-                  <div class="info">
-                    <img
-                      src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/6562f7bc017800001.png?type=thumb&opt=C72x72.fwebp"
-                      width="36"
-                      height="36"
-                    />
-                    <div class="state">인기 게시글</div>
-                    <span class="date">방금 전</span>
-                  </div>
-
-                  <h1 id="title">해동용궁사에서 용을 보다</h1>
-
-                  <ul id="tag">
-                    <li>#부산</li>
-                    <li>#용</li>
-                    <li>#절</li>
-                    <li>#108배</li>
-                  </ul>
-                </div>
-
-                <div class="lower">
-                  <div class="writer">
-                    <p>작성자 :</p> 
-                    <p>민욱</p>
-                  </div>
-
-                  <div class="hit">
-                    <p>조회수 :</p> 
-                    <p>555</p>
-                  </div>
-                </div>
-                <!-- <img src="" alt=""> -->
-              </section>
+              <PostCard></PostCard>
             </li>
           </ul>
         </div>
@@ -104,10 +72,12 @@ const tripPlans = {
       </div>
     </div>
   </div>
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
   padding: 20px;
@@ -160,89 +130,11 @@ const tripPlans = {
   border-bottom: 2px solid var(--tag-color);
 }
 .post-list {
-  height: 500px;
   padding: 50px 30px;
   display: flex;
   gap: 20px;
   overflow-x: scroll;
 }
-
-#section {
-  box-sizing: border-box;
-  width: 400px;
-  height: 300px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  /* border: 1px solid #d6d9d7; */
-  border-radius: 15px;
-  background-color: var(--font-color);
-  box-shadow: 4px 12px 30px 6px var(--shadow-color);
-}
-
-.upper {
-  flex-basis: 50%;
-  flex-grow: 1;
-  padding: 20px;
-}
-.info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.state {
-  padding: 5px 10px;
-  font-size: 13px;
-  line-height: 20px;
-  color: var(--tag-font-color);
-  border-radius: 10px;
-  background-color: var(--tag-color);
-}
-.date {
-  font-size: 11px;
-  line-height: 20px;
-  color: var(--tag-font-color);
-}
-
-#title {
-  margin: 10px 0;
-  font-size: 25px;
-  color: var(--fourth-font-color);
-}
-
-#tag {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  gap: 5px;
-  font-size: 14px;
-  line-height: 19px;
-  color: var(--tag-font-color);
-}
-
-.writer, .hit {
-  padding: 10px 0;
-  color: var(--font-color)
-}
-.writer p:first-child, .hit p:first-child {
-  font-size: 15px;
-  font-weight: 200;
-}
-
-.writer p:last-child, .hit p:last-child {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.lower {
-  padding: 20px;
-  flex-basis: 50%;
-  flex-grow: 1;
-  background-color: var(--sky-color);
-  border-radius: 0 0 15px 15px;
-}
-
 .my-trip-course {
   margin: 0 20px;
   padding: 30px 0 30px 30px;

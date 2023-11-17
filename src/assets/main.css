@@ -23,7 +23,9 @@
   --red-color: #f15d4c;
 }
 
-body {
+html, body {
+  width: 100%;
+  height: 100%;
   background-color: var(--body-color);
   font-family: 'Pretendard', sans-serif;
   color: var(--font-color);

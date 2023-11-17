@@ -32,8 +32,9 @@ const siteMapLists = [
 
 <style scoped>
 #footer {
+  box-sizing: border-box;
   width: 100%;
-  height: 300px;
+  height: 370px;
   padding: 60px;
   display: flex;
   flex-direction: column;
