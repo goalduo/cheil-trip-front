@@ -1,5 +1,5 @@
 import { RestServerAxios } from "@/util/http-commons";
-
+import { httpStatusCode } from "@/util/http-status";
 const local = RestServerAxios();
 
 async function userRegist(body, success, fail) {
@@ -26,4 +26,32 @@ async function logout(userid, success, fail) {
   await local.get(`/user/logout/${userid}`).then(success).catch(fail);
 }
 
-export { userRegist, userConfirm, findById, tokenRegeneration, logout };
+async function findUserById(userId, callbackFn){
+  findById(
+    userId,
+    (response) => {
+      if (response.status === httpStatusCode.OK) {
+        const result = {
+          userId : response.data.userId,
+          userName : response.data.userName
+        }
+        callbackFn(result)
+      } else {
+        console.log("유저 정보 없음!!!!");
+        callbackFn(null)
+      }
+    },
+    (error) => {
+      callbackFn(null);
+    }
+  )
+
+}
+
+async function getAttractionUserMapping(userId, success, fail) {
+  await local.get(`/user/attractionMapping/${userId}`).then(success).catch(fail);
+}
+async function setAttractionUserMapping(body, success, fail) {
+  await local.post(`/user/attractionMapping`, body).then(success).catch(fail);
+}
+export { userRegist, userConfirm, findById, tokenRegeneration, logout, findUserById, getAttractionUserMapping, setAttractionUserMapping };

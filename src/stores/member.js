@@ -142,4 +142,4 @@ export const useMemberStore = defineStore("memberStore", () => {
     tokenRegenerate,
     userLogout,
   };
-});
+}, {persist : true});

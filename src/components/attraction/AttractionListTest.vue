@@ -1,6 +1,7 @@
 <script setup>
 import yorkie from 'yorkie-js-sdk';
 import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import {
   initMap,
   displayMarker,
@@ -10,10 +11,11 @@ import {
   searchByCategory,
   setMapByArea
 } from '@/util/kakaomap-commons.js'
-import { findById } from '@/api/UserAPI.js'
+import { findById, findUserById, getAttractionUserMapping, setAttractionUserMapping } from '@/api/UserAPI.js'
 import { useMemberStore } from "@/stores/member";
 const { VITE_YORKIE_SERVER, VITE_YORKIE_API_KEY } = import.meta.env;
 const memberStore = useMemberStore();
+const { userInfo } = storeToRefs(memberStore)
 const areaCode = ref(0)
 const contentTypeId = ref('')
 
@@ -21,7 +23,8 @@ const contentTypeId = ref('')
 const client = new yorkie.Client(VITE_YORKIE_SERVER, {
     apiKey: VITE_YORKIE_API_KEY,
   });
-const doc = new yorkie.Document('doc1');
+// const doc = new yorkie.Document('doc1');
+let doc;
 
 // 여행 경로 저장하기
 const tripCourseList = ref([])
@@ -90,37 +93,50 @@ function displaysearchCategory(code) {
   })
 }
 async function disconnect() {
+  doc.update((root) => {
+    root.tripCourseList = [];
+  })
   await client.detach(doc);
   await client.deactivate();
 }
-
 onMounted(async() => {
   if (window.kakao && window.kakao.maps) {
     map = initMap('map')
     drawLine(map, paths)
   }
-
-  await client.activate();
-  await client.attach(doc);
-  doc.update((root) => {
-    if (!root.tripCourseList) {
-      root.tripCourseList = [];
+  if (userInfo.value !== null) {
+    const userId = userInfo.value.userId;
+    console.log(userInfo.value)
+    let userMapping;
+    await getAttractionUserMapping(userId, (response) => {
+      console.log(response.data)
+      userMapping = response.data;
+    })
+    console.log(userMapping)
+    await client.activate();
+    doc = new yorkie.Document(`doc-${userMapping}`)
+    await client.attach(doc, {
+      initialPresence: {
+      userId : userInfo.value.userId,
+      userName : userInfo.value.userName
+    }});
+      doc.update((root) => {
+      if (!root.tripCourseList) {
+        root.tripCourseList = [];
+        }
+      })
+      doc.subscribe((event) => {
+        tripCourseList.value = doc.getRoot().tripCourseList
+      })
+    const users = doc.getPresences();
+    for (const { clientID, presence } of users) {
+      console.log(clientID, presence)
     }
-  })
-  doc.subscribe((event) => {
-    // if (event.type === 'remote-change') {
-      tripCourseList.value = doc.getRoot().tripCourseList
-      console.log(tripCourseList.value)
-    // }
-  // if (event.type === 'remote-change') {
-  // }
-  })
-  await client.sync();
-  tripCourseList.value = doc.getRoot().tripCourseList;
-  // if (doc.getRoot().tripCourseList) {
-  //   tripCourseList.value = doc.getRoot().tripCourseList
-  //   console.log(tripCourseList.value)
-  // }
+    await client.sync();
+    tripCourseList.value = doc.getRoot().tripCourseList;
+  }
+  console.log(userInfo.value)
+  
 })
 
 onUnmounted(() => {
@@ -165,8 +181,6 @@ const convertOpenState = () => {
   isTripCourseSaveOpen.value = !isTripCourseSaveOpen.value
 }
 
-
-
 // 장소를 클릭할 때 카카오맵 center 다시 지정
 function showPlace(location) {
   displayMarker(
@@ -189,20 +203,36 @@ function addPlace(location) {
     window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
     return;
   }
-  console.log(tripCourseList.value)
-  doc.update((root) => {
-    root.tripCourseList.push(location)
-  })
+  if (doc == null) {
+    tripCourseList.value.push(location);
+  } else {
+    let result = true;
+    if (doc.getRoot().tripCourseList.length !== 0) {
+      doc.getRoot().tripCourseList.forEach(element => {
+      if (location.id == element.id) {
+        window.alert('이미 추가된 여행지입니다.');
+        result = false;
+      }
+    });
+    if (!result) return;
+    }
+    doc.update((root) => {
+      root.tripCourseList.push(location)
+    })
+  }
   // console.log(tripCourseList.value)
   isTripCourseSaveOpen.value = true
 }
 
 // 여행 장소를 경로에서 제거할 때
 function removePlace(location) {
-  console.log(tripCourseList.value)
-  doc.update((root) => {
+  if (doc == null) {
+    tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
+  } else {
+    doc.update((root) => {
     root.tripCourseList.deleteByID(location.getID());
   })
+  }
 }
 
 const isOnCreateTripCourse = ref(false)
@@ -230,29 +260,30 @@ function cancelTripCourse() {
 // 사용자 검색
 
 const searchedUser = ref("");
-const searchresultUser = ref("");
-function searchUser() {
-  findById(searchedUser.value, (response) => {
-    searchresultUser.value = response.data.userId
+async function inviteUser(from) {
+  const to = userInfo.value.userId;
+  const body = {
+    from,
+    to,
+  }
+  await setAttractionUserMapping(body, (response) => {
+    console.log(response.data)
+    console.log(body)
   })
+  await setAttractionUserMapping({ from: to, to: to }, (response) => {
+    console.log(response.data)
+    console.log(body)
+  })
+  
 }
-const invitedMessage = ref("");
-
-async function inviteUser() {
-  await client.activate();
-  await client.attach(doc);
-
-  watch(searchList, (cur, prev) => {
-    doc.update((root) => {
-      root.searchList = cur
-    })
+function searchUser(userId) {
+  // console.log(userId)
+  findUserById(userId, (response) => {
+    if (response != null) inviteUser.value = response;
   })
-  doc.subscribe((event) => {
-    searchList.value = doc.getRoot().searchList
-  })
-  await client.sync();
+
+  
 }
-
 
 </script>
 
@@ -303,10 +334,8 @@ async function inviteUser() {
             type="text"
             placeholder="사용자 검색"
           />
-          <button @click="searchUser">검색</button>
-          <div></div>
-          <div @click="inviteUser"> {{  searchresultUser }} </div>
-          <div>{{ invitedMessage }}</div>
+          <button @click="searchUser(searchedUser)">검색</button>
+          <div @click="inviteUser(searchedUser)"> {{  searchedUser }} </div>
         </div>
       </div>
 
