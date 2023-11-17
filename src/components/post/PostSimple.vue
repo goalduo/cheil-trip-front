@@ -1,23 +1,39 @@
 <script setup>
 import {ref, onMounted} from 'vue'
 import PostCard from './PostCard.vue'
+import Observer from '@/components/Observer.vue'
 import { listArticle } from '@/api/BoardAPI.js'
 const articles = ref([]);
-onMounted(async() => {
+// onMounted(async() => {
+//   await listArticle(
+//     {pgno: "2"},
+//     (response) => {
+//       articles.value = response.data
+//       console.log(articles.value)
+//     },
+//     (error) => {
+//     console.log(error)
+//   })
+//     console.log(articles.value);
+// })
+
+// async function searchAttraction() {
+   
+// }
+
+const page = ref(0)
+const loadMore = async () => {
   await listArticle(
-    {},
+    {pgno: page.value + 1},
     (response) => {
-      articles.value = response.data
-      console.log(articles.value)
+      articles.value.push(...response.data)
+      // console.log(articles.value)
     },
     (error) => {
-    console.log(error)
-  })
-    console.log(articles.value);
-})
-
-async function searchAttraction() {
-   
+      console.log(error)
+    }
+  )
+  page.value += 1
 }
 
 // const articles = [
@@ -77,6 +93,7 @@ async function searchAttraction() {
     <div class="card-list">
       <post-card v-for="article in articles" :key="article.id" v-bind="article" />
     </div>
+    <Observer @triggerIntersected="loadMore"/>
   </div>
 </template>
 
