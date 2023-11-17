@@ -49,21 +49,13 @@ onMounted(() => {
       <li class="hit-number">조회수 11</li>
     </ul>
 
-    <hr />
-
     <div id="viewer"></div>
   </div>
 </template>
 
 <style scoped>
-hr {
-  margin: 0 -25px;
-  width: 100%;
-  color: var(--fourth-font-color);
-  size: 2px;
-}
-
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding: 25px;

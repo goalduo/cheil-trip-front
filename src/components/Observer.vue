@@ -25,9 +25,9 @@ onMounted(() => {
     }
 })
 
-onUnmounted(() => {
-    observer.value.disconnect()
-})
+// onUnmounted(() => {
+//     observer.value.disconnect()
+// })
 </script>
 
 <template>

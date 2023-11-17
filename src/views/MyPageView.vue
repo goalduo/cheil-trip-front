@@ -21,6 +21,7 @@ const tripPlans = {
 </script>
 
 <template>
+  <NavHeader></NavHeader>
   <div id="wrap">
     <div id="my">
       <div id="my-info">
@@ -71,10 +72,12 @@ const tripPlans = {
       </div>
     </div>
   </div>
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
   padding: 20px;

@@ -49,7 +49,7 @@ const loadMore = async () => {
 </script>
 
 <template>
-  <div id="container">
+  <div id="wrap">
     <div class="card-list">
       <post-card v-for="article in articles" :key="article.id" v-bind="article" />
     </div>
@@ -58,9 +58,8 @@ const loadMore = async () => {
 </template>
 
 <style scoped>
-#container {
+#wrap {
   width: 100%;
-  min-height: 100vh;
   padding: 100px 0;
   background-color: var(--font-color);
 }
