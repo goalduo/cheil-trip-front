@@ -31,6 +31,10 @@ html, body {
   color: var(--font-color);
 }
 
+button, label {
+  font-family: 'Pretendard', sans-serif;
+}
+
 /* infowindow에 적용할 CSS */
 .infowindow-wrap {
   width: 250px;

@@ -1,7 +1,8 @@
 <script setup>
 import TripPlanElement from './TripPlanElement.vue'
 import html2canvas from 'html2canvas'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+const { VITE_KAKAO_KEY } = import.meta.env;
 
 // 더미 데이터
 const tripPlans = {
@@ -39,6 +40,57 @@ const captureImage = async () => {
   link.download = 'trip_course.jpeg'
   link.click()
 }
+
+
+// 카카오톡으로 공유하는 방법
+const imageUrl = ref('')
+const imageUploader = ref()
+const uploadImageFile = async (files) => {
+  await Kakao.Share.uploadImage({
+    file: files
+  }).then((response) => {
+    console.log(response.infos.original.url)
+    imageUrl.value = response.infos.original.url
+  }).catch((error) => {
+    console.log(error)
+  })
+  imageUploader.value.value = ''                                                                                                                                               
+}
+
+// file-input에서 파일 선택 클릭 시 업로드
+// change 이벤트가 일어나면 먼저 카카오에 이미지를 업로드
+// 업로드 후 imageUrl 반응성 객체가 변경
+// 변경된 바를 토대로 공유하기
+async function sendLink(files) {
+    await uploadImageFile(files)
+
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '복지리가 땡기는 지리산 여행',
+        description: '#복지리 #복어 #지리산 #등산',
+        imageUrl: imageUrl.value,
+        link: {
+          mobileWebUrl: 'localhost:5173',
+          webUrl: 'localhost:5173',
+        },
+      },
+      buttons: [
+        {
+          title: '웹으로 보기',  //첫 번째 버튼 
+          link: {
+            mobileWebUrl: 'localhost:5173',  //버튼 클릭 시 이동 링크
+            webUrl: 'localhost:5173',
+          },
+        }
+      ],
+    })
+}
+
+onMounted(() => {
+  Kakao.init(VITE_KAKAO_KEY);
+  console.log(Kakao.isInitialized());
+})
 </script>
 
 <template>
@@ -107,10 +159,17 @@ const captureImage = async () => {
           <div class="download-logo"></div>
           이미지로 다운로드
         </button>
-        <button>
+        <!-- <button @click="shareImageByKakao">
           <div class="share-logo"></div>
           카카오톡 공유하기
-        </button>
+        </button> -->
+        <label for="file">
+          <div id="share-button">
+            <div class="share-logo"></div>
+            카카오톡 공유하기
+          </div>
+        </label>
+        <input id="file" type="file" name="file" ref="imageUploader" @change="sendLink($event.target.files)" />
       </div>
     </div>
   </div>
@@ -280,8 +339,13 @@ const captureImage = async () => {
     0 3px 3px rgba(0, 0, 0, 0.21);
 }
 
-#export button {
+#file {
+  display: none;
+}
+
+#download-button, #share-button {
   cursor: pointer;
+  box-sizing: border-box;
   width: 200px;
   height: 50px;
   padding: 0 10px;
@@ -296,7 +360,7 @@ const captureImage = async () => {
   border-radius: 20px;
 }
 
-#export button:hover {
+#download-button:hover, #share-button:hover {
   color: var(--sky-color);
   border-color: var(--sky-color);
 }
