@@ -144,7 +144,7 @@ function searchByCategory(category, map, callbackFn) {
   searchPlacesByCategory(category, map, (response) => {
     var bounds = new kakao.maps.LatLngBounds()
     response.searchList.forEach((data) => {
-      console.log(data)
+      // console.log(data)
       displayMarker(
         {
           y: data.y,

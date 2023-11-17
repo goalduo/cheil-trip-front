@@ -1,6 +1,6 @@
 <script setup>
 import yorkie from 'yorkie-js-sdk';
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import {
   initMap,
   displayMarker,
@@ -12,37 +12,21 @@ import {
 } from '@/util/kakaomap-commons.js'
 import { findById } from '@/api/UserAPI.js'
 import { useMemberStore } from "@/stores/member";
+const { VITE_YORKIE_SERVER, VITE_YORKIE_API_KEY } = import.meta.env;
 const memberStore = useMemberStore();
-//import AttractionListRow from './AttractionListRow.vue'
-// let searchOptions = ref([])
 const areaCode = ref(0)
 const contentTypeId = ref('')
 
-const client = new yorkie.Client('http://localhost:8080');
-const doc = new yorkie.Document('docs');
-// const keyword = ref('')
-// const tripList = ref([])
-// onMounted(async () => {
-//   searchOptions.value = await getsearchOptionList()
-//   console.log(searchOptions.value)
-// })
+// const client = new yorkie.Client('http://localhost:8080');
+const client = new yorkie.Client(VITE_YORKIE_SERVER, {
+    apiKey: VITE_YORKIE_API_KEY,
+  });
+const doc = new yorkie.Document('doc1');
 
-// async function searchAttraction() {
-//   console.log('search')
-//   const params = { listYN: 'Y', arrange: 'A', numOfRows: 10, pageNo: 1 }
-//   if (areaCode.value != 0) params.areaCode = areaCode.value
-//   if (contentTypeId.value != 0) params.contentTypeId = contentTypeId.value
-//   if (keyword.value != null && keyword.value.length > 0) {
-//     params.keyword = keyword.value
-//     tripList.value = await getKeywordAttractionList(params)
-//   } else {
-//     tripList.value = await getAreaBasedAttractionList(params)
-//   }
-//   console.log(tripList.value)
-// }
+// 여행 경로 저장하기
+const tripCourseList = ref([])
 
 // 아래는 KakaoMap.vue에 있던 코드
-
 let map
 const paths = [
   new kakao.maps.LatLng(126.97053, 37.56664),
@@ -59,6 +43,7 @@ function displaysearchKeyword() {
       map,
       (response) => {
         searchList.value = response
+        console.log(searchList.value)
       },
       {
         location: new kakao.maps.LatLng(map.getCenter().getLat(), map.getCenter().getLng()),
@@ -71,6 +56,7 @@ function displaysearchKeyword() {
       map,
       (response) => {
         searchList.value = response
+        console.log(searchList.value)
       },
       {}
     )
@@ -103,19 +89,43 @@ function displaysearchCategory(code) {
     searchList.value = response
   })
 }
+async function disconnect() {
+  await client.detach(doc);
+  await client.deactivate();
+}
 
-onMounted(() => {
+onMounted(async() => {
   if (window.kakao && window.kakao.maps) {
     map = initMap('map')
-    // displayMarker({ y: 37.56664, x : 126.97053 }, map1);
-    // displayMarker({ y: 33.450701, x : 126.570667 }, map2);
     drawLine(map, paths)
-    // searchPlacesByKeyword('이태원 맛집', (data) => {
-    //   searchList.value = data
-    // })
   }
+
+  await client.activate();
+  await client.attach(doc);
+  doc.update((root) => {
+    if (!root.tripCourseList) {
+      root.tripCourseList = [];
+    }
+  })
+  doc.subscribe((event) => {
+    // if (event.type === 'remote-change') {
+      tripCourseList.value = doc.getRoot().tripCourseList
+      console.log(tripCourseList.value)
+    // }
+  // if (event.type === 'remote-change') {
+  // }
+  })
+  await client.sync();
+  tripCourseList.value = doc.getRoot().tripCourseList;
+  // if (doc.getRoot().tripCourseList) {
+  //   tripCourseList.value = doc.getRoot().tripCourseList
+  //   console.log(tripCourseList.value)
+  // }
 })
 
+onUnmounted(() => {
+  disconnect();
+})
 const tripAreaObject = {
   0: { rnum: 1, lat: 37.556099, lng: 126.972371, name: '서울' },
   1: { rnum: 2, lat: 36.331643, lng: 127.433655, name: '대전' },
@@ -155,8 +165,7 @@ const convertOpenState = () => {
   isTripCourseSaveOpen.value = !isTripCourseSaveOpen.value
 }
 
-// 여행 경로 저장하기
-const tripCourseList = ref([])
+
 
 // 장소를 클릭할 때 카카오맵 center 다시 지정
 function showPlace(location) {
@@ -176,16 +185,24 @@ function showPlace(location) {
 function addPlace(location) {
   showPlace(location)
   // 여행 경로의 길이는 5를 넘을 수 없음
-  if (tripCourseList.value.length < 5) tripCourseList.value.push(location)
-  else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
-
+  if (tripCourseList.value.length == 5) {
+    window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+    return;
+  }
+  console.log(tripCourseList.value)
+  doc.update((root) => {
+    root.tripCourseList.push(location)
+  })
   // console.log(tripCourseList.value)
   isTripCourseSaveOpen.value = true
 }
 
 // 여행 장소를 경로에서 제거할 때
 function removePlace(location) {
-  tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
+  console.log(tripCourseList.value)
+  doc.update((root) => {
+    root.tripCourseList.deleteByID(location.getID());
+  })
 }
 
 const isOnCreateTripCourse = ref(false)
@@ -220,15 +237,20 @@ function searchUser() {
   })
 }
 const invitedMessage = ref("");
+
 async function inviteUser() {
   await client.activate();
   await client.attach(doc);
-  doc.update((root) => {
-        if (!root.text) {
-          root.text = 'start';
-        }
-  }, 'create default list if not exists');
-  invitedMessage.value = doc.getRoot().text;
+
+  watch(searchList, (cur, prev) => {
+    doc.update((root) => {
+      root.searchList = cur
+    })
+  })
+  doc.subscribe((event) => {
+    searchList.value = doc.getRoot().searchList
+  })
+  await client.sync();
 }
 
 

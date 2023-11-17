@@ -13,7 +13,7 @@ async function userConfirm(param, success, fail) {
 }
 
 async function findById(userid, success, fail) {
-  local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
+  // local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
   await local.get(`/user/info/${userid}`).then(success).catch(fail);
 }
 

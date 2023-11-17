@@ -12,6 +12,7 @@ function listArticle(param, success, fail) {
   
   function registArticle(article, success, fail) {
     console.log("boardjs article", article);
+    local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
     local.post(`/board`, JSON.stringify(article)).then(success).catch(fail);
   }
   

@@ -3,7 +3,9 @@ import { RouterLink } from 'vue-router'
 
 import { useHeaderMenuStore } from '../stores/menu'
 import { storeToRefs } from 'pinia'
-
+import { useMemberStore } from "@/stores/member";
+const memberStore = useMemberStore();
+const { userLogout } = memberStore;
 const headerMenuStore = useHeaderMenuStore()
 const { headerMenuList } = storeToRefs(headerMenuStore)
 const { changeHeaderMenuState } = headerMenuStore
