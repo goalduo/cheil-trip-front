@@ -59,17 +59,23 @@ function displayMarker(location, map) {
   map.setCenter(markerPosition)
 }
 
-function drawLine(map, path) {
-  // 지도에 선을 표시한다
-  var polyline = new kakao.maps.Polyline({
-    path: path,
+function createLine() {
+  const polyline = new kakao.maps.Polyline({
     strokeWeight: 5, // 선의 두께
     strokeColor: '#684fff', // 선 색
     strokeOpacity: 0.9, // 선 투명도
     strokeStyle: 'solid' // 선 스타일
   })
+  return polyline
+}
 
+function drawLine(polyline, map, path) {
+  polyline.setPath(path)
   polyline.setMap(map)
+}
+
+function removeLine(polyline) {
+  polyline.setMap(null)
 }
 
 function searchPlacesByKeyword(keyword, callbackFn, option) {
@@ -208,7 +214,9 @@ function setMarkerWithCustomOverlay(data, map) {
 export {
   initMap,
   displayMarker,
+  createLine,
   drawLine,
+  removeLine,
   searchPlacesByKeyword,
   search,
   searchByCategory,

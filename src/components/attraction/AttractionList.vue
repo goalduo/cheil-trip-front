@@ -4,7 +4,9 @@ import { ref, onMounted } from 'vue'
 import {
   initMap,
   displayMarker,
+  createLine,
   drawLine,
+  removeLine,
   searchPlacesByKeyword,
   search,
   searchByCategory,
@@ -172,13 +174,19 @@ function showPlace(location) {
   )
 }
 
+let polyline = createLine()
 // 여행 장소를 경로에 추가하거나 제거할 시에 다시 경로 그리기
 function drawCourseLine() {
   const tripCourseLatLng = []
   for (const tripCourse of tripCourseList.value) {
     tripCourseLatLng.push(new kakao.maps.LatLng(tripCourse.y, tripCourse.x))
   }
-  drawLine(map, tripCourseLatLng)
+
+  drawLine(polyline, map, tripCourseLatLng)
+}
+
+function removeCourseLine() {
+  removeLine(polyline)
 }
 
 // 여행 장소를 경로에 추가할 때
@@ -199,7 +207,8 @@ function addPlace(location) {
 // 여행 장소를 경로에서 제거할 때
 function removePlace(location) {
   tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
-  // 경로 다시 그리기
+  // 경로 삭제 후 다시 그리기
+  removeCourseLine()
   drawCourseLine()
 }
 
