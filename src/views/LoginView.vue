@@ -8,6 +8,8 @@ import { useHeaderMenuStore } from '@/stores/menu'
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
+import { toast } from 'vue3-toastify'
+
 const router = useRouter()
 const memberStore = useMemberStore()
 
@@ -20,8 +22,25 @@ const loginUser = ref({
   userPass: ''
 })
 
+const notify = () => {
+  console.log('hi')
+  toast('로그인에 성공하였습니다!', {
+    limit: 1,
+    autoClose: 1000,
+    position: toast.POSITION.BOTTOM_LEFT,
+    hideProgressBar: true,
+    pauseOnHover: false,
+    theme: 'colored',
+    type: 'success',
+    toastStyle: {
+      fontSize: '14px',
+      backgroundColor: '#19c9ff'
+    }
+  })
+}
+
 const login = async () => {
-  console.log('login ing!!!! !!!')
+  notify()
   await userLogin(loginUser.value)
   let token = sessionStorage.getItem('accessToken')
   console.log('111. ', token)
