@@ -9,8 +9,8 @@ import test from "../components/attraction/test.vue";
     <div>
         <!-- <NavHeader></NavHeader> -->
         <!-- <test></test> -->
-        <!-- <attraction-list></attraction-list> -->
-        <attraction-list-test></attraction-list-test>
+        <attraction-list></attraction-list>
+        <!-- <attraction-list-test></attraction-list-test> -->
     </div>
 </template>
 

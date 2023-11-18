@@ -12,7 +12,6 @@
   "dependencies": {
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
-    "@yaireo/tagify": "^4.17.9",
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
     "html2canvas": "^1.4.1",

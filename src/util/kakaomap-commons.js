@@ -62,13 +62,14 @@ function displayMarker(location, map) {
 function drawLine(map, path) {
   // 지도에 선을 표시한다
   var polyline = new kakao.maps.Polyline({
-    map: map, // 선을 표시할 지도 객체
     path: path,
-    strokeWeight: 3, // 선의 두께
-    strokeColor: '#FF0000', // 선 색
+    strokeWeight: 5, // 선의 두께
+    strokeColor: '#684fff', // 선 색
     strokeOpacity: 0.9, // 선 투명도
     strokeStyle: 'solid' // 선 스타일
   })
+
+  polyline.setMap(map)
 }
 
 function searchPlacesByKeyword(keyword, callbackFn, option) {

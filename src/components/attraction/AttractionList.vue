@@ -44,11 +44,6 @@ const doc = new yorkie.Document('docs');
 // 아래는 KakaoMap.vue에 있던 코드
 
 let map
-const paths = [
-  new kakao.maps.LatLng(126.97053, 37.56664),
-  new kakao.maps.LatLng(126.97453, 37.57064),
-  new kakao.maps.LatLng(126.97053, 37.57064)
-]
 const searchKeyword = ref('')
 const searchList = ref([])
 
@@ -106,10 +101,15 @@ function displaysearchCategory(code) {
 
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
+    // var linePath = [
+    //   new kakao.maps.LatLng(33.452344169439975, 126.56878163224233),
+    //   new kakao.maps.LatLng(33.452739313807456, 126.5709308145358),
+    //   new kakao.maps.LatLng(33.45178067090639, 126.5726886938753) 
+    // ];
     map = initMap('map')
+    // drawLine(map, linePath)
     // displayMarker({ y: 37.56664, x : 126.97053 }, map1);
     // displayMarker({ y: 33.450701, x : 126.570667 }, map2);
-    drawLine(map, paths)
     // searchPlacesByKeyword('이태원 맛집', (data) => {
     //   searchList.value = data
     // })
@@ -172,11 +172,24 @@ function showPlace(location) {
   )
 }
 
+// 여행 장소를 경로에 추가하거나 제거할 시에 다시 경로 그리기
+function drawCourseLine() {
+  const tripCourseLatLng = []
+  for (const tripCourse of tripCourseList.value) {
+    tripCourseLatLng.push(new kakao.maps.LatLng(tripCourse.y, tripCourse.x))
+  }
+  drawLine(map, tripCourseLatLng)
+}
+
 // 여행 장소를 경로에 추가할 때
 function addPlace(location) {
   showPlace(location)
   // 여행 경로의 길이는 5를 넘을 수 없음
-  if (tripCourseList.value.length < 5) tripCourseList.value.push(location)
+  if (tripCourseList.value.length < 5) {
+    tripCourseList.value.push(location)
+    // 경로 다시 그리기
+    drawCourseLine()
+  }
   else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
 
   // console.log(tripCourseList.value)
@@ -186,6 +199,8 @@ function addPlace(location) {
 // 여행 장소를 경로에서 제거할 때
 function removePlace(location) {
   tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
+  // 경로 다시 그리기
+  drawCourseLine()
 }
 
 const isOnCreateTripCourse = ref(false)
