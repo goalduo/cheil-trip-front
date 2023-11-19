@@ -27,7 +27,7 @@ const loadMore = async () => {
     {pgno: page.value + 1},
     (response) => {
       articles.value.push(...response.data)
-      // console.log(articles.value)
+      console.log(articles.value)
     },
     (error) => {
       console.log(error)

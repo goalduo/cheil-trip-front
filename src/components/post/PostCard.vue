@@ -1,11 +1,15 @@
 <script setup>
-defineProps({
-  id: Number,
-  userName: String,
-  title: String,
+import { watch, ref } from 'vue';
+import { useRouter } from 'vue-router'
+
+const props = defineProps({
+  articleNo: Number,
+  userId: String,
+  subject: String,
   content: String,
   hit: Number,
-  registerTime: String
+  registerTime: String,
+  // 카테고리 연결 필요함
 })
 
 function elapsedTime(date) {
@@ -31,10 +35,15 @@ function elapsedTime(date) {
   }
   return '방금 전'
 }
+
+const router = useRouter()
+const goDetailView = () => {
+  router.push({ name: 'postDetail', params: { articleNo: props.articleNo}})
+}
 </script>
 
 <template>
-  <section id="section">
+  <section @click="goDetailView" id="section">
     <div class="upper">
       <div class="info">
         <img
@@ -46,8 +55,7 @@ function elapsedTime(date) {
         <span class="date">{{ elapsedTime(registerTime) }}</span>
       </div>
 
-      <!-- <h1 id="title">{{ title }}</h1> -->
-      <h1 id="title">해동용궁사에서 용을 보다으하하하하하하하하하하하하하</h1>
+      <h1 id="title">{{ subject }}</h1>
 
       <ul id="tag">
         <li>#부산</li>
@@ -61,14 +69,12 @@ function elapsedTime(date) {
     <div class="lower">
       <div class="writer">
         <p>작성자 :</p> 
-        <!-- <p>{{ userName }}</p> -->
-        <p>장수민</p>
+        <p>{{ userId }}</p>
       </div>
 
       <div class="hit">
         <p>조회수 :</p> 
-        <!-- <p>{{ hit }}</p> -->
-        <p>25</p>
+        <p>{{ hit }}</p>
       </div>
     </div>
     <!-- <img src="" alt=""> -->
@@ -77,6 +83,7 @@ function elapsedTime(date) {
 
 <style scoped>
 #section {
+  cursor: pointer;
   box-sizing: border-box;
   width: 400px;
   height: 300px;

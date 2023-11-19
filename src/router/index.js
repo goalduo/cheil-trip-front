@@ -43,8 +43,13 @@ const router = createRouter({
       name: 'attraction',
       component: AttractionSearchView
     },
+    // {
+    //   path: '/post/detail',
+    //   name: 'postDetail',
+    //   component: PostDetailView
+    // },
     {
-      path: '/post/detail',
+      path: '/post/detail/:articleNo',
       name: 'postDetail',
       component: PostDetailView
     },

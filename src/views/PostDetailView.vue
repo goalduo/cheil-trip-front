@@ -1,24 +1,42 @@
 <script setup>
-import { routerViewLocationKey } from 'vue-router'
+import { routerViewLocationKey, useRoute } from 'vue-router'
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
+import { detailArticle } from '@/api/BoardAPI.js'
 import { Editor } from '@toast-ui/editor'
 
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+
+const article = ref()
+const route = useRoute()
+
+// 게시물을 가져와서 viewer에 적용
+const getArticle = async () => {
+  const { articleNo } = route.params
+
+  await detailArticle(
+    articleNo,
+    (response) => {
+      article.value = response.data
+      console.log(article.value)
+
+      // viewer를 동적으로 생성
+      const viewer = Editor.factory({
+        el: document.querySelector('#viewer'),
+        viewer: true,
+        height: '600px',
+        initialValue: article.value.content
+      })
+    },
+    (error) => {
+      console.log(error)
+    }
+  )
+}
 
 onMounted(() => {
-  const viewer = Editor.factory({
-    el: document.querySelector('#viewer'),
-    viewer: true,
-    height: '600px',
-    initialValue: `# Hello
-    안녕하세요 저는 MINWOOK입니다
-    제가 저번 주에 부산에 있는 해동용궁사를 다녀왔는데요
-    글쎼, 용이 있는거 아니겠어요
-    수고하세요!
-    `
-  })
+  getArticle()
 })
 </script>
 
@@ -28,9 +46,8 @@ onMounted(() => {
   <div id="wrap">
     <!-- props -->
     <p class="category">여행지</p>
-
     <!-- props -->
-    <h1 class="title">해동 용궁사에서 용보다</h1>
+    <h1 class="title">{{ article?.subject }}</h1>
 
     <!-- props -->
     <ul class="tag">
@@ -42,11 +59,11 @@ onMounted(() => {
 
     <!-- props -->
     <ul class="user-info">
-      <li class="user-name">민욱</li>
+      <li class="user-name">{{ article?.userId }}</li>
       <li class="split">|</li>
-      <li class="post-date">23.11.10 11:11</li>
+      <li class="post-date">{{ article?.registerTime }}</li>
       <li class="split">|</li>
-      <li class="hit-number">조회수 11</li>
+      <li class="hit-number">조회수 {{ article?.hit }}</li>
     </ul>
 
     <div id="viewer"></div>
