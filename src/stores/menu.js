@@ -6,8 +6,6 @@ export const useHeaderMenuStore = defineStore('headerMenuStore', () => {
     { name: '여행지 검색', routeName: '/attraction', show: true },
     { name: '여행카드 만들기', routeName: '/plan', show: true },
     { name: '게시판', routeName: '/post', show: true },
-    // 나중에 게시판 상세 삭제하기
-    { name: '게시판 상세', routeName: '/post/detail', show: true },
     { name: '게시물 작성하기', routeName: '/post/create', show: true },
     { name: '로그인', routeName: '/login', show: true },
     // 마이페이지 잠시 개발중에만 true로 바꿔 놓음

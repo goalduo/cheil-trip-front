@@ -14,10 +14,14 @@ const logout = () => {
   window.alert('로그아웃 되었습니다.')
   changeHeaderMenuState()
 }
+
+defineProps({
+  isMainPageHeader: Boolean
+})
 </script>
 
 <template>
-  <header id="header">
+  <header id="header" :class="{ 'header-fixed': isMainPageHeader ,'header-color': isMainPageHeader }">
     <div>
       <RouterLink to="/">
         <img id="logo" src="../assets/images/logo.svg" alt="logo" />
@@ -40,11 +44,6 @@ const logout = () => {
 
 <style scoped>
 #header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 99;
   box-sizing: border-box;
   width: 100%;
   height: 70px;
@@ -52,7 +51,19 @@ const logout = () => {
   display: flex;
   align-items: center;
   font-size: 20px;
-  background-color: var(--navheader-color);
+  background-color: var(--body-color);
+}
+
+.header-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+.header-color {
+  background-color: var(--navheader-color) !important;
 }
 
 #logo {

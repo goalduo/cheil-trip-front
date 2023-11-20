@@ -6,9 +6,9 @@ import TripPlan from '../components/tripplan/TripPlan.vue'
 
 <template>
   <div>
-    <!-- <NavHeader></NavHeader> -->
+    <NavHeader :is-main-page-header="false"></NavHeader>
     <TripPlan></TripPlan>
-    <!-- <SiteMapFooter></SiteMapFooter> -->
+    <SiteMapFooter></SiteMapFooter>
   </div>
 </template>
 

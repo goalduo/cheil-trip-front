@@ -43,7 +43,7 @@ const loadMore = async () => {
 </script>
 
 <template>
-  <NavHeader></NavHeader>
+  <NavHeader :is-main-page-header="false"></NavHeader>
   <div id="wrap">
     <div id="my">
       <div id="my-info">

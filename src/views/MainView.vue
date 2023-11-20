@@ -22,7 +22,7 @@ const mouseMove = (event) => {
     </div>
 
     <!-- 헤더 -->
-    <NavHeader></NavHeader>
+    <NavHeader :is-main-page-header="true"></NavHeader>
     <!-- 메인 컨텐츠 -->
     <MainContent></MainContent>
     <!-- 푸터 -->

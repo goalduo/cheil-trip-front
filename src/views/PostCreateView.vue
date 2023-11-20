@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
 import { onMounted, ref, watch } from 'vue'
@@ -111,6 +112,8 @@ const removeTag = (index) => {
 </script>
 
 <template>
+  <NavHeader :is-main-page-header="false"></NavHeader>
+  
   <div id="wrap">
     <h1 class="title">게시글 작성</h1>
 
