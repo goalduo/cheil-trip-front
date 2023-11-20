@@ -2,26 +2,17 @@
 import TripPlanElement from './TripPlanElement.vue'
 import html2canvas from 'html2canvas'
 import { ref, onMounted } from 'vue'
+import { getTripplansAndTripCoursesByUserId } from '@/api/TripplanAPI.js'
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from 'pinia'
+const memberStore = useMemberStore();
+
 const { VITE_KAKAO_KEY } = import.meta.env;
+const { userInfo } = storeToRefs(memberStore)
+const tripPlans = ref([]);
 
-// 더미 데이터
-const tripPlans = {
-  0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
-  1: {
-    id: 2,
-    title: '암벽등반은 싫지만 그래도 가는 북한산',
-    tags: ['등산', '끝나고', '술', '두잔']
-  },
-  2: {
-    id: 3,
-    title: '대방어를 먹기 위한 군산 여행',
-    tags: ['대방어', '기름져', '광어도', '필요해']
-  },
-  3: { id: 4, title: '콜라 공장 방문', tags: ['제로', '콜라', '대세'] },
-  4: { id: 5, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] }
-}
 const captureTarget = ref()
-
+const currentTargetTripPlan = ref({})
 // 클립보드에 복사하는 방법
 // const captureImage = async () => {
 //   await html2canvas(captureTarget.value).then((canvas) => {
@@ -40,7 +31,6 @@ const captureImage = async () => {
   link.download = 'trip_course.jpeg'
   link.click()
 }
-
 
 // 카카오톡으로 공유하는 방법
 const imageUrl = ref('')
@@ -67,8 +57,8 @@ async function sendLink(files) {
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '복지리가 땡기는 지리산 여행',
-        description: '#복지리 #복어 #지리산 #등산',
+        title: currentTargetTripPlan?.value.planName,
+        description: '#' + currentTargetTripPlan?.value.hashtags.join(' #'),
         imageUrl: imageUrl.value,
         link: {
           mobileWebUrl: 'localhost:5173',
@@ -87,9 +77,30 @@ async function sendLink(files) {
     })
 }
 
-onMounted(() => {
-  Kakao.init(VITE_KAKAO_KEY);
-  console.log(Kakao.isInitialized());
+const randomColor = ref([false, false, false, false, false])
+
+const pickRandomNumber = () => {
+  return Math.floor(Math.random(0, 1) * 5)
+}
+
+const changeCurrentTargetTripPlan = (tripPlan) => {
+  currentTargetTripPlan.value = tripPlan 
+  randomColor.value.fill(false)
+  randomColor.value[pickRandomNumber()] = true
+}
+
+onMounted(async () => {
+  if (!Kakao.isInitialized()) {
+    Kakao.init(VITE_KAKAO_KEY);
+  }
+
+  const result = await getTripplansAndTripCoursesByUserId(userInfo.value.userId);
+  result.forEach(tripPlan => {
+    tripPlan.hashtags = tripPlan.hashtags?.split('-')
+    tripPlans.value.push(tripPlan)
+  })
+  if (result.length >= 1) currentTargetTripPlan.value = tripPlans.value[0]
+  randomColor.value[pickRandomNumber()] = true
 })
 </script>
 
@@ -99,47 +110,44 @@ onMounted(() => {
       <div class="make-card-logo"></div>
       <div id="my-plans">
         <TripPlanElement
-          v-for="tripPlan in tripPlans"
-          :key="tripPlan.id"
-          :tripPlan="tripPlan"
+        v-for="tripPlan in tripPlans"
+        :key="tripPlan.planId"
+        :tripPlan="tripPlan"
+        @click="changeCurrentTargetTripPlan(tripPlan)"
         ></TripPlanElement>
       </div>
     </div>
 
     <div id="make-card">
-      <div ref="captureTarget" id="card">
+      <div ref="captureTarget" id="card" :class="{ 'purple-color-card': randomColor[0], 'orange-color-card': randomColor[1], 'green-color-card': randomColor[2], 'sky-color-card': randomColor[3], 'pink-color-card': randomColor[4] }">
         <div class="main-logo"></div>
         <div class="right-up-edge"></div>
         <div class="right-down-edge"></div>
 
         <div class="user-name">
           <p class="italic-text">CARD MAKER :</p>
-          <p>장수민</p>
+          <p>{{ userInfo?.userId }}</p>
         </div>
 
         <div class="trip-title">
           <p class="italic-text">TRIP TITLE :</p>
-          <p>"복지리가 땡기는 지리산 여행"</p>
+          <p>"{{ currentTargetTripPlan?.planName }}"</p>
         </div>
 
         <div class="hash-tag">
           <p class="italic-text">HASH TAG :</p>
           <ul>
-            <li>#복지리</li>
-            <li>#복어</li>
-            <li>#지리산</li>
-            <li>#등산</li>
+            <li v-for="tag in currentTargetTripPlan?.hashtags">#{{ tag }}</li>
           </ul>
         </div>
 
         <div class="trip-course">
           <p class="italic-text">TRIP COURSE :</p>
           <ul>
-            <li>남원역<span>1</span></li>
-            <li>지리산 정상<span>2</span></li>
-            <li>광주송정역<span>3</span></li>
-            <li>광주 복지리탕 맛집<span>4</span></li>
-            <li>수원역<span>5</span></li>
+            <li v-for="tripCourse in currentTargetTripPlan?.tripCourseList">
+              {{ tripCourse.place_name }}
+              <span>{{ tripCourse.course_id }}</span>
+            </li>
           </ul>
         </div>
 
@@ -159,10 +167,6 @@ onMounted(() => {
           <div class="download-logo"></div>
           이미지로 다운로드
         </button>
-        <!-- <button @click="shareImageByKakao">
-          <div class="share-logo"></div>
-          카카오톡 공유하기
-        </button> -->
         <label for="file">
           <div id="share-button">
             <div class="share-logo"></div>
@@ -188,7 +192,7 @@ onMounted(() => {
 }
 
 #info {
-  width: 650px;
+  width: 700px;
   height: 95%;
   box-sizing: border-box;
   padding: 20px;
@@ -210,7 +214,7 @@ onMounted(() => {
 }
 
 #my-plans {
-  width: 600px;
+  width: 650px;
   height: 900px;
   margin: 30px auto;
   display: grid;
@@ -237,7 +241,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background-image: url('@/assets/images/purple-color-card.svg');
   background-position: center;
   box-shadow:
     0 5px 20px rgba(0, 0, 0, 0.19),
@@ -246,6 +249,26 @@ onMounted(() => {
   font-size: 18px;
   letter-spacing: 0.5px;
   color: var(--font-color);
+}
+
+.purple-color-card {
+  background-image: url('@/assets/images/purple-color-card.svg');
+}
+
+.orange-color-card {
+  background-image: url('@/assets/images/orange-color-card.svg');
+}
+
+.green-color-card {
+  background-image: url('@/assets/images/green-color-card.svg');
+}
+
+.sky-color-card {
+  background-image: url('@/assets/images/sky-color-card.svg');
+}
+
+.pink-color-card {
+  background-image: url('@/assets/images/pink-color-card.svg');
 }
 
 .main-logo {

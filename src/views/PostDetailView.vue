@@ -42,17 +42,16 @@ function deleteArticleByArticleId() {
 </script>
 
 <template>
-  <!-- <NavHeader></NavHeader>
-  <SitemapFooter></SitemapFooter> -->
+  <NavHeader :is-main-page-header="false"></NavHeader>
   <div id="wrap">
     <!-- props -->
-    <p class="category">여행지</p>
+    <p class="category">{{ article?.category }}</p>
     <!-- props -->
     <h1 class="title">{{ article?.subject }}</h1>
 
     <!-- props -->
     <ul class="tag">
-      <li v-for="tag in article?.hashtags" :key="tag">{{ tag }}</li>
+      <li v-for="tag in article?.hashtags" :key="tag">#{{ tag }}</li>
       <!-- <li class="tag-element">#부산</li>
       <li class="tag-element">#용</li>
       <li class="tag-element">#절</li>
@@ -71,6 +70,7 @@ function deleteArticleByArticleId() {
     <button v-if="article?.userId === userInfo.userId" @click="deleteArticleByArticleId"> 삭제 {{ article?.userId }}</button>
     <div id="viewer"></div>
   </div>
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>

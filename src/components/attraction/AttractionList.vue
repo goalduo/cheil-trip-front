@@ -270,6 +270,7 @@ function saveTripplan() {
     tripCourseList : tripCourseList.value
   }
   postTripPlanAndTripCourse(body);
+  router.push('/plan')
 }
 </script>
 

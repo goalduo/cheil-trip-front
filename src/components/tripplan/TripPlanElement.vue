@@ -15,10 +15,10 @@ defineProps({
       <div class="state">여행 경로 저장</div>
     </div>
 
-    <h1 id="title">{{ tripPlan.title }}</h1>
+    <h1 id="title">{{ tripPlan.planName }}</h1>
 
     <ul id="tag">
-      <li v-for="tag in tripPlan.tags">#{{ tag }}</li>
+      <li v-for="tag in tripPlan.hashtags">#{{ tag }}</li>
     </ul>
   </div>
 </template>
@@ -27,7 +27,7 @@ defineProps({
 #plan {
   cursor: pointer;
   box-sizing: border-box;
-  width: 250px;
+  width: 300px;
   height: 200px;
   padding: 20px;
   display: flex;

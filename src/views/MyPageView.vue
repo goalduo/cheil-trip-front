@@ -11,22 +11,6 @@ import { useMemberStore } from "@/stores/member";
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore)
 const articleCount = ref(0);
-// 여행 경로 가져오기
-// const tripPlans = {
-//   0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
-//   1: {
-//     id: 2,
-//     title: '암벽등반은 싫지만 그래도 가는 북한산',
-//     tags: ['등산', '끝나고', '술', '두잔']
-//   },
-//   2: {
-//     id: 3,
-//     title: '대방어를 먹기 위한 군산 여행',
-//     tags: ['대방어', '기름져', '광어도', '필요해']
-//   },
-//   3: { id: 4, title: '콜라 공장 방문', tags: ['제로', '콜라', '대세'] },
-//   4: { id: 5, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] }
-// }
 const tripPlans = ref([]);
 
 onMounted(async () => {
@@ -199,7 +183,7 @@ const loadMore = async () => {
 #plan {
   cursor: pointer;
   box-sizing: border-box;
-  width: 250px;
+  width: 300px;
   height: 200px;
   padding: 20px;
   display: flex;

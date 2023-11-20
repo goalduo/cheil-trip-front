@@ -11,7 +11,6 @@ const props = defineProps({
   hashtags: Array,
   hit: Number,
   registerTime: String,
-  // 카테고리 연결 필요함
 })
 
 function elapsedTime(date) {
@@ -53,14 +52,14 @@ const goDetailView = () => {
           width="36"
           height="36"
         />
-        <div class="state">인기 게시글</div>
-        <span class="date">{{ elapsedTime(registerTime) }}</span>
+        <div class="state">{{ props.category }}</div>
+        <span class="date">{{ elapsedTime(props.registerTime) }}</span>
       </div>
 
-      <h1 id="title">{{ subject }}</h1>
+      <h1 id="title">{{ props.subject }}</h1>
 
       <ul id="tag">
-        <li v-for="tag in hashtags" :key="tag">{{ tag }}</li>
+        <li v-for="tag in props.hashtags" :key="tag">#{{ tag }}</li>
       </ul>
     </div>
 
@@ -68,12 +67,12 @@ const goDetailView = () => {
     <div class="lower">
       <div class="writer">
         <p>작성자 :</p> 
-        <p>{{ userId }}</p>
+        <p>{{ props.userId }}</p>
       </div>
 
       <div class="hit">
         <p>조회수 :</p> 
-        <p>{{ hit }}</p>
+        <p>{{ props.hit }}</p>
       </div>
     </div>
     <!-- <img src="" alt=""> -->
@@ -86,7 +85,6 @@ const goDetailView = () => {
   box-sizing: border-box;
   width: 400px;
   height: 300px;
-  margin: 0 auto;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
