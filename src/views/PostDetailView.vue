@@ -18,6 +18,7 @@ const getArticle = async () => {
   await detailArticle(
     articleNo,
     (response) => {
+      response.data.hashtags = response.data.hashtags.split("-")
       article.value = response.data
       console.log(article.value)
 
@@ -51,10 +52,11 @@ onMounted(() => {
 
     <!-- props -->
     <ul class="tag">
-      <li class="tag-element">#부산</li>
+      <li v-for="tag in article?.hashtags" :key="tag">{{ tag }}</li>
+      <!-- <li class="tag-element">#부산</li>
       <li class="tag-element">#용</li>
       <li class="tag-element">#절</li>
-      <li class="tag-element">#108배</li>
+      <li class="tag-element">#108배</li> -->
     </ul>
 
     <!-- props -->

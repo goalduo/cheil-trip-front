@@ -7,6 +7,8 @@ const props = defineProps({
   userId: String,
   subject: String,
   content: String,
+  category: String,
+  hashtags: Array,
   hit: Number,
   registerTime: String,
   // 카테고리 연결 필요함
@@ -58,10 +60,7 @@ const goDetailView = () => {
       <h1 id="title">{{ subject }}</h1>
 
       <ul id="tag">
-        <li>#부산</li>
-        <li>#용</li>
-        <li>#절</li>
-        <li>#108배</li>
+        <li v-for="tag in hashtags" :key="tag">{{ tag }}</li>
       </ul>
     </div>
 

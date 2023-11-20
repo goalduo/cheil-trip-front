@@ -26,8 +26,12 @@ const loadMore = async () => {
   await listArticle(
     {pgno: page.value + 1},
     (response) => {
+      response.data.forEach(element => {
+        if (element.hashtags !== null) {
+          element.hashtags = element.hashtags.split("-")
+        }
+      });
       articles.value.push(...response.data)
-      console.log(articles.value)
     },
     (error) => {
       console.log(error)
