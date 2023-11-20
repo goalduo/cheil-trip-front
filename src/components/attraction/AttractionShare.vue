@@ -1,7 +1,7 @@
 <script setup>
 import yorkie from 'yorkie-js-sdk';
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import {
   initMap,
@@ -15,14 +15,16 @@ import {
   setMapByArea
 } from '@/util/kakaomap-commons.js'
 import { findById } from '@/api/UserAPI.js'
-import {postTripPlanAndTripCourse, getTripplanId, addUserIdAtAttraction} from '@/api/TripplanAPI.js'
+import {postTripPlanAndTripCourse, getTripplanId, isUserInAttractionSet, addUserIdAtAttraction} from '@/api/TripplanAPI.js'
 import { useMemberStore } from "@/stores/member";
+const { VITE_YORKIE_SERVER, VITE_YORKIE_API_KEY } = import.meta.env;
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore)
 //import AttractionListRow from './AttractionListRow.vue'
 // let searchOptions = ref([])
 
 const router = useRouter()
+const route = useRoute()
 const areaCode = ref(0)
 const contentTypeId = ref('')
 
@@ -32,6 +34,13 @@ const tripplanHashtag = ref("");
 let map
 const searchKeyword = ref('')
 const searchList = ref([])
+
+// const client = new yorkie.Client('http://localhost:8080');
+const client = new yorkie.Client(VITE_YORKIE_SERVER, {
+    apiKey: VITE_YORKIE_API_KEY,
+  });
+// const doc = new yorkie.Document('doc1');
+let doc;
 
 function displaysearchKeyword() {
   if (areaCode.value !== 0) {
@@ -84,13 +93,57 @@ function displaysearchCategory(code) {
     searchList.value = response
   })
 }
-
-onMounted(() => {
+// unmount시 doc disconnect
+async function disconnect() {
+  doc.update((root) => {
+    root.tripCourseList = [];
+  })
+  await client.detach(doc);
+  await client.deactivate();
+}
+onMounted(async() => {
   if (window.kakao && window.kakao.maps) {
     map = initMap('map')
+    }
+  // 유저 체크  
+  const id = route.params.id
+  const userId = userInfo.value.userId
+  const params = {
+    id, userId
   }
-})
+  const isUserValidated = await isUserInAttractionSet(params)
+  if (isUserValidated === 0) {
+    alert("권한이 없습니다.")
+    router.push("/")
+  }
 
+  // dom client 생성
+  await client.activate();
+  doc = new yorkie.Document(`doc-${id}`)
+  await client.attach(doc, {
+      initialPresence: {
+      userId : userInfo.value.userId,
+      userName : userInfo.value.userName
+    }});
+    doc.update((root) => {
+    if (!root.tripCourseList) {
+      root.tripCourseList = [];
+      }
+    })
+    doc.subscribe((event) => {
+      tripCourseList.value = doc.getRoot().tripCourseList
+    })
+  const users = doc.getPresences();
+    for (const { clientID, presence } of users) {
+      console.log(clientID, presence)
+    }
+    await client.sync();
+    tripCourseList.value = doc.getRoot().tripCourseList;
+  console.log(tripCourseList)
+})
+onUnmounted(() => {
+  disconnect();
+})
 const tripAreaObject = {
   0: { rnum: 1, lat: 37.556099, lng: 126.972371, name: '서울' },
   1: { rnum: 2, lat: 36.331643, lng: 127.433655, name: '대전' },
@@ -166,12 +219,24 @@ function removeCourseLine() {
 function addPlace(location) {
   showPlace(location)
   // 여행 경로의 길이는 5를 넘을 수 없음
-  if (tripCourseList.value.length < 5) {
-    tripCourseList.value.push(location)
-    // 경로 다시 그리기
-    drawCourseLine()
+  if (tripCourseList.value.length == 5) {
+    window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+    return;
   }
-  else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+  let result = true;
+  if (doc.getRoot().tripCourseList.length !== 0) {
+    doc.getRoot().tripCourseList.forEach(element => {
+    if (location.id == element.id) {
+      window.alert('이미 추가된 여행지입니다.');
+      result = false;
+    }
+  });
+  if (!result) return;
+  }
+  doc.update((root) => {
+    root.tripCourseList.push(location)
+  })
+  drawCourseLine()
 
   // console.log(tripCourseList.value)
   isTripCourseSaveOpen.value = true
@@ -179,7 +244,9 @@ function addPlace(location) {
 
 // 여행 장소를 경로에서 제거할 때
 function removePlace(location) {
-  tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
+  doc.update((root) => {
+    root.tripCourseList.deleteByID(location.getID());
+  })
   // 경로 삭제 후 다시 그리기
   removeCourseLine()
   drawCourseLine()
@@ -207,37 +274,28 @@ function cancelTripCourse() {
   isOnSetTitle.value = true
 }
 
-// 공유하기 버튼을 누르면 워크스페이스 변경
-async function changeWorkspaceToShare() {
-  const id = await getTripplanId();
-  const body = {
-    planId: id,
-    userId : userInfo.value.userId
-  }
-  console.log(body);
-  await addUserIdAtAttraction(body);
-  router.push({ name: 'attractionshare', params: { id }})
-}
-
 // 사용자 검색
 const searchedUser = ref("");
 const searchresultUser = ref("");
-// function searchUser() {
-//   findById(searchedUser.value, (response) => {
-//     searchresultUser.value = response.data.userId
-//   })
-// }
-// const invitedMessage = ref("");
-// async function inviteUser() {
-//   await client.activate();
-//   await client.attach(doc);
-//   doc.update((root) => {
-//         if (!root.text) {
-//           root.text = 'start';
-//         }
-//   }, 'create default list if not exists');
-//   invitedMessage.value = doc.getRoot().text;
-// }
+function searchUser() {
+  findById(searchedUser.value, (response) => {
+    searchresultUser.value = response.data.userId
+  })
+}
+const invitedMessage = ref("");
+async function inviteUser(curUserId) {
+    // redis에 사용자 저장하기
+    console.log("redis에 사용자 저장하기" + curUserId);
+    const id = route.params.id
+    const userId = curUserId
+    const body = {
+      planId: id,
+      userId : userId
+    }
+  const result = await addUserIdAtAttraction(body);
+  console.log(result)
+  alert("사용자 초대 완료!")
+}
 
 
 // 여행 정보 저장하기
@@ -297,9 +355,10 @@ function saveTripplan() {
             type="text"
             placeholder="사용자 검색"
           />
-          <button @click="changeWorkspaceToShare">공유하기</button>
+          <button @click="searchUser">사용자 검색하기</button>
           <div></div>
-          <div @click="inviteUser"> {{  searchresultUser }} </div>
+          <div v-if="searchresultUser" @click="inviteUser(searchresultUser)"> {{ searchresultUser }} </div>
+          <div>{{ invitedMessage }}</div>
         </div>
       </div>
 

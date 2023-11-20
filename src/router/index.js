@@ -10,6 +10,7 @@ import TripPlanView from '@/views/TripPlanView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import KakaoMap from '@/components/attraction/KakaoMap.vue'
 import TripplanTest from '@/components/tripplan/TripplanTest.vue'
+import attractionshare from '@/components/attraction/attractionshare.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -41,7 +42,13 @@ const router = createRouter({
     {
       path: '/attraction',
       name: 'attraction',
-      component: AttractionSearchView
+      component: AttractionSearchView,
+      props :true
+    },
+    {
+      path: '/attraction/:id',
+      name: 'attractionshare',
+      component : attractionshare
     },
     // {
     //   path: '/post/detail',
