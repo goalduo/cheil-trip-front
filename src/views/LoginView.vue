@@ -8,49 +8,36 @@ import { useHeaderMenuStore } from '@/stores/menu'
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
-import { toast } from 'vue3-toastify'
+import { notify } from '@/components/toastMessage.js'
 
 const router = useRouter()
 const memberStore = useMemberStore()
-
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo } = memberStore
-const { changeHeaderMenuState } = useHeaderMenuStore()
+
+const headerMenuStore = useHeaderMenuStore()
+const { isAccessible } = storeToRefs(headerMenuStore)
+const { changeHeaderMenuState } = headerMenuStore
 
 const loginUser = ref({
   userId: '',
   userPass: ''
 })
 
-const notify = () => {
-  console.log('hi')
-  toast('로그인에 성공하였습니다!', {
-    limit: 1,
-    autoClose: 1000,
-    position: toast.POSITION.BOTTOM_LEFT,
-    hideProgressBar: true,
-    pauseOnHover: false,
-    theme: 'colored',
-    type: 'success',
-    toastStyle: {
-      fontSize: '14px',
-      backgroundColor: '#19c9ff'
-    }
-  })
-}
-
 const login = async () => {
-  notify()
   await userLogin(loginUser.value)
   let token = sessionStorage.getItem('accessToken')
   console.log('111. ', token)
   console.log('isLogin: ', isLogin)
-  if (isLogin) {
-    console.log('로그인 성공!')
+  if (isLogin.value) {
+    notify('SUCCESS', '로그인에 성공했습니다.')
     getUserInfo(token)
     changeHeaderMenuState()
+    // isAccessible.value = false
+    router.push('/')
+  } else {
+    notify('FAIL', '로그인에 실패했습니다.')
   }
-  router.push('/')
 }
 </script>
 
@@ -80,7 +67,6 @@ const login = async () => {
 #login-form {
   width: 100%;
   height: 70%;
-  margin: 70px auto 0 auto;
   padding: 50px 0;
   display: flex;
   flex-direction: column;
