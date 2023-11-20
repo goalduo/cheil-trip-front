@@ -266,6 +266,7 @@ const searchresultUser = ref("");
 function saveTripplan() {
   const body = {
     planName: tripplanTitle.value,
+    hashtags: tags.value.join("-"),
     tripCourseList : tripCourseList.value
   }
   postTripPlanAndTripCourse(body);
