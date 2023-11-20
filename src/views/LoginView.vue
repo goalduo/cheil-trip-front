@@ -3,7 +3,6 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from '@/stores/member'
-import { useHeaderMenuStore } from '@/stores/menu'
 
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
@@ -14,10 +13,6 @@ const router = useRouter()
 const memberStore = useMemberStore()
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo } = memberStore
-
-const headerMenuStore = useHeaderMenuStore()
-const { isAccessible } = storeToRefs(headerMenuStore)
-const { changeHeaderMenuState } = headerMenuStore
 
 const loginUser = ref({
   userId: '',

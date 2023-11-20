@@ -1,26 +1,51 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router'
 
-import { useHeaderMenuStore } from '../stores/menu'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member";
 import { notify } from '@/components/toastMessage.js'
 
 const memberStore = useMemberStore();
 const { isLogin, userInfo, isValidToken } = storeToRefs(memberStore)
-const headerMenuStore = useHeaderMenuStore()
-const { headerMenuList } = storeToRefs(headerMenuStore)
-const { changeHeaderMenuState } = headerMenuStore
+
+const headerMenuList = ref([])
 
 const logout = async () => {
   isLogin.value = false;
   userInfo.value = null;
   isValidToken.value = false;
-  // isAccessible.value = false;
   sessionStorage.clear();
-  changeHeaderMenuState()
   notify('SUCCESS', '로그아웃 되었습니다.')
+  headerMenuList.value = [
+      { name: '여행지 검색', routeName: '/attraction' },
+      { name: '여행카드 만들기', routeName: '/plan' },
+      { name: '게시판', routeName: '/post' },
+      { name: '로그인', routeName: '/login' }
+  ]
 }
+
+onMounted(() => {
+  // 로그인 상태
+  if (sessionStorage.getItem('accessToken') !== null) {
+    headerMenuList.value = [
+      { name: '여행지 검색', routeName: '/attraction' },
+      { name: '여행카드 만들기', routeName: '/plan' },
+      { name: '게시판', routeName: '/post' },
+      { name: '게시물 작성하기', routeName: '/post/create' },
+      { name: '마이페이지', routeName: '/my' },
+      { name: '로그아웃', routeName: '/', event: 'click' }
+    ]
+  } else {
+    console.log('hi')
+    headerMenuList.value = [
+      { name: '여행지 검색', routeName: '/attraction' },
+      { name: '여행카드 만들기', routeName: '/plan' },
+      { name: '게시판', routeName: '/post' },
+      { name: '로그인', routeName: '/login' }
+    ]
+  }
+})
 
 defineProps({
   isMainPageHeader: Boolean
@@ -39,7 +64,6 @@ defineProps({
       <RouterLink
         @[headerMenu.event]="logout"
         v-for="headerMenu in headerMenuList"
-        v-show="headerMenu.show"
         class="link"
         :to="headerMenu.routeName"
       >
