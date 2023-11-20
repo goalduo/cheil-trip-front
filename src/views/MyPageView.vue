@@ -1,8 +1,12 @@
 <script setup>
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
-import PostCard from '../components/post/PostCard.vue';
+import PostCard from '../components/post/PostCard.vue'
+import { ref } from 'vue'
+import { listArticle } from '@/api/BoardAPI.js'
+import Observer from '@/components/Observer.vue'
 
+// 여행 경로 가져오기
 const tripPlans = {
   0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
   1: {
@@ -18,6 +22,24 @@ const tripPlans = {
   3: { id: 4, title: '콜라 공장 방문', tags: ['제로', '콜라', '대세'] },
   4: { id: 5, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] }
 }
+
+// 게시물을 가져오기
+const articles = ref([]);
+const page = ref(0)
+const loadMore = async () => {
+  await listArticle(
+    {pgno: page.value + 1},
+    (response) => {
+      articles.value.push(...response.data)
+      console.log(articles.value)
+    },
+    (error) => {
+      console.log(error)
+    }
+  )
+  page.value += 1
+}
+
 </script>
 
 <template>
@@ -28,7 +50,7 @@ const tripPlans = {
         <p>장수민</p>
 
         <span class="post-count">게시글</span>
-        <span class="count">2</span>
+        <span class="count">{{ articles.length }}</span>
         <span class="course-count">여행 경로</span>
         <span class="count">8</span>
       </div>
@@ -38,11 +60,10 @@ const tripPlans = {
         <div class="my-post">
           <p>게시물</p>
 
-          <ul class="post-list">
-            <li v-for="i in 4">
-              <PostCard></PostCard>
-            </li>
-          </ul>
+          <div class="post-list">
+            <PostCard v-for="article in articles" :key="article.id" v-bind="article"></PostCard>
+            <Observer @triggerIntersected="loadMore"/>
+          </div>
         </div>
 
         <div class="my-trip-course">

@@ -88,9 +88,9 @@ const goDetailView = () => {
   width: 400px;
   height: 300px;
   margin: 0 auto;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid #d6d9d7; */
   border-radius: 15px;
   background-color: var(--font-color);
   box-shadow: 4px 12px 30px 6px var(--shadow-color);

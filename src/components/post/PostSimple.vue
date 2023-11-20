@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted} from 'vue'
+import { ref } from 'vue'
 import PostCard from './PostCard.vue'
 import Observer from '@/components/Observer.vue'
 import { listArticle } from '@/api/BoardAPI.js'
