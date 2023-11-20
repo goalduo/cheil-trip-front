@@ -32,8 +32,11 @@ const tripPlans = ref([]);
 onMounted(async () => {
   console.log(userInfo.value)
   articleCount.value = await getArticleCountByUserId(userInfo.value.userId);
-  tripPlans.value = await getTripplansAndTripCoursesByUserId(userInfo.value.userId);
-  console.log(tripPlans.value)
+  const result = await getTripplansAndTripCoursesByUserId(userInfo.value.userId);
+  result.forEach(tripPlan => {
+    tripPlan.hashtags = tripPlan.hashtags?.split('-')
+    tripPlans.value.push(tripPlan)
+  })
 })
 // 게시물을 가져오기
 const articles = ref([]);
@@ -102,7 +105,7 @@ const loadMore = async () => {
                 <h1 id="title">{{ tripPlan.planName }}</h1>
 
                 <ul id="tag">
-                  <li v-for="tag in tripPlan.tags" :key="tag">#{{ tag }}</li>
+                  <li v-for="hashtag in tripPlan.hashtags" :key="hashtag">#{{ hashtag }}</li>
                 </ul>
               </div>
             </li>
