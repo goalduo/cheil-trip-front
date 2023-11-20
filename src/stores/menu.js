@@ -2,6 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useHeaderMenuStore = defineStore('headerMenuStore', () => {
+  // const isAccessible = ref(true)
+
   const headerMenuList = ref([
     { name: '여행지 검색', routeName: '/attraction', show: true },
     { name: '여행카드 만들기', routeName: '/plan', show: true },

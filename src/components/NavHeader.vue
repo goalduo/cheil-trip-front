@@ -4,16 +4,22 @@ import { RouterLink } from 'vue-router'
 import { useHeaderMenuStore } from '../stores/menu'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member";
+import { notify } from '@/components/toastMessage.js'
+
 const memberStore = useMemberStore();
-const { userLogout } = memberStore;
+const { isLogin, userInfo, isValidToken } = storeToRefs(memberStore)
 const headerMenuStore = useHeaderMenuStore()
 const { headerMenuList } = storeToRefs(headerMenuStore)
 const { changeHeaderMenuState } = headerMenuStore
 
-const logout = () => {
-  window.alert('로그아웃 되었습니다.')
-  sessionStorage.clear()
+const logout = async () => {
+  isLogin.value = false;
+  userInfo.value = null;
+  isValidToken.value = false;
+  // isAccessible.value = false;
+  sessionStorage.clear();
   changeHeaderMenuState()
+  notify('SUCCESS', '로그아웃 되었습니다.')
 }
 
 defineProps({
