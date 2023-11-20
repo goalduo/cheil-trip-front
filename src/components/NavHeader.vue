@@ -12,6 +12,7 @@ const { changeHeaderMenuState } = headerMenuStore
 
 const logout = () => {
   window.alert('로그아웃 되었습니다.')
+  sessionStorage.clear()
   changeHeaderMenuState()
 }
 
