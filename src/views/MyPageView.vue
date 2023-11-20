@@ -2,34 +2,52 @@
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 import PostCard from '../components/post/PostCard.vue'
-import { ref } from 'vue'
-import { listArticle } from '@/api/BoardAPI.js'
+import { ref, onMounted } from 'vue'
+import { listArticle, listArticleByUserId, getArticleCountByUserId } from '@/api/BoardAPI.js'
+import { getTripplansAndTripCoursesByUserId } from '@/api/TripplanAPI.js'
+import { storeToRefs } from 'pinia'
 import Observer from '@/components/Observer.vue'
-
+import { useMemberStore } from "@/stores/member";
+const memberStore = useMemberStore();
+const { userInfo } = storeToRefs(memberStore)
+const articleCount = ref(0);
 // 여행 경로 가져오기
-const tripPlans = {
-  0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
-  1: {
-    id: 2,
-    title: '암벽등반은 싫지만 그래도 가는 북한산',
-    tags: ['등산', '끝나고', '술', '두잔']
-  },
-  2: {
-    id: 3,
-    title: '대방어를 먹기 위한 군산 여행',
-    tags: ['대방어', '기름져', '광어도', '필요해']
-  },
-  3: { id: 4, title: '콜라 공장 방문', tags: ['제로', '콜라', '대세'] },
-  4: { id: 5, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] }
-}
+// const tripPlans = {
+//   0: { id: 1, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] },
+//   1: {
+//     id: 2,
+//     title: '암벽등반은 싫지만 그래도 가는 북한산',
+//     tags: ['등산', '끝나고', '술', '두잔']
+//   },
+//   2: {
+//     id: 3,
+//     title: '대방어를 먹기 위한 군산 여행',
+//     tags: ['대방어', '기름져', '광어도', '필요해']
+//   },
+//   3: { id: 4, title: '콜라 공장 방문', tags: ['제로', '콜라', '대세'] },
+//   4: { id: 5, title: '복지리가 땡기는 지리산 여행', tags: ['복지리', '복어', '지리산', '등산'] }
+// }
+const tripPlans = ref([]);
 
+onMounted(async () => {
+  console.log(userInfo.value)
+  articleCount.value = await getArticleCountByUserId(userInfo.value.userId);
+  tripPlans.value = await getTripplansAndTripCoursesByUserId(userInfo.value.userId);
+  console.log(tripPlans.value)
+})
 // 게시물을 가져오기
 const articles = ref([]);
 const page = ref(0)
 const loadMore = async () => {
-  await listArticle(
-    {pgno: page.value + 1},
+  await listArticleByUserId(
+    { pgno: page.value + 1 },
+    userInfo.value.userId,
     (response) => {
+      response.data.forEach(element => {
+        if (element.hashtags !== null) {
+          element.hashtags = element.hashtags.split("-")
+        }
+      });
       articles.value.push(...response.data)
       console.log(articles.value)
     },
@@ -47,12 +65,12 @@ const loadMore = async () => {
   <div id="wrap">
     <div id="my">
       <div id="my-info">
-        <p>장수민</p>
+        <p>{{userInfo.userName}}</p>
 
         <span class="post-count">게시글</span>
-        <span class="count">{{ articles.length }}</span>
+        <span class="count">{{ articleCount }}</span>
         <span class="course-count">여행 경로</span>
-        <span class="count">8</span>
+        <span class="count">{{tripPlans.length}}</span>
       </div>
 
       <div id="my-activity">
@@ -70,7 +88,7 @@ const loadMore = async () => {
           <p>여행 경로</p>
 
           <ul class="trip-course-list">
-            <li v-for="tripPlan in tripPlans">
+            <li v-for="tripPlan in tripPlans" :key="tripPlan.planId">
               <div id="plan">
                 <div class="info">
                   <img
@@ -81,10 +99,10 @@ const loadMore = async () => {
                   <div class="state">여행 경로 저장</div>
                 </div>
 
-                <h1 id="title">{{ tripPlan.title }}</h1>
+                <h1 id="title">{{ tripPlan.planName }}</h1>
 
                 <ul id="tag">
-                  <li v-for="tag in tripPlan.tags">#{{ tag }}</li>
+                  <li v-for="tag in tripPlan.tags" :key="tag">#{{ tag }}</li>
                 </ul>
               </div>
             </li>

@@ -69,8 +69,8 @@ function cancelPost() {
 function savePost() {
   const article = {
     subject: title.value,
-    userId: 'ssafy',
     category: categorySelected.value,
+    hashtags: tags.value.join("-"),
     content: editor.getHTML()
   }
   if (editor.getMarkdown().length < 1) {

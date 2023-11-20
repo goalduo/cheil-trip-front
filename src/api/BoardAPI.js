@@ -6,6 +6,9 @@ function listArticle(param, success, fail) {
     local.get(`/board`, { params: param }).then(success).catch(fail);
   }
   
+function listArticleByUserId(param, userId, success, fail) {
+  local.get(`/board/user/${userId}`, {params: param}).then(success).catch(fail);
+}
   function detailArticle(articleno, success, fail) {
     local.get(`/board/${articleno}`).then(success).catch(fail);
   }
@@ -30,7 +33,11 @@ function listArticle(param, success, fail) {
   
 function uploadImage(formData, success, fail) {
   axios.post(`/board/image-upload`, formData).then(success).catch(fail);
-  }
+}
+  
+function getArticleCountByUserId(userId) {
+  return axios.get(`/board/user/${userId}/count`).then((response) => response.data)
+}
 
   export {
     listArticle,
@@ -39,5 +46,7 @@ function uploadImage(formData, success, fail) {
     getModifyArticle,
     modifyArticle,
     deleteArticle,
-    uploadImage
+  uploadImage,
+  listArticleByUserId,
+  getArticleCountByUserId
   };
