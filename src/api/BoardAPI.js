@@ -9,8 +9,8 @@ function listArticle(param, success, fail) {
 function listArticleByUserId(param, userId, success, fail) {
   local.get(`/board/user/${userId}`, {params: param}).then(success).catch(fail);
 }
-  function detailArticle(articleno, success, fail) {
-    local.get(`/board/${articleno}`).then(success).catch(fail);
+  function detailArticle(articleno) {
+    return local.get(`/board/${articleno}`).then((response) => response.data);
   }
   
   function registArticle(article, success, fail) {

@@ -3,42 +3,42 @@ import { routerViewLocationKey, useRoute } from 'vue-router'
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
-import { detailArticle } from '@/api/BoardAPI.js'
+import { detailArticle, deleteArticle } from '@/api/BoardAPI.js'
 import { Editor } from '@toast-ui/editor'
 
 import { ref, onMounted } from 'vue'
-
+import { useMemberStore } from '@/stores/member'
+import router from "../router"
+const memberStore = useMemberStore()
+const { userInfo } = memberStore
 const article = ref()
 const route = useRoute()
 
-// 게시물을 가져와서 viewer에 적용
-const getArticle = async () => {
+onMounted(async () => {
   const { articleNo } = route.params
-
-  await detailArticle(
-    articleNo,
-    (response) => {
-      response.data.hashtags = response.data.hashtags.split("-")
-      article.value = response.data
-      console.log(article.value)
-
-      // viewer를 동적으로 생성
-      const viewer = Editor.factory({
+  const response = await detailArticle(articleNo)
+  console.log(response)
+  if(response.hashtags !== null) response.hashtags = response.hashtags.split("-")
+  article.value = response
+  // viewer를 동적으로 생성
+  const viewer = Editor.factory({
         el: document.querySelector('#viewer'),
         viewer: true,
         height: '600px',
         initialValue: article.value.content
       })
-    },
-    (error) => {
-      console.log(error)
-    }
-  )
-}
-
-onMounted(() => {
-  getArticle()
+  
 })
+
+function deleteArticleByArticleId() {
+  const result = confirm("삭제하시겠습니까?");
+  if (!result) return;
+  deleteArticle(article.value.articleNo, ((response) => {
+    console.log(response)
+    alert("게시글이 삭제되었습니다.")
+    router.push("/")
+  }))
+}
 </script>
 
 <template>
@@ -67,7 +67,8 @@ onMounted(() => {
       <li class="split">|</li>
       <li class="hit-number">조회수 {{ article?.hit }}</li>
     </ul>
-
+    <button v-if="article?.userId === userInfo.userId"> 수정 {{ article?.userId }}</button>
+    <button v-if="article?.userId === userInfo.userId" @click="deleteArticleByArticleId"> 삭제 {{ article?.userId }}</button>
     <div id="viewer"></div>
   </div>
 </template>
