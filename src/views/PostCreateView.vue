@@ -196,6 +196,7 @@ const removeTag = (index) => {
   border: 1px solid var(--tag-color);
   border-radius: 4px;
   outline-color: var(--sky-color);
+  overflow: hidden;
 }
 
 .tag-input span {

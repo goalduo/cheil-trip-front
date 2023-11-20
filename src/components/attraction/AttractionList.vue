@@ -200,6 +200,28 @@ function goToSetHashTag() {
   isOnSetTitle.value = false
 }
 
+const tags = ref([])
+const tag = ref('')
+const isInputAvailable = ref(true)
+
+const onChangeTagInputValue = (event) => {
+  tag.value = event.target.value
+  // console.log(tag.value)
+}
+
+const addTag = (event) => {
+  if (tag.value.length > 0 && tags.value.length < 5) {
+    tags.value.push(tag.value.trim())
+    tag.value = ''
+  }
+  if (tags.value.length === 5) isInputAvailable.value = false
+}
+
+const removeTag = (index) => {
+  tags.value.splice(index, 1)
+  if (tags.value.length < 5) isInputAvailable.value = true
+}
+
 // 취소 버튼 누르면 여행 경로 생성 취소
 function cancelTripCourse() {
   tripCourseList.value.length = 0
@@ -366,9 +388,24 @@ function saveTripplan() {
       </div>
 
       <!-- 여행 해시 태그 정하기 -->
-      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="plan-hash-tag">
+      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="tag-wrap">
         <p>여행 경로의 해시 태그 정하기</p>
-        <input type="text" v-model="tripplanHashtag"/>
+        <!-- <input type="text" v-model="tripplanHashtag"/> -->
+        <div class="tag-input">
+          <div v-for="(tag, index) in tags" :key="index" class="tagging">
+            {{ tag }}
+            <span @click="removeTag(index)">x</span>
+          </div>
+          <input
+            v-show="isInputAvailable"
+            :value="tag"
+            @input="onChangeTagInputValue"
+            @keypress.enter.prevent="addTag"
+            type="text"
+            placeholder="태그를 추가해보세요!"
+            class="tag-text"
+          />
+        </div>
         <div class="button-group">
           <button class="save-button" @click="saveTripplan">최종 저장하기</button>
           <button @click="cancelTripCourse" class="cancel-button">취소</button>
@@ -417,30 +454,64 @@ function saveTripplan() {
 }
 
 .plan-title,
-.plan-hash-tag {
+.tag-wrap {
   position: absolute;
   bottom: 30px;
   left: 30px;
-  width: 400px;
+  width: 600px;
   box-sizing: border-box;
   padding: 15px;
   display: flex;
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
   background-color: var(--font-color);
   border-radius: 15px;
   z-index: 10;
 }
 
+.tag-input {
+  box-sizing: border-box;
+  height: 60px;
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid var(--tag-color);
+  border-radius: 4px;
+  outline-color: var(--sky-color);
+  overflow: hidden;
+}
+
+.tag-input span {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.tagging {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  background-color: var(--tag-color);
+  border-radius: 5px;
+}
+
+.tag-text {
+  font-size: 16px;
+  border: none;
+  outline: none;
+}
+
 .plan-title p,
-.plan-hash-tag p {
+.tag-wrap p {
   font-size: 15px;
   font-weight: 800;
   color: var(--sky-color);
 }
 
-.plan-title input,
-.plan-hash-tag input {
+.plan-title input {
   padding: 20px;
   font-size: 16px;
   border: 1px solid var(--tag-color);

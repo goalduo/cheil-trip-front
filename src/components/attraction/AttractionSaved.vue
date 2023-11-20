@@ -124,12 +124,6 @@ const tripTypeObject = {
   8: { rnum: 9, code: 'MT1', name: '대형마트' }
 }
 
-// 여행 경로 저장하기 창 열고 닫기 조절
-const isTripCourseSaveOpen = ref(false)
-const convertOpenState = () => {
-  isTripCourseSaveOpen.value = !isTripCourseSaveOpen.value
-}
-
 // 여행 경로 저장하기
 const tripCourseList = ref([])
 
@@ -160,51 +154,6 @@ function drawCourseLine() {
 
 function removeCourseLine() {
   removeLine(polyline)
-}
-
-// 여행 장소를 경로에 추가할 때
-function addPlace(location) {
-  showPlace(location)
-  // 여행 경로의 길이는 5를 넘을 수 없음
-  if (tripCourseList.value.length < 5) {
-    tripCourseList.value.push(location)
-    // 경로 다시 그리기
-    drawCourseLine()
-  }
-  else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
-
-  // console.log(tripCourseList.value)
-  isTripCourseSaveOpen.value = true
-}
-
-// 여행 장소를 경로에서 제거할 때
-function removePlace(location) {
-  tripCourseList.value.splice(tripCourseList.value.indexOf(location), 1)
-  // 경로 삭제 후 다시 그리기
-  removeCourseLine()
-  drawCourseLine()
-}
-
-const isOnCreateTripCourse = ref(false)
-// 제목 정하기가 해시 태그보다 앞이므로 초기값은 true
-const isOnSetTitle = ref(true)
-
-// 경로 설정 후 저장하기 버튼을 누르면 제목 설정 단계로 돌입
-function goToSetTitle() {
-  isTripCourseSaveOpen.value = false
-  isOnCreateTripCourse.value = true
-}
-
-// 제목 설정 후 계속하기 버튼을 누르면 해시태그 설정 단계로 돌입
-function goToSetHashTag() {
-  isOnSetTitle.value = false
-}
-
-// 취소 버튼 누르면 여행 경로 생성 취소
-function cancelTripCourse() {
-  tripCourseList.value.length = 0
-  isOnCreateTripCourse.value = false
-  isOnSetTitle.value = true
 }
 
 // 공유하기 버튼을 누르면 워크스페이스 변경
@@ -253,64 +202,30 @@ function saveTripplan() {
 <template>
   <div id="wrap">
     <div id="info">
-      <div class="search">
-        <div class="search-logo"></div>
-        <!-- 지역 옵션 선택하기 -->
-        <p class="pick-area">지역 고르기</p>
-        <ul class="area">
-          <li v-for="tripArea in tripAreaObject" :key="tripArea.rnum">
-            <button
-              :class="{ 'area-selected': isAreaSelected[tripArea.rnum - 1] }"
-              @click="displayArea(tripArea.rnum, tripArea.lat, tripArea.lng)"
-            >
-              {{ tripArea.name }}
-            </button>
-          </li>
-        </ul>
-
-        <!-- 검색지 유형 선택하기 -->
-        <p class="pick-type">유형 고르기</p>
-        <ul class="type">
-          <li v-for="tripType in tripTypeObject" :key="tripType.rnum">
-            <button @click="displaysearchCategory(tripType.code)">
-              {{ tripType.name }}
-            </button>
-          </li>
-        </ul>
-
-        <!-- 여행지 검색하는 input 요소 -->
-        <p class="insert-text">검색어 입력하기</p>
-        <div class="search-input">
-          <input
-            v-model="searchKeyword"
-            @keyup.enter="displaysearchKeyword"
-            type="text"
-            placeholder="검색어 입력"
-          />
-          <img
-            @click="displaysearchKeyword"
-            src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png"
-          />
-          <br/>
-          <input
-            v-model="searchedUser"
-            type="text"
-            placeholder="사용자 검색"
-          />
-          <button @click="changeWorkspaceToShare">공유하기</button>
-          <div></div>
-          <div @click="inviteUser"> {{  searchresultUser }} </div>
+      <div class="plan-result">
+        <div class="plan-result-logo"></div>
+        <!-- 여행 경로 제목 -->
+        <div class="title-wrap">
+          <p class="title-label">제목</p>
+          <p class="title">해동용궁사에서 용을 보다. 너넨 용을 본적이 있어?</p>
         </div>
-      </div>
 
-      <hr />
+        <!-- 여행 경로 태그 -->
+        <div class="tag-wrap">
+          <p class="tag-label">태그</p>
+          <ul class="tag">
+            <li>#용</li>
+            <li>#해동용궁사</li>
+            <li>#부산</li>
+            <li>#하핫</li>
+          </ul>
+        </div>
 
-      <!-- 검색 결과를 나타내는 곳 -->
-      <div class="search-result">
-        <div class="search-result-logo"></div>
-        <div class="search-result-list">
+        <!-- 여행 경로 리스트 -->
+        <div class="plan-wrap">
+          <p class="plan-label">경로</p>
           <ul class="result">
-            <template v-for="search in searchList">
+            <!-- <template v-for="search in searchList">
               <li v-if="searchList.length" :key="search.id" @click="showPlace(search)">
                 <div class="span-group">
                   <span>{{ search.place_name }}</span>
@@ -318,63 +233,33 @@ function saveTripplan() {
                 </div>
                 <div @click="addPlace(search)" class="plus-button"></div>
               </li>
-            </template>
+            </template> -->
+            <li>
+              <div class="span-group">
+                <span>제주 올레길</span>
+                <span>제주 얼레벌레 올레길 가보고 싶다 한라산도</span>
+              </div>
+            </li>
+            <li>
+              <div class="span-group">
+                <span>제주 올레길</span>
+                <span>제주 얼레벌레 올레길 가보고 싶다 한라산도</span>
+              </div>
+            </li>
+            <li>
+              <div class="span-group">
+                <span>제주 올레길</span>
+                <span>제주 얼레벌레 올레길 가보고 싶다 한라산도</span>
+              </div>
+            </li>
           </ul>
         </div>
+
       </div>
     </div>
 
     <!-- 카카오 map이 들어갈 곳-->
-    <div id="map">
-      <!-- 여행 경로 저장 - 최대 5개 제한 -->
-      <div v-show="isTripCourseSaveOpen && !isOnCreateTripCourse" class="plan">
-        <div class="plan-header">
-          <div class="plan-logo"></div>
-          <div @click="convertOpenState" class="up-down-button"></div>
-        </div>
-
-        <ul v-for="place in tripCourseList" class="plan-list">
-          <li :key="place.id">
-            <span>{{ place.place_name }}</span>
-            <div @click="removePlace(place)" class="minus-button"></div>
-          </li>
-        </ul>
-
-        <span class="warning-text">여행 경로는 최대 5개까지 지정할 수 있습니다.</span>
-
-        <div class="button-group">
-          <button @click="goToSetTitle" class="save-button">저장하기</button>
-          <button @click="cancelTripCourse" class="cancel-button">취소</button>
-        </div>
-      </div>
-      <!-- 여행 경로 저장 창 숨기기 -->
-      <div v-show="!isTripCourseSaveOpen && !isOnCreateTripCourse" class="plan-hide">
-        <div class="plan-header">
-          <div class="plan-logo"></div>
-          <div @click="convertOpenState" class="up-down-button"></div>
-        </div>
-      </div>
-
-      <!-- 여행 경로 제목 정하기 -->
-      <div v-show="isOnCreateTripCourse && isOnSetTitle" class="plan-title">
-        <p>여행 경로의 제목 정하기</p>
-        <input type="text" v-model="tripplanTitle"/>
-        <div class="button-group">
-          <button @click="goToSetHashTag" class="save-button">계속하기</button>
-          <button @click="cancelTripCourse" class="cancel-button">취소</button>
-        </div>
-      </div>
-
-      <!-- 여행 해시 태그 정하기 -->
-      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="plan-hash-tag">
-        <p>여행 경로의 해시 태그 정하기</p>
-        <input type="text" v-model="tripplanHashtag"/>
-        <div class="button-group">
-          <button class="save-button" @click="saveTripplan">최종 저장하기</button>
-          <button @click="cancelTripCourse" class="cancel-button">취소</button>
-        </div>
-      </div>
-    </div>
+    <div id="map"></div>
   </div>
 </template>
 
@@ -387,165 +272,6 @@ function saveTripplan() {
   box-shadow:
     0 5px 20px rgba(0, 0, 0, 0.19),
     0 3px 3px rgba(0, 0, 0, 0.21);
-}
-
-.plan {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  width: 400px;
-  box-sizing: border-box;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background-color: var(--font-color);
-  border-radius: 15px;
-  z-index: 10;
-}
-
-.plan-hide {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  width: 400px;
-  box-sizing: border-box;
-  padding: 15px;
-  background-color: var(--font-color);
-  border-radius: 15px;
-  z-index: 10;
-}
-
-.plan-title,
-.plan-hash-tag {
-  position: absolute;
-  bottom: 30px;
-  left: 30px;
-  width: 400px;
-  box-sizing: border-box;
-  padding: 15px;
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  background-color: var(--font-color);
-  border-radius: 15px;
-  z-index: 10;
-}
-
-.plan-title p,
-.plan-hash-tag p {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--sky-color);
-}
-
-.plan-title input,
-.plan-hash-tag input {
-  padding: 20px;
-  font-size: 16px;
-  border: 1px solid var(--tag-color);
-  border-radius: 4px;
-  outline-color: var(--sky-color);
-}
-
-.plan-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.plan-logo {
-  width: 200px;
-  height: 30px;
-  margin-bottom: -5px;
-  margin-left: -5px;
-  background-image: url('@/assets/images/plan-logo.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.up-down-button {
-  cursor: pointer;
-  width: 23px;
-  height: 23px;
-  background-image: url('@/assets/images/up-down-button.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.plan-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.plan-list li {
-  box-sizing: border-box;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 5px;
-  background-color: var(--map-color);
-  border: none;
-  border-radius: 4px;
-}
-
-.plan-list li span {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.plan-list li .minus-button {
-  cursor: pointer;
-  width: 25px;
-  height: 25px;
-  background-image: url('@/assets/images/minus-button.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.warning-text {
-  font-size: 11px;
-  font-weight: 200;
-  text-align: right;
-}
-
-.button-group {
-  padding: 10px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-}
-
-.button-group button {
-  cursor: pointer;
-  width: fit-content;
-  height: 50px;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--tag-font-color);
-  background-color: var(--font-color);
-  border: 1px solid var(--tag-color);
-  border-radius: 20px;
-}
-
-.save-button:hover {
-  color: var(--sky-color);
-  border-color: var(--sky-color);
-}
-
-.cancel-button:hover {
-  color: var(--minus-button-color);
-  border-color: var(--minus-button-color);
 }
 
 #wrap {
@@ -566,135 +292,56 @@ function saveTripplan() {
   box-sizing: border-box;
   padding: 20px;
   border: none;
-  border-radius: 15px 0 0 15px;
+  border-radius: 15px;
   box-shadow:
     0 5px 20px rgba(0, 0, 0, 0.19),
     0 3px 3px rgba(0, 0, 0, 0.21);
-  overflow-y: scroll;
 }
 
-.search-logo {
-  width: 110px;
-  height: 35px;
-  margin-left: -10px;
-  background-image: url('@/assets/images/search-logo.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.search {
+.plan-result {
   display: flex;
   flex-direction: column;
   gap: 25px;
 }
 
-.pick-area,
-.pick-type,
-.insert-text {
-  margin-bottom: -15px;
-  font-size: 15px;
+.plan-result-logo {
+  width: 110px;
+  height: 35px;
+  margin-left: -10px;
+  background-image: url('@/assets/images/plan-result-logo.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.title-wrap,
+.tag-wrap,
+.plan-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title-label,
+.tag-label,
+.plan-label {
+  font-size: 20px;
   font-weight: 800;
   color: var(--sky-color);
 }
 
-.pick-area::after {
-  content: ' : 빠르게 다른 지역으로 이동하세요!';
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--fourth-font-color);
+.title {
+  font-size: 30px;
+  font-weight: 600;
+  word-break: keep-all;
 }
 
-.pick-type::after {
-  content: ' : 지도 근처에서 장소 유형을 선택할 수 있어요!';
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--fourth-font-color);
-}
-
-.insert-text::after {
-  content: ' : 지역 근처나 전국에서 찾고자하는 장소를 검색해보세요!';
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--fourth-font-color);
-}
-
-.area,
-.type {
+.tag {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.area li button,
-.type li button {
-  cursor: pointer;
-  width: fit-content;
-  height: 30px;
-  padding: 0 10px;
-  font-size: 16px;
-  font-weight: 300;
+  gap: 10px;
+  font-size: 15px;
+  font-style: italic;
   color: var(--tag-font-color);
-  background-color: var(--font-color);
-  border: 1px solid var(--tag-color);
-  border-radius: 20px;
-}
-
-.area li .area-selected {
-  color: var(--sky-color);
-  border-color: var(--sky-color);
-}
-
-.area li button:hover,
-.type li button:hover {
-  color: var(--sky-color);
-  border-color: var(--sky-color);
-}
-
-.search-input {
-  width: 75%;
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--tag-color);
-  border-radius: 4px;
-}
-
-.search-input input {
-  cursor: text;
-  box-sizing: border-box;
-  width: 95%;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 4px 0 0 4px;
-  border-right: 1px solid var(--tag-color);
-  font-size: 18px;
-  outline: none;
-}
-
-.search-input img {
-  cursor: pointer;
-  width: 20px;
-  margin: 0 10px;
-}
-
-hr {
-  margin: 20px -10px;
-}
-
-.search-result {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.search-result-logo {
-  width: 110px;
-  height: 35px;
-  margin: -5px;
-  background-image: url('@/assets/images/search-result-logo.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 .result {
@@ -703,7 +350,7 @@ hr {
   gap: 10px;
 }
 .result li {
-  width: 95%;
+  width: 100%;
   box-sizing: border-box;
   padding: 10px;
   display: flex;
@@ -718,16 +365,6 @@ hr {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-.plus-button {
-  cursor: pointer;
-  width: 25px;
-  height: 25px;
-  background-image: url('@/assets/images/plus-button.svg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 .result li span:first-child {
