@@ -4,7 +4,8 @@ const notify = (option, message) => {
     if (option === 'SUCCESS') {
         toast(message, {
           limit: 1,
-          autoClose: 1000,
+          autoClose: 1200,
+          clearOnUrlChange: false,
           position: toast.POSITION.BOTTOM_LEFT,
           hideProgressBar: true,
           pauseOnHover: false,
@@ -20,7 +21,8 @@ const notify = (option, message) => {
     if (option === 'FAIL') {
         toast(message, {
           limit: 1,
-          autoClose: 1000,
+          autoClose: 1200,
+          clearOnUrlChange: false,
           position: toast.POSITION.BOTTOM_LEFT,
           hideProgressBar: true,
           pauseOnHover: false,
@@ -36,7 +38,8 @@ const notify = (option, message) => {
     if (option === 'WARNING') {
         toast(message, {
           limit: 1,
-          autoClose: 1000,
+          autoClose: 1200,
+          clearOnUrlChange: false,
           position: toast.POSITION.BOTTOM_LEFT,
           hideProgressBar: true,
           pauseOnHover: false,
