@@ -11,6 +11,7 @@ import MyPageView from '@/views/MyPageView.vue'
 import KakaoMap from '@/components/attraction/KakaoMap.vue'
 import TripplanTest from '@/components/tripplan/TripplanTest.vue'
 import attractionshare from '@/components/attraction/attractionshare.vue'
+import attractionSaved from '@/components/attraction/attractionSaved.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -44,6 +45,11 @@ const router = createRouter({
       name: 'attraction',
       component: AttractionSearchView,
       props :true
+    },
+    {
+      path: '/attraction/saved/:id',
+      name: 'attractionsaved',
+      component : attractionSaved
     },
     {
       path: '/attraction/:id',
