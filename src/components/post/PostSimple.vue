@@ -1,25 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PostCard from './PostCard.vue'
 import Observer from '@/components/Observer.vue'
 import { listArticle } from '@/api/BoardAPI.js'
 const articles = ref([]);
-// onMounted(async() => {
-//   await listArticle(
-//     {pgno: "2"},
-//     (response) => {
-//       articles.value = response.data
-//       console.log(articles.value)
-//     },
-//     (error) => {
-//     console.log(error)
-//   })
-//     console.log(articles.value);
-// })
 
-// async function searchAttraction() {
-   
-// }
+onMounted(() => {
+  loadMore()
+})
 
 const page = ref(0)
 const loadMore = async () => {
@@ -39,17 +27,6 @@ const loadMore = async () => {
   )
   page.value += 1
 }
-
-// const articles = [
-//   {
-//     id: 1,
-//     userName: 'wook2',
-//     title: '해동용궁사에서 용 보다',
-//     content: '해동용궁사',
-//     hit: 20,
-//     registerTime: '2023-11-10'
-//   }
-// ]
 </script>
 
 <template>
@@ -69,7 +46,7 @@ const loadMore = async () => {
 }
 
 .card-list {
-  width: 60%;
+  width: 80%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -144,9 +144,9 @@ onMounted(async () => {
         <div class="trip-course">
           <p class="italic-text">TRIP COURSE :</p>
           <ul>
-            <li v-for="tripCourse in currentTargetTripPlan?.tripCourseList">
+            <li v-for="tripCourse, index in currentTargetTripPlan?.tripCourseList">
               {{ tripCourse.place_name }}
-              <span>{{ tripCourse.course_id }}</span>
+              <span>{{ index + 1 }}</span>
             </li>
           </ul>
         </div>

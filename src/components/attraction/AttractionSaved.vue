@@ -27,7 +27,7 @@ onMounted(async () => {
     map = initMap('map')
   }
 
-  tripPlan.value = await getTripPlanAndTripCoursesByPlanId(4)
+  tripPlan.value = await getTripPlanAndTripCoursesByPlanId(6)
   tripPlan.value.hashtags = tripPlan.value.hashtags.split('-')
 
   tripPlan.value.tripCourseList.forEach(location => {

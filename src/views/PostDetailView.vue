@@ -66,8 +66,8 @@ function deleteArticleByArticleId() {
       <li class="split">|</li>
       <li class="hit-number">조회수 {{ article?.hit }}</li>
     </ul>
-    <button v-if="article?.userId === userInfo.userId"> 수정 {{ article?.userId }}</button>
-    <button v-if="article?.userId === userInfo.userId" @click="deleteArticleByArticleId"> 삭제 {{ article?.userId }}</button>
+    <button v-if="article?.userId === userInfo?.userId"> 수정 {{ article?.userId }}</button>
+    <button v-if="article?.userId === userInfo?.userId" @click="deleteArticleByArticleId"> 삭제 {{ article?.userId }}</button>
     <div id="viewer"></div>
   </div>
   <SitemapFooter></SitemapFooter>

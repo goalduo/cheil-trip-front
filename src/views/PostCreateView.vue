@@ -8,6 +8,8 @@ import SitemapFooter from '../components/SitemapFooter.vue'
 import { onMounted, ref, watch } from 'vue'
 import { uploadImage, registArticle } from '@/api/BoardAPI.js'
 import { useMemberStore } from '@/stores/member'
+import { notify } from '@/components/toastMessage.js'
+
 const memberStore = useMemberStore()
 const { userInfo } = memberStore
 
@@ -86,6 +88,8 @@ function savePost() {
       console.log(error)
     }
   )
+  notify('SUCCESS', '게시물을 작성하였습니다.')
+  router.push('/post')
 }
 
 const tags = ref([])
