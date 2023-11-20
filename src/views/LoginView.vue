@@ -27,7 +27,6 @@ const login = async () => {
   if (isLogin.value) {
     notify('SUCCESS', '로그인에 성공했습니다.')
     getUserInfo(token)
-    changeHeaderMenuState()
     // isAccessible.value = false
     router.push('/')
   } else {

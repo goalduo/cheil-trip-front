@@ -25,7 +25,7 @@ const notify = (option, message) => {
           hideProgressBar: true,
           pauseOnHover: false,
           theme: 'colored',
-          type: 'success',
+          type: 'error',
           toastStyle: {
             fontSize: '14px',
             backgroundColor: '#e51258'
@@ -41,7 +41,7 @@ const notify = (option, message) => {
           hideProgressBar: true,
           pauseOnHover: false,
           theme: 'colored',
-          type: 'success',
+          type: 'warning',
           toastStyle: {
             fontSize: '14px',
             backgroundColor: '#ffcd01'
