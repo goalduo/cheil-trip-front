@@ -32,8 +32,8 @@ onMounted(async () => {
   tripPlan.value = await getTripPlanAndTripCoursesByPlanId(id)
   tripPlan.value.hashtags = tripPlan.value.hashtags?.split('-')
 
-  tripPlan.value.tripCourseList.forEach(location => {
-    showPlace(location)
+  tripPlan.value.tripCourseList.forEach((location, idx) => {
+    showPlace(location, idx)
     drawCourseLine()
   })
 })
@@ -42,7 +42,7 @@ onMounted(async () => {
 const tripCourseList = ref([])
 
 // 장소를 클릭할 때 카카오맵 center 다시 지정
-function showPlace(location) {
+function showPlace(location, idx) {
   displayMarker(
     {
       y: location.y,
@@ -51,7 +51,9 @@ function showPlace(location) {
       address_name: location.address_name,
       category_group_name: location.category_group_name
     },
-    map
+    map,
+    'ORDERED',
+    idx
   )
 }
 

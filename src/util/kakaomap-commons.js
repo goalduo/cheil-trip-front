@@ -10,15 +10,34 @@ function initMap(dom) {
   return map
 }
 
-function displayMarker(location, map) {
+function displayMarker(location, map, option, idx = 0) {
   const { y, x, place_name, address_name, category_group_name } = location
   var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 })
   var markerPosition = new kakao.maps.LatLng(y, x)
   // 마커를 생성합니다
-  var marker = new kakao.maps.Marker({
-    map: map,
-    position: markerPosition
-  })
+  var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png' // 마커 이미지 url, 스프라이트 이미지를 씁니다
+  var imageSize = new kakao.maps.Size(36, 37)  // 마커 이미지의 크기
+  var imgOptions =  {
+    spriteSize : new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+    spriteOrigin : new kakao.maps.Point(0, (idx*46)+10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+    offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+  }
+  var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions)
+  
+  var marker
+  if (option === 'ORDERED') { // ORDERED인 경우에만 순서 적용
+    marker = new kakao.maps.Marker({
+      map: map,
+      position: markerPosition,
+      image: markerImage 
+    });
+  }
+  if (option === 'UNORDERED') { // UNORDERED인 경우에는 순서 적용하지 않음
+    marker = new kakao.maps.Marker({
+      map: map,
+      position: markerPosition,
+    });
+  }
 
   const content = `
       <div class="infowindow-wrap">
@@ -31,28 +50,17 @@ function displayMarker(location, map) {
           </div>
       </div>`
 
-  let overlay = new kakao.maps.CustomOverlay({
-    map: map,
-    position: markerPosition
-  })
-
   // 마커가 지도 위에 표시되도록 설정합니다
   kakao.maps.event.addListener(marker, 'mouseover', function () {
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     // infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>')
     infowindow.setContent(content)
     infowindow.open(map, marker)
-    // 마커를 클릭하면 커스텀 오버레이 표시
-    // overlay.setContent(content)
-    // overlay.setMap(map)
   })
 
   kakao.maps.event.addListener(marker, 'mouseout', function () {
     // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     infowindow.close()
-    // 마커를 클릭하면 커스텀 오버레이 표시
-    // overlay.setContent(content)
-    // overlay.setMap(map)
   })
 
   marker.setMap(map)
@@ -136,7 +144,8 @@ function search(keyword, map, callbackFn, option) {
             address_name: data.address_name,
             category_group_name: data.category_group_name
           },
-          map
+          map,
+          'UNORDERED'
         )
         bounds.extend(new kakao.maps.LatLng(data.y, data.x))
       })
@@ -160,7 +169,8 @@ function searchByCategory(category, map, callbackFn) {
           address_name: data.address_name,
           category_group_name: data.category_group_name
         },
-        map
+        map,
+        'UNORDERED'
       )
       bounds.extend(new kakao.maps.LatLng(data.y, data.x))
     })
