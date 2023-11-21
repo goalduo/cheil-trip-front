@@ -29,8 +29,7 @@ const login = async () => {
     // getUserInfo(token);
     // changeMenuState();
   }
-  router.push("/");
-};
+}
 </script>
 
 <template>

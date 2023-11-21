@@ -21,6 +21,7 @@ function getTripplanId() {
 }
 
 function addUserIdAtAttraction(body) {
+    axios.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
     return axios.post('/tripplan/user', body).then((response) => response.data)
 }
 function isUserInAttractionSet(params) {
