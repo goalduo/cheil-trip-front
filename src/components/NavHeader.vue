@@ -53,7 +53,7 @@ defineProps({
 </script>
 
 <template>
-  <header id="header" :class="{ 'header-fixed': isMainPageHeader ,'header-color': isMainPageHeader }">
+  <header id="header" :class="{ 'header-fixed': isMainPageHeader }">
     <div>
       <RouterLink to="/">
         <img id="logo" src="../assets/images/logo.svg" alt="logo" />
@@ -82,7 +82,7 @@ defineProps({
   display: flex;
   align-items: center;
   font-size: 20px;
-  background-color: var(--body-color);
+  background-color: var(--navheader-color);
 }
 
 .header-fixed {
@@ -91,10 +91,6 @@ defineProps({
   left: 0;
   right: 0;
   z-index: 99;
-}
-
-.header-color {
-  background-color: var(--navheader-color) !important;
 }
 
 #logo {

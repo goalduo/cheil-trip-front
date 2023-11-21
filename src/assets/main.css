@@ -31,7 +31,7 @@ html, body {
   color: var(--font-color);
 }
 
-button, label {
+input, button, label {
   font-family: 'Pretendard', sans-serif;
 }
 

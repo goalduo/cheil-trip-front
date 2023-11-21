@@ -79,7 +79,6 @@ function deleteArticleByArticleId() {
 #wrap {
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
   padding: 25px;
   display: flex;
   flex-direction: column;

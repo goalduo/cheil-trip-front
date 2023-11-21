@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -37,6 +37,12 @@ function elapsedTime(date) {
   return '방금 전'
 }
 
+const randomColor = ref([false, false, false])
+const pickRandomNumber = () => {
+  return Math.floor(Math.random(0, 1) * 3)
+}
+randomColor.value[pickRandomNumber()] = true
+
 const router = useRouter()
 const goDetailView = () => {
   router.push({ name: 'postDetail', params: { articleNo: props.articleNo}})
@@ -64,7 +70,7 @@ const goDetailView = () => {
     </div>
 
     <!-- <div class="lower"> 내용 : {{ content }} , <br/> 작성자 : {{ userName }} , 조회수 : {{ hit }}</div> -->
-    <div class="lower">
+    <div class="lower" :class="{ 'purple-color': randomColor[0], 'green-color': randomColor[1], 'sky-color': randomColor[2] }">
       <div class="writer">
         <p>작성자 :</p> 
         <p>{{ props.userId }}</p>
@@ -84,7 +90,7 @@ const goDetailView = () => {
   cursor: pointer;
   box-sizing: border-box;
   width: 400px;
-  height: 300px;
+  height: fit-content;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -95,7 +101,7 @@ const goDetailView = () => {
 
 .upper {
   box-sizing: border-box;
-  height: 170px;
+  /* height: 170px; */
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -157,8 +163,18 @@ const goDetailView = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: var(--sky-color);
   border-radius: 0 0 15px 15px;
 }
 
+.purple-color {
+  background-color: var(--purple-color);
+}
+
+.green-color {
+  background-color: var(--green-color);
+}
+
+.sky-color {
+  background-color: var(--sky-color);
+}
 </style>

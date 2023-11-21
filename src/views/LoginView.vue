@@ -67,7 +67,6 @@ const login = async () => {
   justify-content: first baseline;
   gap: 15px;
   background-color: var(--font-color);
-  border: 1px solid var(--third-font-color);
 }
 
 .login-logo {
