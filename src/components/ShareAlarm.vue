@@ -1,4 +1,33 @@
-<script setup></script>
+<script setup>
+import { useNotificationStore } from '@/stores/notification' 
+import { storeToRefs } from 'pinia'
+const notificationStore = useNotificationStore()
+const { notification } = storeToRefs(notificationStore)
+
+function elapsedTime(date) {
+  const start = new Date(date)
+  const end = new Date()
+
+  const diff = (end - start) / 1000
+
+  const times = [
+    { name: '년', milliSeconds: 60 * 60 * 24 * 365 },
+    { name: '개월', milliSeconds: 60 * 60 * 24 * 30 },
+    { name: '일', milliSeconds: 60 * 60 * 24 },
+    { name: '시간', milliSeconds: 60 * 60 },
+    { name: '분', milliSeconds: 60 }
+  ]
+
+  for (const value of times) {
+    const betweenTime = Math.floor(diff / value.milliSeconds)
+
+    if (betweenTime > 0) {
+      return `${betweenTime}${value.name} 전`
+    }
+  }
+  return '방금 전'
+}
+</script>
 
 <template>
     <!-- <div id="share-hide">
@@ -8,14 +37,14 @@
     <div id="share-open">
         <p>!! 여행 공유 알람 !!</p>
         <ul class="alarm-list">
-            <li class="alarm">
-                민님으로부터 공유된 여행이 있습니다.
+            <li class="alarm" v-for="item in notification" :key="item.notificationId">
+                {{ item.fromId }} 님으로부터 공유된 여행이 있습니다. {{ elapsedTime(item.createdAt) }}
                 <span>X</span>
             </li>
-            <li class="alarm">
+            <!-- <li class="alarm">
                 수님으로부터 공유된 여행이 있습니다.
                 <span>X</span>
-            </li>
+            </li> -->
         </ul>
     </div>
 </template>

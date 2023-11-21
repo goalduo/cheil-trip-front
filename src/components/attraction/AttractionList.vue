@@ -238,6 +238,7 @@ async function changeWorkspaceToShare() {
   }
   console.log(body);
   await addUserIdAtAttraction(body);
+  
   router.push({ name: 'attractionshare', params: { id }})
 }
 
