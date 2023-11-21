@@ -3,18 +3,19 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from '@/stores/member'
-
+import { useNotificationStore } from '@/stores/notification' 
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
 import { notify } from '@/components/toastMessage.js'
-
 const { VITE_VUE_API_URL } = import.meta.env;
 const router = useRouter()
 const memberStore = useMemberStore()
+const notificationStore = useNotificationStore()
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo } = memberStore
-
+const { notification } = storeToRefs(notificationStore)
+const {addNotification} = notificationStore
 const loginUser = ref({
   userId: '',
   userPass: ''
@@ -34,7 +35,8 @@ const login = async () => {
       console.log(event.data);
     });
     eventSource.addEventListener("notification", function (event) {
-      console.log(event.data);
+      const result = JSON.parse(event.data)
+      addNotification(result)
     })
     router.push('/')
   } else {
