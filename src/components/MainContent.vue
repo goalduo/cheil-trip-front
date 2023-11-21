@@ -3,7 +3,7 @@
 <template>
   <section id="logo-section">
     <img id="earth-image" src="../assets/images/earth.svg" />
-    <img id="point-image" src="../assets/images/point.svg" />
+    <!-- <img id="point-image" src="../assets/images/point.svg" /> -->
 
     <div id="sub-logo"></div>
   </section>

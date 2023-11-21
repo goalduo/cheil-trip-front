@@ -1,5 +1,6 @@
 <script setup>
 import NavHeader from '../components/NavHeader.vue'
+import ShareAlarm from '../components/ShareAlarm.vue'
 import MainContent from '../components/MainContent.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
@@ -23,6 +24,8 @@ const mouseMove = (event) => {
 
     <!-- 헤더 -->
     <NavHeader :is-main-page-header="true"></NavHeader>
+    <!-- 알림창 -->
+    <ShareAlarm></ShareAlarm>
     <!-- 메인 컨텐츠 -->
     <MainContent></MainContent>
     <!-- 푸터 -->

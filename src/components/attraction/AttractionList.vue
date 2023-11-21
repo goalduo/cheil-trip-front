@@ -458,7 +458,7 @@ function saveTripplan() {
 .plan-title,
 .tag-wrap {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
   width: 600px;
   box-sizing: border-box;
