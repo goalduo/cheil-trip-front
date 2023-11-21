@@ -143,7 +143,8 @@ function showPlace(location) {
       address_name: location.address_name,
       category_group_name: location.category_group_name
     },
-    map
+    map,
+    'UNORDERED'
   )
 }
 

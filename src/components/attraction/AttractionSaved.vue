@@ -44,7 +44,6 @@ const tripCourseList = ref([])
 // 장소를 클릭할 때 카카오맵 center 다시 지정
 function showPlace(location, idx) {
   displayMarker(
-    idx, 
     {
       y: location.y,
       x: location.x,
@@ -52,7 +51,9 @@ function showPlace(location, idx) {
       address_name: location.address_name,
       category_group_name: location.category_group_name
     },
-    map
+    map,
+    'ORDERED',
+    idx
   )
 }
 
