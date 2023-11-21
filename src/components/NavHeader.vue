@@ -5,10 +5,10 @@ import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member";
 import { notify } from '@/components/toastMessage.js'
+import { useNotificationStore } from "@/stores/notification";
 
 const memberStore = useMemberStore();
 const { isLogin, userInfo, isValidToken } = storeToRefs(memberStore)
-import { useNotificationStore } from "@/stores/notification";
 const notificationStore = useNotificationStore();
 const {notification} = storeToRefs(notificationStore)
 const headerMenuList = ref([])

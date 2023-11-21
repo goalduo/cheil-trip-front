@@ -304,13 +304,13 @@ function cancelTripCourse() {
 
 // 사용자 검색
 const searchedUser = ref("");
-const searchresultUser = ref("");
+const searchresultUser = ref([]);
 function searchUser() {
   findById(searchedUser.value, (response) => {
-    searchresultUser.value = response.data.userId
+    searchresultUser.value.push(response.data.userId)
   })
 }
-const invitedMessage = ref("");
+
 async function inviteUser(curUserId) {
     // redis에 사용자 저장하기
     console.log("redis에 사용자 저장하기" + curUserId);
@@ -348,6 +348,32 @@ function saveTripplan() {
 <template>
   <div id="wrap">
     <div id="info">
+      <div class="share-wrap">
+        <div class="with-logo"></div>
+        <p class="share-text">사용자 입력하기</p>
+        <div class="share">
+          <input
+            v-model="searchedUser"
+            type="text"
+            placeholder="사용자 검색"
+          />
+          <img
+            @click="searchUser"
+            src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png"
+          />
+        </div>
+        <ul class="user">
+          <!-- <div v-if="searchresultUser" @click="inviteUser(searchresultUser)"> {{ searchresultUser }} </div> -->
+          <li v-for="user in searchresultUser">
+            <button @click="inviteUser(user)">
+              {{ user }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <hr />
+
       <div class="search">
         <div class="search-logo"></div>
         <!-- 지역 옵션 선택하기 -->
@@ -386,16 +412,6 @@ function saveTripplan() {
             @click="displaysearchKeyword"
             src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png"
           />
-          <br/>
-          <input
-            v-model="searchedUser"
-            type="text"
-            placeholder="사용자 검색"
-          />
-          <button @click="searchUser">사용자 검색하기</button>
-          <div></div>
-          <div v-if="searchresultUser" @click="inviteUser(searchresultUser)"> {{ searchresultUser }} </div>
-          <div>{{ invitedMessage }}</div>
         </div>
       </div>
 
@@ -718,6 +734,16 @@ function saveTripplan() {
   overflow-y: scroll;
 }
 
+.with-logo {
+  width: 160px;
+  height: 35px;
+  margin-left: -7px;
+  background-image: url('@/assets/images/with-logo.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .search-logo {
   width: 110px;
   height: 35px;
@@ -728,7 +754,7 @@ function saveTripplan() {
   background-repeat: no-repeat;
 }
 
-.search {
+.share-wrap, .search {
   display: flex;
   flex-direction: column;
   gap: 25px;
@@ -736,7 +762,8 @@ function saveTripplan() {
 
 .pick-area,
 .pick-type,
-.insert-text {
+.insert-text,
+.share-text {
   margin-bottom: -15px;
   font-size: 15px;
   font-weight: 800;
@@ -764,6 +791,14 @@ function saveTripplan() {
   color: var(--fourth-font-color);
 }
 
+.share-text::after {
+  content: ' : 다른 사용자를 초대해서 같이 여행을 짤 수 있어요!';
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--fourth-font-color);
+}
+
+.user,
 .area,
 .type {
   display: flex;
@@ -771,6 +806,7 @@ function saveTripplan() {
   gap: 5px;
 }
 
+.user li button,
 .area li button,
 .type li button {
   cursor: pointer;
@@ -790,13 +826,14 @@ function saveTripplan() {
   border-color: var(--sky-color);
 }
 
+.user li button:hover,
 .area li button:hover,
 .type li button:hover {
   color: var(--sky-color);
   border-color: var(--sky-color);
 }
 
-.search-input {
+.share, .search-input {
   width: 75%;
   display: flex;
   align-items: center;
@@ -804,7 +841,7 @@ function saveTripplan() {
   border-radius: 4px;
 }
 
-.search-input input {
+.share input, .search-input input {
   cursor: text;
   box-sizing: border-box;
   width: 95%;
@@ -816,7 +853,7 @@ function saveTripplan() {
   outline: none;
 }
 
-.search-input img {
+.share img, .search-input img {
   cursor: pointer;
   width: 20px;
   margin: 0 10px;

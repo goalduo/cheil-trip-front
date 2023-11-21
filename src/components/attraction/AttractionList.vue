@@ -279,8 +279,9 @@ function saveTripplan() {
 <template>
   <div id="wrap">
     <div id="info">
-      <div>
-        <button @click="changeWorkspaceToShare">여행 같이 짜기</button>
+      <div class="share">
+        <div class="with-logo"></div>
+        <button @click="changeWorkspaceToShare">공유 페이지로 이동</button>
       </div>
 
       <hr />
@@ -661,6 +662,22 @@ function saveTripplan() {
   background-repeat: no-repeat;
 }
 
+.with-logo {
+  width: 160px;
+  height: 35px;
+  margin-left: -7px;
+  background-image: url('@/assets/images/with-logo.svg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.share {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
 .search {
   display: flex;
   flex-direction: column;
@@ -704,6 +721,7 @@ function saveTripplan() {
   gap: 5px;
 }
 
+.share button,
 .area li button,
 .type li button {
   cursor: pointer;
@@ -723,6 +741,7 @@ function saveTripplan() {
   border-color: var(--sky-color);
 }
 
+.share button:hover,
 .area li button:hover,
 .type li button:hover {
   color: var(--sky-color);
