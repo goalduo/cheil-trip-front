@@ -39,6 +39,10 @@ function deleteArticleByArticleId() {
     router.push("/")
   }))
 }
+
+function goToModifyView() {
+  router.push({ name: 'postModify', params: { articleNo: article.value.articleNo}})
+}
 </script>
 
 <template>
@@ -52,10 +56,6 @@ function deleteArticleByArticleId() {
     <!-- props -->
     <ul class="tag">
       <li v-for="tag in article?.hashtags" :key="tag">#{{ tag }}</li>
-      <!-- <li class="tag-element">#부산</li>
-      <li class="tag-element">#용</li>
-      <li class="tag-element">#절</li>
-      <li class="tag-element">#108배</li> -->
     </ul>
 
     <!-- props -->
@@ -68,7 +68,7 @@ function deleteArticleByArticleId() {
     </ul>
     <div id="viewer"></div>
     <div class="button-group">
-      <button v-if="article?.userId === userInfo?.userId" class="modify">수정</button>
+      <button v-if="article?.userId === userInfo?.userId" @click="goToModifyView" class="modify">수정</button>
       <button v-if="article?.userId === userInfo?.userId" @click="deleteArticleByArticleId" class="delete">삭제</button>
     </div>
   </div>
@@ -79,6 +79,7 @@ function deleteArticleByArticleId() {
 #wrap {
   box-sizing: border-box;
   width: 100%;
+  min-height: 100%;
   padding: 25px;
   display: flex;
   flex-direction: column;

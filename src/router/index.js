@@ -6,6 +6,7 @@ import PostView from '@/views/PostView.vue'
 import AttractionSearchView from '@/views/AttractionSearchView.vue'
 import PostCreateView from '@/views/PostCreateView.vue'
 import PostDetailView from '@/views/PostDetailView.vue'
+import PostModifyView from '@/views/PostModifyView.vue'
 import TripPlanView from '@/views/TripPlanView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import KakaoMap from '@/components/attraction/KakaoMap.vue'
@@ -65,6 +66,11 @@ const router = createRouter({
       path: '/post/detail/:articleNo',
       name: 'postDetail',
       component: PostDetailView
+    },
+    {
+      path: '/post/modify/:articleNo',
+      name: 'postModify',
+      component: PostModifyView
     },
     {
       path: '/plan',
