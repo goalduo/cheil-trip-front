@@ -37,7 +37,6 @@ onMounted(() => {
       { name: '로그아웃', routeName: '/', event: 'click' }
     ]
   } else {
-    console.log('hi')
     headerMenuList.value = [
       { name: '여행지 검색', routeName: '/attraction' },
       { name: '여행카드 만들기', routeName: '/plan' },

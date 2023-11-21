@@ -278,6 +278,12 @@ function saveTripplan() {
 <template>
   <div id="wrap">
     <div id="info">
+      <div>
+        <button @click="changeWorkspaceToShare">여행 같이 짜기</button>
+      </div>
+
+      <hr />
+
       <div class="search">
         <div class="search-logo"></div>
         <!-- 지역 옵션 선택하기 -->
@@ -317,14 +323,11 @@ function saveTripplan() {
             src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png"
           />
           <br/>
-          <input
-            v-model="searchedUser"
-            type="text"
-            placeholder="사용자 검색"
-          />
-          <button @click="changeWorkspaceToShare">공유하기</button>
+          
+
+          <!-- <button @click="changeWorkspaceToShare">공유하기</button>
           <div></div>
-          <div @click="inviteUser"> {{  searchresultUser }} </div>
+          <div @click="inviteUser"> {{  searchresultUser }} </div> -->
         </div>
       </div>
 
