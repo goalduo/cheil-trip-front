@@ -1,7 +1,7 @@
 <script setup>
 import yorkie from 'yorkie-js-sdk';
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import {
   initMap,
@@ -18,6 +18,7 @@ const { userInfo } = storeToRefs(memberStore)
 //import AttractionListRow from './AttractionListRow.vue'
 // let searchOptions = ref([])
 
+const route = useRoute()
 const tripPlan = ref({})
 
 let map
@@ -27,8 +28,9 @@ onMounted(async () => {
     map = initMap('map')
   }
 
-  tripPlan.value = await getTripPlanAndTripCoursesByPlanId(6)
-  tripPlan.value.hashtags = tripPlan.value.hashtags.split('-')
+  const { id } = route.params
+  tripPlan.value = await getTripPlanAndTripCoursesByPlanId(id)
+  tripPlan.value.hashtags = tripPlan.value.hashtags?.split('-')
 
   tripPlan.value.tripCourseList.forEach(location => {
     showPlace(location)

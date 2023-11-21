@@ -2,6 +2,8 @@
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 import PostCard from '../components/post/PostCard.vue'
+import TripPlanElement from '@/components/tripplan/TripPlanElement.vue'
+
 import { ref, onMounted } from 'vue'
 import { listArticle, listArticleByUserId, getArticleCountByUserId } from '@/api/BoardAPI.js'
 import { getTripplansAndTripCoursesByUserId } from '@/api/TripplanAPI.js'
@@ -73,27 +75,14 @@ const loadMore = async () => {
 
         <div class="my-trip-course">
           <p>여행 경로</p>
-
-          <ul class="trip-course-list">
-            <li v-for="tripPlan in tripPlans" :key="tripPlan.planId">
-              <div id="plan">
-                <div class="info">
-                  <img
-                    src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/category/1cf6a77b018800001.png?type=thumb&amp;opt=C72x72.fwebp"
-                    width="36"
-                    height="36"
-                  />
-                  <div class="state">여행 경로 저장</div>
-                </div>
-
-                <h1 id="title">{{ tripPlan.planName }}</h1>
-
-                <ul id="tag">
-                  <li v-for="hashtag in tripPlan.hashtags" :key="hashtag">#{{ hashtag }}</li>
-                </ul>
-              </div>
-            </li>
-          </ul>
+          
+          <div class="trip-course-list">
+            <TripPlanElement
+              v-for="tripPlan in tripPlans"
+              :key="tripPlan.planId"
+              :tripPlan="tripPlan"
+            ></TripPlanElement>
+          </div>
         </div>
       </div>
     </div>

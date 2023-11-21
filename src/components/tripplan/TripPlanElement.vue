@@ -1,7 +1,15 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
 defineProps({
   tripPlan: Object
 })
+
+const router = useRouter()
+
+const goToTripCourseDetailView = (planId) => {
+  router.push({ name: 'attractionsaved', params: { id: planId }})
+}
 </script>
 
 <template>
@@ -12,7 +20,8 @@ defineProps({
         width="36"
         height="36"
       />
-      <div class="state">여행 경로 저장</div>
+      <div class="state">여행 경로</div>
+      <div class="detail" @click.stop="goToTripCourseDetailView(tripPlan.planId)">상세보기 ></div>
     </div>
 
     <h1 id="title">{{ tripPlan.planName }}</h1>
@@ -24,6 +33,7 @@ defineProps({
 </template>
 
 <style scoped>
+
 #plan {
   cursor: pointer;
   box-sizing: border-box;
@@ -43,7 +53,7 @@ defineProps({
   align-items: center;
   gap: 10px;
 }
-.state {
+.state, .detail {
   padding: 5px 10px;
   font-size: 13px;
   line-height: 20px;
@@ -51,6 +61,11 @@ defineProps({
   border-radius: 10px;
   background-color: var(--tag-color);
 }
+
+.detail {
+  cursor: pointer;
+}
+
 .date {
   font-size: 11px;
   line-height: 20px;

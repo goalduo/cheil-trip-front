@@ -66,9 +66,11 @@ function deleteArticleByArticleId() {
       <li class="split">|</li>
       <li class="hit-number">조회수 {{ article?.hit }}</li>
     </ul>
-    <button v-if="article?.userId === userInfo?.userId"> 수정 {{ article?.userId }}</button>
-    <button v-if="article?.userId === userInfo?.userId" @click="deleteArticleByArticleId"> 삭제 {{ article?.userId }}</button>
     <div id="viewer"></div>
+    <div class="button-group">
+      <button v-if="article?.userId === userInfo?.userId" class="modify">수정</button>
+      <button v-if="article?.userId === userInfo?.userId" @click="deleteArticleByArticleId" class="delete">삭제</button>
+    </div>
   </div>
   <SitemapFooter></SitemapFooter>
 </template>
@@ -126,5 +128,34 @@ function deleteArticleByArticleId() {
 
 #viewer {
   width: 1000px;
+}
+
+.button-group {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.modify {
+  cursor: pointer;
+  width: 80px;
+  height: 50px;
+  font-size: 16px;
+  background-color: var(--font-color);
+  border: 1px solid var(--tag-color);
+  border-radius: 4px;
+}
+
+.delete {
+  cursor: pointer;
+  width: 80px;
+  height: 50px;
+  font-size: 16px;
+  border: 1px solid var(--tag-color);
+  border-radius: 4px;
+}
+
+.modify:hover, .delete:hover {
+  border-color: var(--fourth-font-color);
 }
 </style>
