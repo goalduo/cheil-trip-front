@@ -9,7 +9,6 @@ import {
   createLine,
   drawLine,
   removeLine,
-  searchPlacesByKeyword,
   search,
   searchByCategory,
   setMapByArea
@@ -17,10 +16,10 @@ import {
 import { findById } from '@/api/UserAPI.js'
 import {postTripPlanAndTripCourse, getTripplanId, addUserIdAtAttraction} from '@/api/TripplanAPI.js'
 import { useMemberStore } from "@/stores/member";
+import { notify } from '@/components/toastMessage.js'
+
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore)
-//import AttractionListRow from './AttractionListRow.vue'
-// let searchOptions = ref([])
 
 const router = useRouter()
 const areaCode = ref(0)
@@ -172,7 +171,7 @@ function addPlace(location) {
     // 경로 다시 그리기
     drawCourseLine()
   }
-  else window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+  else notify('FAIL', '경로는 5개까지 지정할 수 있습니다!')
 
   // console.log(tripCourseList.value)
   isTripCourseSaveOpen.value = true
@@ -431,7 +430,7 @@ function saveTripplan() {
 
 .plan {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
   width: 400px;
   box-sizing: border-box;
@@ -446,7 +445,7 @@ function saveTripplan() {
 
 .plan-hide {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
   width: 400px;
   box-sizing: border-box;
