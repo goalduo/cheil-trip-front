@@ -12,6 +12,7 @@ function getTripPlanAndTripCoursesByPlanId(id) {
 
 function postTripPlanAndTripCourse(body) {
     axios.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
+    console.log(body)
     return axios.post(`/tripplan`, body)
     .then((response) => console.log(response.data))
 }

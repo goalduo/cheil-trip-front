@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { userConfirm, findById, tokenRegeneration, logout } from "@/api/UserAPI.js";
 import { httpStatusCode } from "@/util/http-status";
 
+
 export const useMemberStore = defineStore("memberStore", () => {
   const router = useRouter();
 
@@ -122,6 +123,7 @@ export const useMemberStore = defineStore("memberStore", () => {
           userInfo.value = null;
           isValidToken.value = false;
           sessionStorage.clear();
+          notification.value = [];
         } else {
           console.error("유저 정보 없음!!!!");
         }

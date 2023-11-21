@@ -8,13 +8,16 @@ import { notify } from '@/components/toastMessage.js'
 
 const memberStore = useMemberStore();
 const { isLogin, userInfo, isValidToken } = storeToRefs(memberStore)
-
+import { useNotificationStore } from "@/stores/notification";
+const notificationStore = useNotificationStore();
+const {notification} = storeToRefs(notificationStore)
 const headerMenuList = ref([])
 
 const logout = async () => {
   isLogin.value = false;
   userInfo.value = null;
   isValidToken.value = false;
+  notification.value = [];
   sessionStorage.clear();
   notify('SUCCESS', '로그아웃 되었습니다.')
   headerMenuList.value = [

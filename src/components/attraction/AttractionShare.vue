@@ -143,7 +143,7 @@ onMounted(async() => {
     }
     await client.sync();
     tripCourseList.value = doc.getRoot().tripCourseList;
-  console.log(tripCourseList)
+    console.log(tripCourseList.value)
 })
 onUnmounted(() => {
   disconnect();
@@ -200,7 +200,8 @@ function showPlace(location) {
       address_name: location.address_name,
       category_group_name: location.category_group_name
     },
-    map
+    map,
+    "UNORDERED"
   )
 }
 
@@ -220,7 +221,7 @@ function removeCourseLine() {
 }
 
 // 여행 장소를 경로에 추가할 때
-function addPlace(location) {
+async function addPlace(location) {
   showPlace(location)
   // 여행 경로의 길이는 5를 넘을 수 없음
   if (tripCourseList.value.length == 5) {
@@ -240,6 +241,7 @@ function addPlace(location) {
   doc.update((root) => {
     root.tripCourseList.push(location)
   })
+  await client.sync()
   drawCourseLine()
 
   // console.log(tripCourseList.value)
@@ -247,10 +249,11 @@ function addPlace(location) {
 }
 
 // 여행 장소를 경로에서 제거할 때
-function removePlace(location) {
+async function removePlace(location) {
   doc.update((root) => {
     root.tripCourseList.deleteByID(location.getID());
   })
+  await client.sync()
   // 경로 삭제 후 다시 그리기
   removeCourseLine()
   drawCourseLine()
@@ -269,6 +272,27 @@ function goToSetTitle() {
 // 제목 설정 후 계속하기 버튼을 누르면 해시태그 설정 단계로 돌입
 function goToSetHashTag() {
   isOnSetTitle.value = false
+}
+const tags = ref([])
+const tag = ref('')
+const isInputAvailable = ref(true)
+
+const onChangeTagInputValue = (event) => {
+  tag.value = event.target.value
+  // console.log(tag.value)
+}
+
+const addTag = (event) => {
+  if (tag.value.length > 0 && tags.value.length < 5) {
+    tags.value.push(tag.value.trim())
+    tag.value = ''
+  }
+  if (tags.value.length === 5) isInputAvailable.value = false
+}
+
+const removeTag = (index) => {
+  tags.value.splice(index, 1)
+  if (tags.value.length < 5) isInputAvailable.value = true
 }
 
 // 취소 버튼 누르면 여행 경로 생성 취소
@@ -301,14 +325,23 @@ async function inviteUser(curUserId) {
   alert("사용자 초대 완료!")
 }
 
+// 태그
+
 
 // 여행 정보 저장하기
 function saveTripplan() {
   const body = {
     planName: tripplanTitle.value,
-    tripCourseList : tripCourseList.value
+    hashtags: tags.value.join("-"),
+    tripCourseList : JSON.stringify(tripCourseList.value)
   }
+  let replaced = body.tripCourseList.replace(/([{,]\s*)([A-Za-z_][A-Za-z0-9_]*)(\s*):/g, '$1"$2":')
+  const obj = JSON.parse(JSON.parse(replaced))
+  body.tripCourseList = obj
+  console.log(body)
   postTripPlanAndTripCourse(body);
+  alert("여행 경로가 저장되었습니다.");
+  router.push("/plan")
 }
 </script>
 
@@ -429,9 +462,24 @@ function saveTripplan() {
       </div>
 
       <!-- 여행 해시 태그 정하기 -->
-      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="plan-hash-tag">
+      <div v-show="isOnCreateTripCourse && !isOnSetTitle" class="tag-wrap">
         <p>여행 경로의 해시 태그 정하기</p>
-        <input type="text" v-model="tripplanHashtag"/>
+        <!-- <input type="text" v-model="tripplanHashtag"/> -->
+        <div class="tag-input">
+          <div v-for="(tag, index) in tags" :key="index" class="tagging">
+            {{ tag }}
+            <span @click="removeTag(index)">x</span>
+          </div>
+          <input
+            v-show="isInputAvailable"
+            :value="tag"
+            @input="onChangeTagInputValue"
+            @keypress.enter.prevent="addTag"
+            type="text"
+            placeholder="태그를 추가해보세요!"
+            class="tag-text"
+          />
+        </div>
         <div class="button-group">
           <button class="save-button" @click="saveTripplan">최종 저장하기</button>
           <button @click="cancelTripCourse" class="cancel-button">취소</button>
@@ -454,7 +502,7 @@ function saveTripplan() {
 
 .plan {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
   width: 400px;
   box-sizing: border-box;
@@ -469,7 +517,7 @@ function saveTripplan() {
 
 .plan-hide {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
   width: 400px;
   box-sizing: border-box;
@@ -480,30 +528,64 @@ function saveTripplan() {
 }
 
 .plan-title,
-.plan-hash-tag {
+.tag-wrap {
   position: absolute;
-  bottom: 30px;
+  top: 30px;
   left: 30px;
-  width: 400px;
+  width: 600px;
   box-sizing: border-box;
   padding: 15px;
   display: flex;
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
   background-color: var(--font-color);
   border-radius: 15px;
   z-index: 10;
 }
 
+.tag-input {
+  box-sizing: border-box;
+  height: 60px;
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid var(--tag-color);
+  border-radius: 4px;
+  outline-color: var(--sky-color);
+  overflow: hidden;
+}
+
+.tag-input span {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.tagging {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  background-color: var(--tag-color);
+  border-radius: 5px;
+}
+
+.tag-text {
+  font-size: 16px;
+  border: none;
+  outline: none;
+}
+
 .plan-title p,
-.plan-hash-tag p {
+.tag-wrap p {
   font-size: 15px;
   font-weight: 800;
   color: var(--sky-color);
 }
 
-.plan-title input,
-.plan-hash-tag input {
+.plan-title input {
   padding: 20px;
   font-size: 16px;
   border: 1px solid var(--tag-color);
