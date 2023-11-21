@@ -1,6 +1,7 @@
 <script setup>
 import { useNotificationStore } from '@/stores/notification' 
 import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 const notificationStore = useNotificationStore()
 const { notification } = storeToRefs(notificationStore)
 
@@ -27,15 +28,20 @@ function elapsedTime(date) {
   }
   return '방금 전'
 }
+
+const isOpen = ref(false)
+const openAndCloseAlarm = () => {
+    isOpen.value = !isOpen.value
+}
 </script>
 
 <template>
-    <div id="share-hide">
+    <div @click="openAndCloseAlarm" v-show="!isOpen" id="share-hide">
         <p>여행 공유 알람</p>
         <p>3</p>
     </div>
 
-    <!-- <div id="share-open">
+    <div @click="openAndCloseAlarm" v-show="isOpen" id="share-open">
         <p>여행 공유 알람</p>
         <ul class="alarm-list">
             <li class="alarm" v-for="item in notification" :key="item.notificationId">
@@ -43,7 +49,7 @@ function elapsedTime(date) {
                 <span>{{ elapsedTime(item.createdAt) }}</span>
             </li>
         </ul>
-    </div> -->
+    </div>
 </template>
 
 <style scoped>
