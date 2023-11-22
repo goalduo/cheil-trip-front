@@ -37,6 +37,7 @@ const goToTripCourseDetailView = (planId) => {
 #plan {
   cursor: pointer;
   box-sizing: border-box;
+  flex-shrink: 0;
   width: 300px;
   height: 200px;
   padding: 20px;

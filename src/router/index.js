@@ -10,7 +10,6 @@ import PostModifyView from '@/views/PostModifyView.vue'
 import TripPlanView from '@/views/TripPlanView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import KakaoMap from '@/components/attraction/KakaoMap.vue'
-import TripplanTest from '@/components/tripplan/TripplanTest.vue'
 import attractionshare from '@/components/attraction/attractionshare.vue'
 import attractionSaved from '@/components/attraction/attractionSaved.vue'
 
@@ -155,16 +154,6 @@ const router = createRouter({
           return { name: 'main' }
         }
       }
-    },
-    {
-      path: '/maptest',
-      name: 'maptest',
-      component: KakaoMap
-    },
-    {
-      path: '/urltest',
-      name: 'urltest',
-      component: TripplanTest
     }
     // {
     //   path: '/about',
