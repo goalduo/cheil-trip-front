@@ -1,4 +1,6 @@
 <script setup>
+import NavHeader from '@/components/NavHeader.vue'
+import SitemapFooter from '@/components/SitemapFooter.vue'
 import yorkie from 'yorkie-js-sdk';
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -106,6 +108,7 @@ const searchresultUser = ref("");
 </script>
 
 <template>
+  <NavHeader :is-main-page-header="false"></NavHeader>
   <div id="wrap">
     <div id="info">
       <div class="plan-result">
@@ -145,6 +148,7 @@ const searchresultUser = ref("");
     <!-- 카카오 map이 들어갈 곳-->
     <div id="map"></div>
   </div>
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>
@@ -161,7 +165,7 @@ const searchresultUser = ref("");
 #wrap {
   width: 100%;
   height: 100vh;
-  padding: 20px;
+  padding: 50px 20px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -209,7 +213,7 @@ const searchresultUser = ref("");
 .title-label,
 .tag-label,
 .plan-label {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--sky-color);
 }

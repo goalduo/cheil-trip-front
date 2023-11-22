@@ -190,7 +190,12 @@ const isOnCreateTripCourse = ref(false)
 const isOnSetTitle = ref(true)
 
 // 경로 설정 후 저장하기 버튼을 누르면 제목 설정 단계로 돌입
+// 로그인 이후 사용 가능
 function goToSetTitle() {
+  if (userInfo.value === null) {
+    notify('FAIL', '로그인이 필요한 서비스입니다.')
+    return
+  }
   isTripCourseSaveOpen.value = false
   isOnCreateTripCourse.value = true
 }
@@ -231,12 +236,17 @@ function cancelTripCourse() {
 
 // 공유하기 버튼을 누르면 워크스페이스 변경
 async function changeWorkspaceToShare() {
+  if (userInfo.value === null) {
+    notify('FAIL', '로그인이 필요한 서비스입니다.')
+    return;
+  }
+
   const id = await getTripplanId();
   const body = {
     planId: id,
     userId : userInfo.value.userId
   }
-  console.log(body);
+  // console.log(body);
   await addUserIdAtAttraction(body);
   
   router.push({ name: 'attractionshare', params: { id }})
@@ -629,8 +639,9 @@ function saveTripplan() {
 
 #wrap {
   width: 100%;
+  min-width: 1000px;
   height: 100vh;
-  padding: 20px;
+  padding: 50px 20px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -663,7 +674,7 @@ function saveTripplan() {
 }
 
 .with-logo {
-  width: 160px;
+  width: 170px;
   height: 35px;
   margin-left: -7px;
   background-image: url('@/assets/images/with-logo.svg');

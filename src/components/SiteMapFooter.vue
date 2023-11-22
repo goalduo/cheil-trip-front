@@ -33,6 +33,7 @@ const siteMapLists = [
 <style scoped>
 #footer {
   box-sizing: border-box;
+  min-width: 1000px;
   width: 100%;
   height: 370px;
   padding: 60px;
