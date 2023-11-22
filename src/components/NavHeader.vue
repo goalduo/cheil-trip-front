@@ -28,6 +28,7 @@ const logout = async () => {
 }
 
 onMounted(() => {
+  console.log(userInfo.value)
   // 로그인 상태
   if (sessionStorage.getItem('accessToken') !== null) {
     headerMenuList.value = [
@@ -35,7 +36,7 @@ onMounted(() => {
       { name: '여행카드 만들기', routeName: '/plan' },
       { name: '게시판', routeName: '/post' },
       { name: '게시물 작성하기', routeName: '/post/create' },
-      { name: '마이페이지', routeName: '/my' },
+      { name: `${userInfo.value.userName}'s 마이페이지`, routeName: '/my' },
       { name: '로그아웃', routeName: '/', event: 'click' }
     ]
   } else {

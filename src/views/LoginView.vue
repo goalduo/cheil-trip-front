@@ -25,7 +25,7 @@ const login = async () => {
   let token = sessionStorage.getItem('accessToken')
   if (isLogin.value) {
     notify('SUCCESS', '로그인에 성공했습니다.')
-    getUserInfo(token)
+    await getUserInfo(token)
     router.push('/')
   } else {
     notify('FAIL', '로그인에 실패했습니다.')
