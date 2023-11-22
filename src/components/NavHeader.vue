@@ -42,7 +42,6 @@ onMounted(() => {
   } else {
     headerMenuList.value = [
       { name: '여행지 검색', routeName: '/attraction' },
-      { name: '여행카드 만들기', routeName: '/plan' },
       { name: '게시판', routeName: '/post' },
       { name: '로그인', routeName: '/login' }
     ]
@@ -78,6 +77,7 @@ defineProps({
 <style scoped>
 #header {
   box-sizing: border-box;
+  min-width: 1000px;
   width: 100%;
   height: 70px;
   padding: 0 20px;
