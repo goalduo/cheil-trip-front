@@ -1,9 +1,66 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const snowUnits = ref([])
+const snowSequence = ref(1)
+
+const addSnow = () => {
+  snowUnits.value.push(snowSequence.value++)
+}
+
+const generateSnow = (size) => {
+  for (let i = 0; i < size; i++) {
+    addSnow()
+  }
+}
+
+const beforeEnter = (element) => {
+  const offset = 400
+  const min = -offset
+  const max = window.screen.width + offset
+  const left = generateRandomInteger(min, max)
+  element.style.left = left + 'px'
+
+  const scale = generateRandom(0.25, 1)
+  element.style.transfrom = `scale(${scale})`
+
+  const opacity = generateRandom(0.1, 1)
+  element.style.opacity = opacity
+
+  const delay = generateRandom(1, 10000)
+  const duration = generateRandom(10000, 30000)
+  element.style.animationDelay = delay + 'ms'
+  element.style.animationDuration = duration + 'ms'
+}
+
+const generateRandom = (begin, end) => {
+  const max = Math.max(begin, end)
+  const min = Math.min(begin, end)
+  const range = max - min
+  return Math.random() * range + min
+}
+
+const generateRandomInteger = (begin, end) => {
+  return parseInt(generateRandom(begin, end))
+}
+
+onMounted(() => {
+  generateSnow(500)
+})
+</script>
 
 <template>
   <section id="logo-section">
-    <img id="earth-image" src="../assets/images/earth.svg" />
-    <!-- <img id="point-image" src="../assets/images/point.svg" /> -->
+    <TransitionGroup @before-enter="beforeEnter">
+      <div v-for="(snow, index) in snowUnits" class="snow falling" :key="index"></div>
+    </TransitionGroup>
+
+    <img id="hanok-image" src="../assets/images/hanok.svg" />
+    <img id="tree-image" src="../assets/images/tree.svg" />
+    <img id="tower-image" src="../assets/images/tower.svg" />
+    <img id="sub-hanok-image" src="../assets/images/sub-hanok.svg" />
+    <img id="building-image" src="../assets/images/building.svg" />
+    <img id="mountain-image" src="../assets/images/mountain.svg" />
 
     <div id="sub-logo"></div>
   </section>
@@ -22,8 +79,38 @@
   display: flex;
 }
 
+.snow {
+  position: absolute;
+  top: -10px;
+  width: 6px;
+  height: 6px;
+  background-color: var(--font-color);
+  border-radius: 50%;
+  z-index: 30;
+  transform: scale(0.5);
+  opacity: 0.5;
+}
+
+.snow.falling {
+  animation: falling;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 10s;
+}
+
+@keyframes falling {
+  from {
+    top: 0%;
+  }
+  to {
+    top: 99%;
+    opacity: 0;
+  }
+}
+
 #intro-section {
   position: relative;
+  top: 0;
   width: 100%;
   height: 100vh;
   display: flex;
@@ -45,47 +132,56 @@ span:nth-child(2) {
   font-weight: 800;
 }
 
-/* .cursor {
+#hanok-image {
   position: absolute;
-  z-index: 100;
+  bottom: 0;
+  left: 430px;
+  width: 400px;
+  margin-bottom: -35px;
+  z-index: 10;
 }
 
-#paperplane-image {
-  width: 60px;
-  transform: scaleX(-1);
-} */
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  50% {
-    transform: rotate(180deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+#tree-image {
+  position: absolute;
+  bottom: 0;
+  left: 600px;
+  width: 500px;
+  margin-bottom: -30px;
+  z-index: 20;
 }
 
-#earth-image {
+#tower-image {
   position: absolute;
-  top: 90px;
-  left: 100px;
-  width: 200px;
-  animation-name: rotate;
-  animation-duration: 3s;
-  animation-delay: 0;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  bottom: 0;
+  left: 0;
+  width: 700px;
+  margin: 0 0 -20px -240px;
+  z-index: 20;
 }
 
-#point-image {
+#sub-hanok-image {
   position: absolute;
-  top: 180px;
-  right: 140px;
-  width: 150px;
+  bottom: 0;
+  left: 300px;
+  width: 400px;
+  margin: 0 0 -70px -200px;
+}
+
+#building-image {
+  position: absolute;
+  bottom: 0;
+  left: 900px;
+  width: 550px;
+  margin-bottom: -85px;
+  z-index: 10;
+}
+
+#mountain-image {
+  position: absolute;
+  bottom: 0;
+  left: 1300px;
+  width: 600px;
+  margin-bottom: -60px;
 }
 
 #sub-logo {
@@ -95,5 +191,7 @@ span:nth-child(2) {
   align-self: center;
   background-image: url('../assets/images/sub-logo.svg');
   background-position: center;
+  opacity: 0.8;
+  z-index: 40;
 }
 </style>
