@@ -281,7 +281,7 @@ function saveTripplan() {
     tripCourseList : tripCourseList.value
   }
   postTripPlanAndTripCourse(body);
-  alert("여행 경로가 저장되었습니다.");
+  notify('SUCCESS', '여행 경로가 저장되었습니다.')
   router.push('/plan')
 }
 </script>

@@ -36,14 +36,14 @@ onMounted(() => {
     ],
     hooks: {
       async addImageBlobHook(blob, callback) {
-        console.log(blob)
+        // console.log(blob)
         const formData = new FormData()
         formData.append('image', blob)
         uploadImage(formData, (response) => {
-          console.log(response)
+          // console.log(response)
           const { saveFolder, originalFile, saveFile } = response.data
-          console.log('서버에 저장된 파일명 : ', saveFile)
-          console.log('원본 파일명 : ', originalFile)
+          // console.log('서버에 저장된 파일명 : ', saveFile)
+          // console.log('원본 파일명 : ', originalFile)
           const imageUrl = `${VITE_VUE_API_URL}/board/image-print?savedFolder=${saveFolder}&filename=${saveFile}`
           callback(imageUrl, 'image alt attribute')
         })
@@ -64,11 +64,11 @@ const onClickCategory = (num) => {
   })
 }
 function cancelPost() {
-  let confirm = confirm('작성중인 게시글이 있습니다. 떠나시겠습니까?')
-  if (confirm) router.push('/')
+  notify('WARNING', '게시글 작성을 취소하였습니다.')
+  router.push('/')
   return
 }
-function savePost() {
+async function savePost() {
   const article = {
     subject: title.value,
     category: categorySelected.value,
@@ -76,10 +76,10 @@ function savePost() {
     content: editor.getHTML()
   }
   if (editor.getMarkdown().length < 1) {
-    alert('에디터 내용을 입력해 주세요.')
+    notify('WARNING', '에디터 내용을 입력해 주세요.')
     throw new Error('editor content is required!')
   }
-  registArticle(
+  await registArticle(
     article,
     (response) => {
       console.log(response)

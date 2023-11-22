@@ -3,6 +3,7 @@ import { useNotificationStore } from '@/stores/notification'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import {useRouter} from 'vue-router'
+import { notify } from '@/components/toastMessage.js'
 const notificationStore = useNotificationStore()
 const { notification } = storeToRefs(notificationStore)
 const router = useRouter()
@@ -35,7 +36,7 @@ const openAndCloseAlarm = () => {
     isOpen.value = !isOpen.value
 }
 function gotoShareURL(item) {
-    alert('공유 페이지로 이동합니다.')
+    notify('SUCCESS', '공유 페이지로 이동합니다.')
     router.push(`/attraction/${item.planId}`)
 }
 </script>
@@ -90,7 +91,7 @@ function gotoShareURL(item) {
     position: fixed;
     top: 100px;
     right: 30px;
-    width: 350px;
+    width: 370px;
     box-sizing: border-box;
     padding: 15px;
     background-color: var(--navheader-color);
@@ -99,6 +100,12 @@ function gotoShareURL(item) {
     text-align: center;
     border-radius: 10px 0 10px 0;
     z-index: 10;
+}
+
+#share-open li {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 #share-open p {

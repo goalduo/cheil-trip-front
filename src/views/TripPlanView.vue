@@ -1,6 +1,6 @@
 <script setup>
-import NavHeader from '../components/NavHeader.vue'
-import SiteMapFooter from '../components/SiteMapFooter.vue'
+import NavHeader from '@/components/NavHeader.vue'
+import SiteMapFooter from '@/components/SiteMapFooter.vue'
 import TripPlan from '../components/tripplan/TripPlan.vue'
 </script>
 

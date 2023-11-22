@@ -33,6 +33,7 @@ onMounted(async () => {
     categoryList.forEach((category, index) => {
         if (category === result.category) categoryState.value[index] = true
     })
+    categorySelected.value = result.category
     // 제목 넣기
     title.value = result.subject
     // 해쉬 태그 넣기
@@ -61,14 +62,14 @@ onMounted(async () => {
     ],
     hooks: {
       async addImageBlobHook(blob, callback) {
-        console.log(blob)
+        // console.log(blob)
         const formData = new FormData()
         formData.append('image', blob)
         uploadImage(formData, (response) => {
-          console.log(response)
+          // console.log(response)
           const { saveFolder, originalFile, saveFile } = response.data
-          console.log('서버에 저장된 파일명 : ', saveFile)
-          console.log('원본 파일명 : ', originalFile)
+          // console.log('서버에 저장된 파일명 : ', saveFile)
+          // console.log('원본 파일명 : ', originalFile)
           const imageUrl = `${VITE_VUE_API_URL}/board/image-print?savedFolder=${saveFolder}&filename=${saveFile}`
           callback(imageUrl, 'image alt attribute')
         })
@@ -89,8 +90,8 @@ const onClickCategory = (num) => {
   })
 }
 function cancelPost() {
-  let confirm = confirm('작성중인 게시글이 있습니다. 떠나시겠습니까?')
-  if (confirm) router.push('/')
+  notify('WARNING', '게시글 작성을 취소하였습니다.')
+  router.push('/')
   return
 }
 // 이 부분 수정 로직으로 바꾸어야 함
@@ -102,7 +103,7 @@ function savePost() {
     content: editor.getHTML()
   }
   if (editor.getMarkdown().length < 1) {
-    alert('에디터 내용을 입력해 주세요.')
+    notify('WARNING', '에디터 내용을 입력해 주세요.')
     throw new Error('editor content is required!')
   }
   const { articleNo } = route.params

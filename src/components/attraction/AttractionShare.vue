@@ -1,4 +1,6 @@
 <script setup>
+import NavHeader from '@/components/NavHeader.vue'
+import SitemapFooter from '@/components/SitemapFooter.vue'
 import yorkie from 'yorkie-js-sdk';
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -17,6 +19,7 @@ import {
 import { findById } from '@/api/UserAPI.js'
 import {postTripPlanAndTripCourse, getTripplanId, isUserInAttractionSet, addUserIdAtAttraction} from '@/api/TripplanAPI.js'
 import { useMemberStore } from "@/stores/member";
+import { notify } from '@/components/toastMessage.js'
 const { VITE_YORKIE_SERVER, VITE_YORKIE_API_KEY } = import.meta.env;
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore)
@@ -107,7 +110,7 @@ onMounted(async() => {
     }
   // 유저 체크  
   if (userInfo.value === null) {
-    alert("로그인이 필요합니다.")
+    notify("FAIL", "로그인이 필요한 서비스입니다.")
     router.push("/")
   }
   const id = route.params.id
@@ -117,7 +120,7 @@ onMounted(async() => {
   }
   const isUserValidated = await isUserInAttractionSet(params)
   if (isUserValidated === 0) {
-    alert("권한이 없습니다.")
+    notify("FAIL", "초대되지 않은 사용자입니다.")
     router.push("/")
   }
 
@@ -346,6 +349,8 @@ function saveTripplan() {
 </script>
 
 <template>
+  <NavHeader :is-main-page-header="false"></NavHeader>
+
   <div id="wrap">
     <div id="info">
       <div class="share-wrap">
@@ -503,6 +508,8 @@ function saveTripplan() {
       </div>
     </div>
   </div>
+
+  <SitemapFooter></SitemapFooter>
 </template>
 
 <style scoped>
@@ -712,7 +719,7 @@ function saveTripplan() {
 #wrap {
   width: 100%;
   height: 100vh;
-  padding: 20px;
+  padding: 50px 20px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -735,7 +742,7 @@ function saveTripplan() {
 }
 
 .with-logo {
-  width: 160px;
+  width: 170px;
   height: 35px;
   margin-left: -7px;
   background-image: url('@/assets/images/with-logo.svg');

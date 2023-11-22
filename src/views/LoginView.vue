@@ -23,8 +23,6 @@ const loginUser = ref({
 const login = async () => {
   await userLogin(loginUser.value)
   let token = sessionStorage.getItem('accessToken')
-  console.log('111. ', token)
-  console.log('isLogin: ', isLogin)
   if (isLogin.value) {
     notify('SUCCESS', '로그인에 성공했습니다.')
     getUserInfo(token)

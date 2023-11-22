@@ -22,7 +22,6 @@ const logout = async () => {
   notify('SUCCESS', '로그아웃 되었습니다.')
   headerMenuList.value = [
       { name: '여행지 검색', routeName: '/attraction' },
-      { name: '여행카드 만들기', routeName: '/plan' },
       { name: '게시판', routeName: '/post' },
       { name: '로그인', routeName: '/login' }
   ]
