@@ -10,7 +10,7 @@ import { useNotificationStore } from '@/stores/notification'
 const { VITE_VUE_API_URL } = import.meta.env;
 const notificationStore = useNotificationStore()
 const { notification } = storeToRefs(notificationStore)
-const { addNotification } = notificationStore
+const { addNotification, getNotification } = notificationStore
 const memberStore = useMemberStore()
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo, userInfo } = memberStore
@@ -21,16 +21,17 @@ const mouseMove = (event) => {
   mouseX.value = event.pageX + 5
   mouseY.value = event.pageY + 5
 }
-onMounted(() => {
+onMounted(async() => {
   if (userInfo !== null) {
+    await getNotification(userInfo.userId)
     const eventSource = new EventSource(VITE_VUE_API_URL + `/notification/connect/?userId=${userInfo.userId}`);
-  eventSource.addEventListener("sse", function (event) {
-    console.log(event.data);
-  });
-  eventSource.addEventListener("notification", function (event) {
-    const result = JSON.parse(event.data)
-    addNotification(result)
-  })
+    eventSource.addEventListener("sse", function (event) {
+      console.log(event.data);
+    });
+    eventSource.addEventListener("notification", function (event) {
+      const result = JSON.parse(event.data)
+      addNotification(result)
+    })
   }
 });
 

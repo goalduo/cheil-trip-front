@@ -6,7 +6,7 @@ import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
 import { onMounted, ref, watch } from 'vue'
-import { uploadImage, registArticle, detailArticle } from '@/api/BoardAPI.js'
+import { uploadImage, updateArticle, detailArticle } from '@/api/BoardAPI.js'
 import { useMemberStore } from '@/stores/member'
 import { notify } from '@/components/toastMessage.js'
 
@@ -94,29 +94,31 @@ function cancelPost() {
   return
 }
 // 이 부분 수정 로직으로 바꾸어야 함
-// function savePost() {
-//   const article = {
-//     subject: title.value,
-//     category: categorySelected.value,
-//     hashtags: tags.value.join("-"),
-//     content: editor.getHTML()
-//   }
-//   if (editor.getMarkdown().length < 1) {
-//     alert('에디터 내용을 입력해 주세요.')
-//     throw new Error('editor content is required!')
-//   }
-//   registArticle(
-//     article,
-//     (response) => {
-//       console.log(response)
-//     },
-//     (error) => {
-//       console.log(error)
-//     }
-//   )
-//   notify('SUCCESS', '게시물을 수정하였습니다.')
-//   router.push('/post')
-// }
+function savePost() {
+  const article = {
+    subject: title.value,
+    category: categorySelected.value,
+    hashtags: tags.value.join("-"),
+    content: editor.getHTML()
+  }
+  if (editor.getMarkdown().length < 1) {
+    alert('에디터 내용을 입력해 주세요.')
+    throw new Error('editor content is required!')
+  }
+  const { articleNo } = route.params
+  updateArticle(
+    article,
+    articleNo,
+    (response) => {
+      console.log(response)
+    },
+    (error) => {
+      console.log(error)
+    }
+  )
+  notify('SUCCESS', '게시물을 수정하였습니다.')
+  router.push('/post')
+}
 
 const tags = ref([])
 const tag = ref('')

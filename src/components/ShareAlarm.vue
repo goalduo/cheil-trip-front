@@ -2,9 +2,10 @@
 import { useNotificationStore } from '@/stores/notification' 
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import {useRouter} from 'vue-router'
 const notificationStore = useNotificationStore()
 const { notification } = storeToRefs(notificationStore)
-
+const router = useRouter()
 function elapsedTime(date) {
   const start = new Date(date)
   const end = new Date()
@@ -33,19 +34,23 @@ const isOpen = ref(false)
 const openAndCloseAlarm = () => {
     isOpen.value = !isOpen.value
 }
+function gotoShareURL(item) {
+    alert('공유 페이지로 이동합니다.')
+    router.push(`/attraction/${item.planId}`)
+}
 </script>
 
 <template>
     <div @click="openAndCloseAlarm" v-show="!isOpen" id="share-hide">
         <p>여행 공유 알람</p>
-        <p>3</p>
+        <p>{{ notification.length }}</p>
     </div>
 
     <div @click="openAndCloseAlarm" v-show="isOpen" id="share-open">
         <p>여행 공유 알람</p>
         <ul class="alarm-list">
             <li class="alarm" v-for="item in notification" :key="item.notificationId">
-                {{ item.fromId }} 님으로부터 공유된 여행이 있습니다. 
+                <div @click="gotoShareURL(item)">{{ item.fromId }} 님으로부터 공유된 여행이 있습니다. </div>
                 <span>{{ elapsedTime(item.createdAt) }}</span>
             </li>
         </ul>

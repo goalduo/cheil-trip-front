@@ -18,7 +18,10 @@ function listArticleByUserId(param, userId, success, fail) {
     local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
     local.post(`/board`, JSON.stringify(article)).then(success).catch(fail);
   }
-  
+function updateArticle(article,articleNo, success, fail) {
+  local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
+  local.post(`/board/modify/${articleNo}`, JSON.stringify(article)).then(success).catch(fail);
+  }
   function getModifyArticle(articleno, success, fail) {
     local.get(`/board/modify/${articleno}`).then(success).catch(fail);
   }
@@ -42,7 +45,8 @@ function getArticleCountByUserId(userId) {
   export {
     listArticle,
     detailArticle,
-    registArticle,
+  registArticle,
+    updateArticle,
     getModifyArticle,
     modifyArticle,
     deleteArticle,

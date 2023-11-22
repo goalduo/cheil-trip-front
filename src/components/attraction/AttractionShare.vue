@@ -305,8 +305,8 @@ function cancelTripCourse() {
 // 사용자 검색
 const searchedUser = ref("");
 const searchresultUser = ref([]);
-function searchUser() {
-  findById(searchedUser.value, (response) => {
+async function searchUser() {
+  await findById(searchedUser.value, (response) => {
     searchresultUser.value.push(response.data.userId)
   })
 }
