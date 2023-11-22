@@ -3,19 +3,18 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from '@/stores/member'
-import { useNotificationStore } from '@/stores/notification' 
+
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 
 import { notify } from '@/components/toastMessage.js'
-const { VITE_VUE_API_URL } = import.meta.env;
+
 const router = useRouter()
 const memberStore = useMemberStore()
-const notificationStore = useNotificationStore()
+
 const { isLogin } = storeToRefs(memberStore)
 const { userLogin, getUserInfo } = memberStore
-const { notification } = storeToRefs(notificationStore)
-const {addNotification} = notificationStore
+
 const loginUser = ref({
   userId: '',
   userPass: ''
@@ -29,15 +28,6 @@ const login = async () => {
   if (isLogin.value) {
     notify('SUCCESS', '로그인에 성공했습니다.')
     getUserInfo(token)
-    const eventSource = new EventSource(VITE_VUE_API_URL + `/notification/connect/?userId=${loginUser.value.userId}`);
-
-    eventSource.addEventListener("sse", function (event) {
-      console.log(event.data);
-    });
-    eventSource.addEventListener("notification", function (event) {
-      const result = JSON.parse(event.data)
-      addNotification(result)
-    })
     router.push('/')
   } else {
     notify('FAIL', '로그인에 실패했습니다.')

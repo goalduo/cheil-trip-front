@@ -3,9 +3,17 @@ import NavHeader from '../components/NavHeader.vue'
 import ShareAlarm from '../components/ShareAlarm.vue'
 import MainContent from '../components/MainContent.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
-
-import { ref } from 'vue'
-
+import { storeToRefs } from 'pinia'
+import { useMemberStore } from '@/stores/member'
+import { ref, onMounted } from 'vue'
+import { useNotificationStore } from '@/stores/notification' 
+const { VITE_VUE_API_URL } = import.meta.env;
+const notificationStore = useNotificationStore()
+const { notification } = storeToRefs(notificationStore)
+const { addNotification } = notificationStore
+const memberStore = useMemberStore()
+const { isLogin } = storeToRefs(memberStore)
+const { userLogin, getUserInfo, userInfo } = memberStore
 const mouseX = ref(0)
 const mouseY = ref(0)
 
@@ -13,6 +21,20 @@ const mouseMove = (event) => {
   mouseX.value = event.pageX + 5
   mouseY.value = event.pageY + 5
 }
+onMounted(() => {
+  if (userInfo !== null) {
+    const eventSource = new EventSource(VITE_VUE_API_URL + `/notification/connect/?userId=${userInfo.userId}`);
+  eventSource.addEventListener("sse", function (event) {
+    console.log(event.data);
+  });
+  eventSource.addEventListener("notification", function (event) {
+    const result = JSON.parse(event.data)
+    addNotification(result)
+  })
+  }
+});
+
+
 </script>
 
 <template>
