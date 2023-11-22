@@ -37,13 +37,14 @@ const login = async () => {
   <NavHeader :is-main-page-header="false"></NavHeader>
   <form id="login-form">
     <div class="login-logo"></div>
-    <input type="text" id="id" v-model="loginUser.userId" placeholder="아이디" />
+    <input type="text" id="id" v-model="loginUser.userId" placeholder="아이디" autocomplete="off"/>
     <input
       type="password"
       id="password"
       v-model="loginUser.userPass"
       @keyup.enter="login"
       placeholder="비밀번호"
+      autocomplete="off"
     />
     <input type="button" id="submit" value="로그인" @click="login" />
     <div class="account">

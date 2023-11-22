@@ -4,8 +4,9 @@
 import NavHeader from '../components/NavHeader.vue'
 import SitemapFooter from '../components/SitemapFooter.vue'
 import { userRegist } from '@/api/UserAPI.js'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import router from "../router";
+import { notify } from '@/components/toastMessage.js'
 
 const name = ref('')
 const id = ref('')
@@ -40,6 +41,10 @@ watch(confirmPassword, () => {
   isValidConfirmPassword.value = confirmPassword.value === password.value ? true : false
 })
 
+const isPossibleToRegist = computed(() => {
+  return name.value.length && id.value.length && isValidEmail.value && isValidPassword.value && isValidConfirmPassword.value
+})
+
 // IME(한글) 처리를 위한 메서드 선언
 const onChangeNameInputValue = (event) => {
   name.value = event.target.value
@@ -59,12 +64,16 @@ async function registerUserInfo() {
     userInfo,
     (response) => {
       router.push('/')
+      notify('SUCCESS', '회원가입에 성공하였습니다.')
       console.log(response)
     }),
     (error) => {
+        notify('FAIL', '회원가입에 실패하였습니다.')
         console.error(error);
     }
 }
+
+
 
 </script>
 
@@ -84,6 +93,7 @@ async function registerUserInfo() {
         id="name"
         name="name"
         placeholder="이름"
+        autocomplete="off"
       />
     </div>
     <div class="group">
@@ -95,6 +105,7 @@ async function registerUserInfo() {
         id="id"
         name="id"
         placeholder="아이디"
+        autocomplete="off"
       />
       <!-- <p class="input-text-error">중복된 아이디가 있습니다.</p> -->
     </div>
@@ -107,6 +118,7 @@ async function registerUserInfo() {
         id="email"
         name="email"
         placeholder="이메일"
+        autocomplete="off"
       />
       <p v-show="!isValidEmail" class="input-text-error">이메일 주소를 정확히 입력해주세요.</p>
     </div>
@@ -119,6 +131,7 @@ async function registerUserInfo() {
         id="password"
         name="password"
         placeholder="********"
+        autocomplete="off"
       />
       <p v-show="!isValidPassword" class="input-text-error">
         영문, 숫자, 특수문자를 조합하여 입력해주세요. (8-16자)
@@ -133,10 +146,11 @@ async function registerUserInfo() {
         id="password-confirm"
         name="password-confirm"
         placeholder="********"
+        autocomplete="off"
       />
       <p v-show="!isValidConfirmPassword" class="input-text-error">비밀번호가 일치하지 않습니다.</p>
     </div>
-    <input type="button" id="submit" value="가입하기" @click="registerUserInfo" />
+    <input type="button" id="submit" value="가입하기" @click="registerUserInfo" :disabled="!isPossibleToRegist" />
   </form>
   <SitemapFooter></SitemapFooter>
 </template>
