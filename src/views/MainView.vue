@@ -44,7 +44,7 @@ onMounted(async() => {
     <div id="cursor" :style="{ left: mouseX + 'px', top: mouseY + 'px' }">
       <img id="paperplane-image" src="../assets/images/paperplane.svg" />
     </div>
-
+    
     <!-- 헤더 -->
     <NavHeader :is-main-page-header="true"></NavHeader>
     <!-- 알림창 -->

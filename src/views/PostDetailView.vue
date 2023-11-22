@@ -6,6 +6,7 @@ import SitemapFooter from '../components/SitemapFooter.vue'
 import { detailArticle, deleteArticle } from '@/api/BoardAPI.js'
 import { Editor } from '@toast-ui/editor'
 
+import { notify } from '@/components/toastMessage.js'
 import { ref, onMounted } from 'vue'
 import { useMemberStore } from '@/stores/member'
 import router from "../router"
@@ -31,12 +32,12 @@ onMounted(async () => {
 })
 
 function deleteArticleByArticleId() {
-  const result = confirm("삭제하시겠습니까?");
-  if (!result) return;
+  // const result = confirm("삭제하시겠습니까?");
+  // if (!result) return;
   deleteArticle(article.value.articleNo, ((response) => {
-    console.log(response)
-    alert("게시글이 삭제되었습니다.")
-    router.push("/")
+    // console.log(response)
+    notify('SUCCESS', '게시물이 삭제되었습니다.')
+    router.push("/post")
   }))
 }
 
@@ -78,9 +79,10 @@ function goToModifyView() {
 <style scoped>
 #wrap {
   box-sizing: border-box;
+  min-width: 1000px;
   width: 100%;
   min-height: 100%;
-  padding: 25px;
+  padding: 50px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -101,6 +103,7 @@ function goToModifyView() {
 }
 
 .title {
+  width: 700px;
   margin: 5px 0 10px 0;
   font-size: 30px;
   font-weight: 600;

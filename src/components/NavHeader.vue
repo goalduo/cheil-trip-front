@@ -78,13 +78,17 @@ defineProps({
 #header {
   box-sizing: border-box;
   min-width: 1000px;
-  width: 100%;
   height: 70px;
   padding: 0 20px;
   display: flex;
   align-items: center;
   font-size: 20px;
   background-color: var(--navheader-color);
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .header-fixed {
@@ -104,8 +108,6 @@ defineProps({
 }
 
 .nav-link {
-  position: absolute;
-  right: 30px;
   display: flex;
   gap: 35px;
 }

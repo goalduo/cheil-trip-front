@@ -228,7 +228,7 @@ const removeTag = (index) => {
   position: relative;
   width: 100%;
   margin: 0 auto;
-  padding: 25px;
+  padding: 50px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -237,7 +237,7 @@ const removeTag = (index) => {
 }
 
 .title {
-  margin: 20px 0;
+  margin-bottom: 20px;
   font-size: 24px;
   font-weight: 600;
 }

@@ -150,8 +150,9 @@ label {
 
 #register-form {
   width: 100%;
+  min-width: 1000px;
   height: 80%;
-  margin: 70px auto 0 auto;
+  margin: 0 auto;
   padding: 50px 0;
   display: flex;
   flex-direction: column;

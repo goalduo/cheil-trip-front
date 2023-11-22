@@ -62,6 +62,7 @@ const loadMore = async () => {
 <style scoped>
 #wrap {
   width: 100%;
+  min-height: 100%;
   padding: 100px 0;
   background-color: var(--font-color);
 }

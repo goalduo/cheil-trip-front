@@ -93,6 +93,7 @@ const loadMore = async () => {
 <style scoped>
 #wrap {
   box-sizing: border-box;
+  min-width: 1000px;
   width: 100%;
   min-height: 100vh;
   padding: 20px;
@@ -109,7 +110,8 @@ const loadMore = async () => {
 }
 
 #my-info {
-  width: 20%;
+  box-sizing: border-box;
+  min-width: 210px;
   padding: 30px;
   border-right: 2px solid var(--tag-color);
 }
@@ -134,7 +136,7 @@ const loadMore = async () => {
 }
 
 #my-activity {
-  width: 80%;
+  min-width: 80%;
   display: flex;
   flex-direction: column;
 }

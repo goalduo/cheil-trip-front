@@ -36,7 +36,7 @@ const login = async () => {
 </script>
 
 <template>
-  <NavHeader></NavHeader>
+  <NavHeader :is-main-page-header="false"></NavHeader>
   <form id="login-form">
     <div class="login-logo"></div>
     <input type="text" id="id" v-model="loginUser.userId" placeholder="아이디" />
@@ -49,8 +49,8 @@ const login = async () => {
     />
     <input type="button" id="submit" value="로그인" @click="login" />
     <div class="account">
-      <RouterLink class="link" to="/">아이디 찾기</RouterLink>
-      <RouterLink class="link" to="/">비밀번호 찾기</RouterLink>
+      <!-- <RouterLink class="link" to="/">아이디 찾기</RouterLink> -->
+      <!-- <RouterLink class="link" to="/">비밀번호 찾기</RouterLink> -->
       <RouterLink class="link" to="/register">회원가입</RouterLink>
     </div>
   </form>
@@ -60,6 +60,7 @@ const login = async () => {
 <style scoped>
 #login-form {
   width: 100%;
+  min-width: 1000px;
   height: 70%;
   padding: 50px 0;
   display: flex;

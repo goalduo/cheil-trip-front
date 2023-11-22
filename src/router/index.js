@@ -51,7 +51,7 @@ const router = createRouter({
       beforeEnter: (to, from) => {
         const memberStore = useMemberStore();
         const { userInfo } = storeToRefs(memberStore)
-        if (userInfo.value === null) {
+        if (userInfo.value) {
           notify('FAIL', '이미 로그인이 되어 있습니다.')
           return { name: 'main' }
         }
@@ -115,15 +115,7 @@ const router = createRouter({
     {
       path: '/post/detail/:articleNo',
       name: 'postDetail',
-      component: PostDetailView,
-      beforeEnter: (to, from) => {
-        const memberStore = useMemberStore();
-        const { userInfo } = storeToRefs(memberStore)
-        if (userInfo.value === null) {
-          notify('FAIL', '로그인이 필요한 서비스입니다.')
-          return { name: 'main' }
-        }
-      }
+      component: PostDetailView
     },
     {
       path: '/post/modify/:articleNo',

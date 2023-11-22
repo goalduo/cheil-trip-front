@@ -184,7 +184,7 @@ onMounted(async () => {
   min-width: 1300px;
   width: 100%;
   min-height: 100vh;
-  padding: 20px;
+  padding: 50px 20px;
   display: flex;
   gap: 20px;
   color: var(--fourth-font-color);
