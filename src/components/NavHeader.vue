@@ -77,6 +77,7 @@ defineProps({
 <style scoped>
 #header {
   box-sizing: border-box;
+  min-width: 1000px;
   width: 100%;
   height: 70px;
   padding: 0 20px;

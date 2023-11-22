@@ -36,6 +36,7 @@ const mouseMove = (event) => {
 <style scoped>
 #wrap {
   position: relative;
+  min-width: 1000px;
   width: 100%;
 }
 
