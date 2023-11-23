@@ -13,7 +13,7 @@ function initMap(dom) {
 }
 
 function displayMarker(location, map, option, idx = 0) {
-  const { y, x, place_name, address_name, category_group_name } = location
+  const { y, x, place_name, address_name, category_group_name, place_url } = location
   var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 })
   var markerPosition = new kakao.maps.LatLng(y, x)
   // 마커를 생성합니다
@@ -49,20 +49,22 @@ function displayMarker(location, map, option, idx = 0) {
           <div class="infowindow-body">
               <div class="infowindow-address">${address_name}</div>
               <div class="infowindow-category">${category_group_name}</div>
+              <div class="infowindow-placeUrl">마커를 클릭하면 장소 페이지로 이동합니다.</div>
           </div>
       </div>`
 
   // 마커가 지도 위에 표시되도록 설정합니다
   kakao.maps.event.addListener(marker, 'mouseover', function () {
-    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-    // infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place_name + '</div>')
     infowindow.setContent(content)
     infowindow.open(map, marker)
   })
 
   kakao.maps.event.addListener(marker, 'mouseout', function () {
-    // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
     infowindow.close()
+  })
+
+  kakao.maps.event.addListener(marker, 'click', function () {
+    window.open(place_url)
   })
 
   marker.setMap(map)
@@ -144,7 +146,8 @@ function search(keyword, map, callbackFn, option) {
             x: data.x,
             place_name: data.place_name,
             address_name: data.address_name,
-            category_group_name: data.category_group_name
+            category_group_name: data.category_group_name,
+            place_url: data.place_url
           },
           map,
           'UNORDERED'
@@ -169,7 +172,8 @@ function searchByCategory(category, map, callbackFn) {
           x: data.x,
           place_name: data.place_name,
           address_name: data.address_name,
-          category_group_name: data.category_group_name
+          category_group_name: data.category_group_name,
+          place_url: data.place_url
         },
         map,
         'UNORDERED'

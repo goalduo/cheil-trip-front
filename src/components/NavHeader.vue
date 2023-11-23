@@ -28,7 +28,7 @@ const logout = async () => {
 }
 
 onMounted(() => {
-  console.log(userInfo.value)
+  // console.log(userInfo.value)
   // 로그인 상태
   if (sessionStorage.getItem('accessToken') !== null) {
     headerMenuList.value = [

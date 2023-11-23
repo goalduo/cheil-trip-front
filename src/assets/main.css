@@ -38,7 +38,7 @@ input, button, label {
 /* infowindow에 적용할 CSS */
 .infowindow-wrap {
   width: 250px;
-  height: 90px;
+  height: 110px;
   line-height: 1.5;
   text-align: left;
   overflow: hidden;
@@ -55,7 +55,7 @@ input, button, label {
 }
 
 .infowindow-body {
-  height: 40px;
+  height: 60px;
   padding: 5px;
   display: flex;
   flex-direction: column;
@@ -71,4 +71,10 @@ input, button, label {
 .infowindow-category {
   font-size: 10px;
   font-weight: 200;
+}
+
+.infowindow-placeUrl {
+  font-size: 10px;
+  font-weight: 200;
+  text-decoration: underline;
 }
