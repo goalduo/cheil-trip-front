@@ -144,7 +144,7 @@ onMounted(() => {
   position: relative;
   box-sizing: border-box;
   width: 100%;
-  height: 80vh;
+  height: 70vh;
   margin-bottom: 100px;
   padding: 60px 120px;
   display: grid;
@@ -158,7 +158,7 @@ onMounted(() => {
 
 #description-section div {
   box-sizing: border-box;
-  width: 400px;
+  width: 320px;
   margin: 0 auto;
   padding: 10px;
   background-color: var(--navheader-color);
@@ -179,8 +179,8 @@ onMounted(() => {
   position: relative;
   box-sizing: border-box;
   background-image: url('../assets/images/trip-plan.png');
-  background-position: 10% 0;
-  background-size: cover;
+  background-size: 120%;
+  background-position: -10px -10px;
   background-repeat: no-repeat;
 }
 
@@ -201,8 +201,8 @@ onMounted(() => {
   position: relative;
   box-sizing: border-box;
   background-image: url('../assets/images/trip-share.png');
-  background-position: 10% 0;
-  background-size: cover;
+  background-position: -10px -10px;
+  background-size: 115%;
   background-repeat: no-repeat;
 }
 
@@ -210,8 +210,8 @@ onMounted(() => {
   position: relative;
   box-sizing: border-box;
   background-image: url('../assets/images/trip-post.png');
-  background-position: 10% 0;
-  background-size: cover;
+  background-position: -8px -18px;
+  background-size: 105%;
   background-repeat: no-repeat;
 }
 
@@ -219,8 +219,8 @@ onMounted(() => {
   position: relative;
   box-sizing: border-box;
   background-image: url('../assets/images/trip-card.png');
-  background-position: center;
-  background-size: cover;
+  background-position: -8px -10px;
+  background-size: 105%;
   background-repeat: no-repeat;
 }
 
