@@ -1,3 +1,5 @@
+import { notify } from '@/components/toastMessage.js'
+
 const ps = new kakao.maps.services.Places()
 let searchResult = {}
 function initMap(dom) {
@@ -89,7 +91,7 @@ function removeLine(polyline) {
 function searchPlacesByKeyword(keyword, callbackFn, option) {
   // var keyword = document.getElementById('keyword').value;
   if (!keyword.replace(/^\s+|\s+$/g, '')) {
-    alert('키워드를 입력해주세요!')
+    notify('WARNING', '키워드를 입력해주세요.')
     return false
   }
   // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
@@ -122,10 +124,10 @@ function placesSearchCB(data, status) {
       searchList: data
     }
   } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-    alert('검색 결과가 존재하지 않습니다.')
+    notify('WARNING', '검색 결과가 존재하지 않습니다.')
     return
   } else if (status === kakao.maps.services.Status.ERROR) {
-    alert('검색 결과 중 오류가 발생했습니다.')
+    notify('FAIL', '검색 중에 오류가 발생했습니다.')
     return
   }
 }

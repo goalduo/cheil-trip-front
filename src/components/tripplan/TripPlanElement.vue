@@ -47,6 +47,12 @@ const goToTripCourseDetailView = (planId) => {
   border-radius: 15px;
   background-color: var(--font-color);
   box-shadow: 4px 12px 30px 6px var(--shadow-color);
+  transition: transform .2s ease, padding .2s ease;
+}
+
+#plan:hover {
+  transform: translate(0, -10px);
+  box-shadow: 4px 12px 30px 16px var(--shadow-color);
 }
 
 .info {

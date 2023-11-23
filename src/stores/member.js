@@ -2,10 +2,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
-
 import { userConfirm, findById, tokenRegeneration, logout } from "@/api/UserAPI.js";
 import { httpStatusCode } from "@/util/http-status";
-
+import { notify } from '@/components/toastMessage.js'
 
 export const useMemberStore = defineStore("memberStore", () => {
   const router = useRouter();
@@ -26,16 +25,16 @@ export const useMemberStore = defineStore("memberStore", () => {
           // console.log("data", data);
           let accessToken = data["accessToken"];
           let refreshToken = data["refreshToken"];
-          console.log("accessToken", accessToken);
-          console.log("refreshToken", refreshToken);
+          // console.log("accessToken", accessToken);
+          // console.log("refreshToken", refreshToken);
           isLogin.value = true;
           isLoginError.value = false;
           isValidToken.value = true;
           sessionStorage.setItem("accessToken", accessToken);
           sessionStorage.setItem("refreshToken", refreshToken);
-          console.log("sessiontStorage에 담았다", isLogin.value);
+          // console.log("sessiontStorage에 담았다", isLogin.value);
         } else {
-          console.log("로그인 실패했다");
+          // console.log("로그인 실패했다");
           isLogin.value = false;
           isLoginError.value = true;
           isValidToken.value = false;
@@ -49,15 +48,15 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const getUserInfo = async (token) => {
     let decodeToken = jwtDecode(token);
-    console.log("2. decodeToken", decodeToken);
+    // console.log("2. decodeToken", decodeToken);
     await findById(
       decodeToken.userId,
       (response) => {
         if (response.status === httpStatusCode.OK) {
           userInfo.value = response.data;
-          console.log("3. getUserInfo data >> ", response.data);
+          // console.log("3. getUserInfo data >> ", response.data);
         } else {
-          console.log("유저 정보 없음!!!!");
+          // console.log("유저 정보 없음!!!!");
         }
       },
       async (error) => {
@@ -79,7 +78,7 @@ export const useMemberStore = defineStore("memberStore", () => {
       (response) => {
         if (response.status === httpStatusCode.CREATE) {
           let accessToken = response.data["access-token"];
-          console.log("재발급 완료 >> 새로운 토큰 : {}", accessToken);
+          // console.log("재발급 완료 >> 새로운 토큰 : {}", accessToken);
           sessionStorage.setItem("accessToken", accessToken);
           isValidToken.value = true;
         }
@@ -87,17 +86,17 @@ export const useMemberStore = defineStore("memberStore", () => {
       async (error) => {
         // HttpStatus.UNAUTHORIZE(401) : RefreshToken 기간 만료 >> 다시 로그인!!!!
         if (error.response.status === httpStatusCode.UNAUTHORIZED) {
-          console.log("갱신 실패");
+          // console.log("갱신 실패");
           // 다시 로그인 전 DB에 저장된 RefreshToken 제거.
           await logout(
             userInfo.value.userid,
             (response) => {
               if (response.status === httpStatusCode.OK) {
-                console.log("리프레시 토큰 제거 성공");
+                // console.log("리프레시 토큰 제거 성공");
               } else {
-                console.log("리프레시 토큰 제거 실패");
+                // console.log("리프레시 토큰 제거 실패");
               }
-              alert("RefreshToken 기간 만료!!! 다시 로그인해 주세요.");
+              notify('WARNING', "다시 로그인해 주세요.");
               isLogin.value = false;
               userInfo.value = null;
               isValidToken.value = false;

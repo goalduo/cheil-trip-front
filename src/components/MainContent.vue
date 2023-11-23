@@ -69,14 +69,31 @@ onMounted(() => {
     <span>설레는 여행의 시작, 제일여행과 함께 해요!</span>
     <span>제일여행의 서비스는 아래에서 확인할 수 있습니다.</span>
   </section>
+
+  <section id="description-section">
+    <div class="trip-plan-image">
+      <p>여행 경로를 저장할 수 있어요!</p>
+    </div>
+    <div class="trip-share-image">
+      <p>여행을 같이 짤 수도 있어요!</p>
+    </div>
+    <div class="trip-post-image">
+      <p>게시글을 올릴 수도 있죠!</p>
+    </div>
+    <div class="trip-card-image">
+      <p>여행 카드를 공유할 수도 있어요!</p>
+    </div>
+  </section>
 </template>
 
 <style scoped>
 #logo-section {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
   height: 100vh;
   display: flex;
+  overflow: hidden;
 }
 
 .snow {
@@ -111,6 +128,7 @@ onMounted(() => {
 #intro-section {
   position: relative;
   top: 0;
+  box-sizing: border-box;
   width: 100%;
   height: 100vh;
   display: flex;
@@ -120,6 +138,90 @@ onMounted(() => {
   gap: 40px;
   letter-spacing: 1px;
   color: var(--sky-color);
+}
+
+#description-section {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 80vh;
+  margin-bottom: 100px;
+  padding: 60px 120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-row-gap: 60px;
+  grid-column-gap: 20px;
+  letter-spacing: 1px;
+  color: var(--sky-color);
+}
+
+#description-section div {
+  box-sizing: border-box;
+  width: 400px;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: var(--navheader-color);
+  border-radius: 15px;
+}
+
+#description-section div:nth-child(1) {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+}
+
+#description-section div:nth-child(4) {
+  grid-row: 1 / span 2;
+  grid-column: 3;
+}
+
+.trip-plan-image {
+  position: relative;
+  box-sizing: border-box;
+  background-image: url('../assets/images/trip-plan.png');
+  background-position: 10% 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.trip-plan-image p, .trip-share-image p, .trip-post-image p, .trip-card-image p {
+  position: absolute;
+  left: 0;
+  top: -30px;
+  box-sizing: border-box;
+  width: fit-content;
+  word-break: keep-all;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--sky-color);
+}
+
+.trip-share-image {
+  position: relative;
+  box-sizing: border-box;
+  background-image: url('../assets/images/trip-share.png');
+  background-position: 10% 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.trip-post-image {
+  position: relative;
+  box-sizing: border-box;
+  background-image: url('../assets/images/trip-post.png');
+  background-position: 10% 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.trip-card-image {
+  position: relative;
+  box-sizing: border-box;
+  background-image: url('../assets/images/trip-card.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 span:nth-child(1) {
@@ -155,7 +257,7 @@ span:nth-child(2) {
   bottom: 0;
   left: 0;
   width: 700px;
-  margin: 0 0 -20px -240px;
+  margin: 0 0 -20px -260px;
   z-index: 20;
 }
 
@@ -179,7 +281,7 @@ span:nth-child(2) {
 #mountain-image {
   position: absolute;
   bottom: 0;
-  left: 1300px;
+  left: 1350px;
   width: 600px;
   margin-bottom: -60px;
 }
