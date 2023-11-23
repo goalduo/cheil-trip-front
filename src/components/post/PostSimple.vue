@@ -9,15 +9,21 @@ onMounted(() => {
   loadMore()
 })
 
-const evenIndexArticles = computed(() => {
+const zeroIndexArticles = computed(() => {
   return articles.value.filter((article, index) => {
-    return index % 2 == 0
+    return index % 3 == 0
   })
 })
 
-const oddIndexArticles = computed(() => {
+const oneIndexArticles = computed(() => {
   return articles.value.filter((article, index) => {
-    return index % 2 == 1
+    return index % 3 == 1
+  })
+})
+
+const twoIndexArticles = computed(() => {
+  return articles.value.filter((article, index) => {
+    return index % 3 == 2
   })
 })
 
@@ -49,10 +55,13 @@ const loadMore = async () => {
     </div> -->
     <div class="card-list">
       <div class="card-list-column">
-        <post-card v-for="article in evenIndexArticles" :key="article.id" v-bind="article" />
+        <post-card v-for="article in zeroIndexArticles" :key="article.id" v-bind="article" />
       </div>
       <div class="card-list-column">
-        <post-card v-for="article in oddIndexArticles" :key="article.id" v-bind="article" />
+        <post-card v-for="article in oneIndexArticles" :key="article.id" v-bind="article" />
+      </div>
+      <div class="card-list-column">
+        <post-card v-for="article in twoIndexArticles" :key="article.id" v-bind="article" />
       </div>
     </div>
     <Observer @triggerIntersected="loadMore"/>
@@ -61,7 +70,9 @@ const loadMore = async () => {
 
 <style scoped>
 #wrap {
+  box-sizing: border-box;
   width: 100%;
+  min-width: 1400px;
   min-height: 100%;
   padding: 100px 0;
   background-color: var(--font-color);
@@ -78,7 +89,6 @@ const loadMore = async () => {
 } */
 
 .card-list {
-  width: 1000px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
