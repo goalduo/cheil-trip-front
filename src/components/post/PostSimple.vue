@@ -72,7 +72,7 @@ const loadMore = async () => {
 #wrap {
   box-sizing: border-box;
   width: 100%;
-  min-width: 1400px;
+  min-width: 1000px;
   min-height: 100%;
   padding: 100px 0;
   background-color: var(--font-color);

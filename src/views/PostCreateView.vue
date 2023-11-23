@@ -225,6 +225,7 @@ const removeTag = (index) => {
 }
 
 #wrap {
+  box-sizing: border-box;
   position: relative;
   width: 100%;
   margin: 0 auto;

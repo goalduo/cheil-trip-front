@@ -181,6 +181,7 @@ onMounted(async () => {
 
 <style scoped>
 #wrap {
+  box-sizing: border-box;
   min-width: 1300px;
   width: 100%;
   min-height: 100vh;

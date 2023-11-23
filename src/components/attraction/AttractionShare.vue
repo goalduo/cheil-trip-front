@@ -228,14 +228,14 @@ async function addPlace(location) {
   showPlace(location)
   // 여행 경로의 길이는 5를 넘을 수 없음
   if (tripCourseList.value.length == 5) {
-    window.alert('여행 경로는 최대 5개까지 지정할 수 있습니다.')
+    notify('WARNING', '여행 경로는 최대 5개까지 지정할 수 있습니다.')
     return;
   }
   let result = true;
   if (doc.getRoot().tripCourseList.length !== 0) {
     doc.getRoot().tripCourseList.forEach(element => {
     if (location.id == element.id) {
-      window.alert('이미 추가된 여행지입니다.');
+      notify('WARNING', '이미 추가된 여행지입니다.');
       result = false;
     }
   });
@@ -325,7 +325,7 @@ async function inviteUser(curUserId) {
     }
   const result = await addUserIdAtAttraction(body);
   console.log(result)
-  alert("사용자 초대 완료!")
+  notify('SUCCESS', "사용자 초대 완료!")
 }
 
 // 태그
@@ -343,7 +343,7 @@ function saveTripplan() {
   body.tripCourseList = obj
   console.log(body)
   postTripPlanAndTripCourse(body);
-  alert("여행 경로가 저장되었습니다.");
+  notify('SUCCESS', "여행 경로가 저장되었습니다.");
   router.push("/plan")
 }
 </script>
@@ -717,6 +717,7 @@ function saveTripplan() {
 }
 
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   height: 100vh;
   padding: 50px 20px;

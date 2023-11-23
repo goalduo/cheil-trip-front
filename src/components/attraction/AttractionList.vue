@@ -639,6 +639,7 @@ function saveTripplan() {
 }
 
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   min-width: 1000px;
   height: 100vh;
