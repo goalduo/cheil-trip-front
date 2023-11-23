@@ -163,6 +163,7 @@ const searchresultUser = ref("");
 }
 
 #wrap {
+  box-sizing: border-box;
   width: 100%;
   height: 100vh;
   padding: 50px 20px;
