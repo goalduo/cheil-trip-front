@@ -201,7 +201,8 @@ function showPlace(location) {
       x: location.x,
       place_name: location.place_name,
       address_name: location.address_name,
-      category_group_name: location.category_group_name
+      category_group_name: location.category_group_name,
+      place_url: location.place_url
     },
     map,
     "UNORDERED"
